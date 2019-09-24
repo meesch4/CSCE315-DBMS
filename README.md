@@ -7,3 +7,4 @@ in IntelliJ.
 
 To do that, go to File->Settings(or Ctrl+Alt+S)->Plugins, then search for ANTLR v4 grammar plug in.
 
+For learning basic ANTLR and how it works(as well as plug in stuff), go to this video that Paul provided us: https://www.youtube.com/watch?v=svEZtRjVBTY
