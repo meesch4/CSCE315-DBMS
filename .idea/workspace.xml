@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="17795044-b1ca-4f2e-aa59-a93b625c7634" name="Default Changelist" comment="Added gen/ folder as a Generated Source Folder so IntelliJ would compile it">
-      <change afterPath="$PROJECT_DIR$/src/parser/antlr/Sql.g4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/tests/sqlInput.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser/antlr/Sql.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/SqlParser.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parser/antlr/test.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/test.g4" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -52,20 +50,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/parser/antlr/Sql.g4">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlParser.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            <state relative-caret-position="119">
+              <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="53" selection-start-line="6" selection-start-column="53" selection-end-line="6" selection-end-column="53" />
+            <state relative-caret-position="34">
+              <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -90,12 +88,13 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/parser/antlr/test.g4" />
-        <option value="$PROJECT_DIR$/src/parser/antlr/Sql.g4" />
         <option value="$PROJECT_DIR$/src/tests/sqlInput.txt" />
         <option value="$PROJECT_DIR$/tests/parser/ParserTest.groovy" />
         <option value="$PROJECT_DIR$/tests/parser/ParserTests.java" />
         <option value="$PROJECT_DIR$/src/parser/Parser.java" />
         <option value="$PROJECT_DIR$/src/parser/Types.java" />
+        <option value="$PROJECT_DIR$/src/parser/antlr/Sql.g4" />
+        <option value="$PROJECT_DIR$/src/parser/antlr/SqlParser.g4" />
         <option value="$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4" />
       </list>
     </option>
@@ -129,6 +128,13 @@
               <item name="CSCE315-DBMS" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="parser" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CSCE315-DBMS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CSCE315-DBMS" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="parser" type="462c0819:PsiDirectoryNode" />
+              <item name="antlr" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="CSCE315-DBMS" type="b2602c69:ProjectViewProjectNode" />
@@ -237,7 +243,7 @@
       <workItem from="1569263229907" duration="5000" />
       <workItem from="1569293200270" duration="628000" />
       <workItem from="1569293841088" duration="995000" />
-      <workItem from="1569354126816" duration="9840000" />
+      <workItem from="1569354126816" duration="10111000" />
     </task>
     <task id="LOCAL-00001" summary="Added ANTLR jar to classpath">
       <created>1569354566626</created>
@@ -281,7 +287,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569369066605</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added basic lexer(keyword) antlr grammar">
+      <created>1569370207975</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1569370207975</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -293,13 +306,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11468000" />
+    <option name="totallyTimeSpent" value="11739000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22257721" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22257721" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Learn" order="3" />
@@ -337,7 +350,8 @@
     <MESSAGE value="Updated README with Roles for Phase 2" />
     <MESSAGE value="Added JUnit for Unit Testing" />
     <MESSAGE value="Added Types enum" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Types enum" />
+    <MESSAGE value="Added basic lexer(keyword) antlr grammar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added basic lexer(keyword) antlr grammar" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/gen/parser/antlr/testLexer.interp">
@@ -460,13 +474,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/parser/antlr/Sql.g4">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/parser/Types.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -486,8 +493,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="53" selection-start-line="6" selection-start-column="53" selection-end-line="6" selection-end-column="53" />
+        <state relative-caret-position="34">
+          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlParser.g4">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
         </state>
       </provider>
     </entry>

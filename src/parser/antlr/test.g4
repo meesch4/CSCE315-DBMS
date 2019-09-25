@@ -7,8 +7,11 @@ createType: 'TABLE';
 primaryKeys: 'primaryKeys';
 
 insert: 'INSERT INTO ' tableName ' '? 'VALUES FROM ' '(' tableValues ')';
-tableName: 'regex' ' '; // Regex here for tableNames? Don't care what the name is as long as it has valid characters
-tableValues: ' '? ('regex' | '4' | 'regex' ',' tableValues) ' '?;
+tableName: variableName ' '; // Regex here for tableNames? Don't care what the name is as long as it has valid characters
+tableValues: ' '? (variableName | variableName ',' tableValues) ' '?;
 
 columnNames: 'regex' type | 'regex' type ',';
 type: 'type';
+
+variableName: ANY+;
+ANY: .;

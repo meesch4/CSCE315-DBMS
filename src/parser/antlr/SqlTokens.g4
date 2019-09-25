@@ -1,4 +1,6 @@
-lexer grammar SqlLexer;
+lexer grammar SqlTokens;
+
+// Need to figure out a way to ignore
 
 SELECT: 'SELECT' | 'select';
 CREATE: 'CREATE' | 'create';
