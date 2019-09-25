@@ -2,7 +2,7 @@
 grammar Sql;
 options { tokenVocab=SqlTokens; }
 
-rename: (select | create | insert)';';
+main: (select | create | insert | variable)';';
 
 create: CREATE 'TABLE' ;
 
@@ -10,3 +10,7 @@ select: ;
 
 insert: ;
 
+rename: ;
+
+variable: VARIABLE WS '<-' WS statement; // variable assigning
+statement: select; // What else can it be?

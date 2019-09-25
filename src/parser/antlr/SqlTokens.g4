@@ -5,6 +5,9 @@ lexer grammar SqlTokens;
 SELECT: 'SELECT' | 'select';
 CREATE: 'CREATE' | 'create';
 INSERT: 'INSERT INTO' | 'insert into';
+RENAME: 'RENAME' | 'rename';
+
+VARIABLE: ('a'..'z' | 'A'..'Z')+; // valid variable names. Any letter for now
 
 // Should we separate the types into a separate lexer file?
 TYPE: INTEGER | VARCHAR | CHAR | FLOAT | DATE | TIME;
@@ -39,3 +42,5 @@ CHAR: CHAR_NAME SPACES PARAMETER;
 
 SPACES: ' '+?; // Any number of spaces, including 0. Not sure if needed
 ANY_DIGIT: '0'..'9'; // Any digit 0 - 9
+
+WS: (' '|'\t')+ -> skip; // Skip any tabs or spaces
