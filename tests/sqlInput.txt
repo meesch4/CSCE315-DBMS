@@ -1,0 +1,11 @@
+CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+
+INSERT INTO animals VALUES FROM ("Joe", "cat", 4);
+insert into animals values from ("Spot", "dog", 10);
+
+SHOW animals;
+
+dogs <- SELECT (kind == "dog") animals;
+old_dogs <- SELECT (age > 10) dog;
+
+a <- RENAME (aname, akind) (project (name, kind) animals); // TF is this syntax
