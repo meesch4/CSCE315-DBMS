@@ -10,12 +10,15 @@ RENAME: 'RENAME' | 'rename';
 VARIABLE: ('a'..'z' | 'A'..'Z')+; // valid variable names. Any letter for now
 
 // Should we separate the types into a separate lexer file?
-TYPE: INTEGER | VARCHAR | CHAR | FLOAT | DATE | TIME;
+TYPE: INTEGER | VARCHAR_NAME | CHAR | FLOAT | DATE | TIME;
 
 INTEGER: 'INTEGER' | 'intger' | 'INT' | 'int';
 FLOAT: 'FLOAT' | 'float' | 'REAL' | 'real';
 
-DATE: YEAR'-'MONTH'-'DAY; // yyyy-mm-dd
+DATE: 'DATE' | 'date';
+TIME: 'TIME' | 'time';
+
+/*DATE: YEAR'-'MONTH'-'DAY; // yyyy-mm-dd
 YEAR: (ANY_DIGIT){4}; // 4 occurences of any number 0-9. Should 0001 be a valid year?
 MONTH:
     ('0' ANY_DIGIT) | // 01 - 09
@@ -31,6 +34,7 @@ HOUR:
     ('2' '0'..'3');      // 20 - 23
 
 MIN_SEC: '0'..'5' ANY_DIGIT; // Minute or second, 00 - 59
+*/
 
 PARAMETER: '(' (ANY_DIGIT)+ ')';
 
@@ -43,4 +47,5 @@ CHAR: CHAR_NAME SPACES PARAMETER;
 SPACES: ' '+?; // Any number of spaces, including 0. Not sure if needed
 ANY_DIGIT: '0'..'9'; // Any digit 0 - 9
 
-WS: (' '|'\t')+ -> skip; // Skip any tabs or spaces
+WS: ' ';
+// WS: (' '|'\t')+ -> skip; // Skip any tabs or spaces
