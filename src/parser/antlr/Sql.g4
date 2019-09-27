@@ -1,4 +1,4 @@
-grammar dbms;
+grammar Sql;
 
 // Batch 0 Tokenizer
 OPERATOR: '==' | '!=' | '<' | '>' | '<=' | '>=' ;
