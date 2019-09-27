@@ -1,4 +1,4 @@
-lexer grammar SqlTokens;
+grammar OldSqlTokens;
 
 // Need to figure out a way to ignore
 
@@ -12,7 +12,7 @@ VARIABLE: ('a'..'z' | 'A'..'Z')+; // valid variable names. Any letter for now
 // Should we separate the types into a separate lexer file?
 TYPE: INTEGER | VARCHAR_NAME | CHAR | FLOAT | DATE | TIME;
 
-INTEGER: 'INTEGER' | 'intger' | 'INT' | 'int';
+INTEGER: 'INTEGER' | 'integer' | 'INT' | 'int';
 FLOAT: 'FLOAT' | 'float' | 'REAL' | 'real';
 
 DATE: 'DATE' | 'date';

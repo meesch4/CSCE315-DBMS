@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="17795044-b1ca-4f2e-aa59-a93b625c7634" name="Default Changelist" comment="Added gen/ folder as a Generated Source Folder so IntelliJ would compile it">
-      <change afterPath="$PROJECT_DIR$/tests/createinput.txt" afterDir="false" />
+    <list default="true" id="17795044-b1ca-4f2e-aa59-a93b625c7634" name="Default Changelist" comment="Renamed Sql.g4 and SqlTokens.g4 to OldSql and OldSqlTokens">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dbms/Dbms.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parser/antlr/OldSql.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parser/antlr/Sql.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/Sql.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser/antlr/Sql.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/antlr/OldSqlTokens.g4" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,31 +22,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/parser/antlr/test.g4">
+        <entry file="file://$PROJECT_DIR$/src/parser/antlr/OldSqlTokens.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="368">
-              <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
-              <folding>
-                <element signature="e#484#996#0" />
-              </folding>
+            <state>
+              <caret column="10" selection-start-column="10" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/parser/antlr/Sql.g4">
+        <entry file="file://$PROJECT_DIR$/src/dbms/Dbms.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="13" selection-start-column="13" selection-end-column="13" />
+            <state relative-caret-position="207">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/parser/antlr/OldSql.g4">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="46">
+              <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
             </state>
           </provider>
         </entry>
@@ -54,8 +53,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -77,8 +76,11 @@
         <option value="$PROJECT_DIR$/src/parser/antlr/SqlLexer.g4" />
         <option value="$PROJECT_DIR$/src/parser/antlr/SqlParser.g4" />
         <option value="$PROJECT_DIR$/tests/parser/createinput.txt" />
-        <option value="$PROJECT_DIR$/src/parser/antlr/Sql.g4" />
         <option value="$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4" />
+        <option value="$PROJECT_DIR$/src/parser/antlr/Sql.g4" />
+        <option value="$PROJECT_DIR$/src/dbms/Dbms.java" />
+        <option value="$PROJECT_DIR$/src/parser/antlr/OldSqlTokens.g4" />
+        <option value="$PROJECT_DIR$/src/parser/antlr/OldSql.g4" />
       </list>
     </option>
   </component>
@@ -92,8 +94,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -115,6 +115,12 @@
               <item name="Java 315" type="b2602c69:ProjectViewProjectNode" />
               <item name="Java 315" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="dbms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Java 315" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Java 315" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="parser" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -124,21 +130,12 @@
               <item name="parser" type="462c0819:PsiDirectoryNode" />
               <item name="antlr" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Java 315" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java 315" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java 315" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java 315" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-              <item name="parser" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -159,6 +156,9 @@
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
       <recent name="parser" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="org.junit.runners.JUnit4" />
@@ -238,7 +238,8 @@
       <workItem from="1569293200270" duration="628000" />
       <workItem from="1569293841088" duration="995000" />
       <workItem from="1569354126816" duration="11021000" />
-      <workItem from="1569420911167" duration="1706000" />
+      <workItem from="1569420911167" duration="2758000" />
+      <workItem from="1569606339419" duration="2225000" />
     </task>
     <task id="LOCAL-00001" summary="Added ANTLR jar to classpath">
       <created>1569354566626</created>
@@ -303,7 +304,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569371117509</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Updated SqlTokens with DATE + TIME valid typenames and added createinput.txt">
+      <created>1569422675687</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1569422675687</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -313,36 +321,39 @@
     <history-entry file="ParserTests_test - 2019.09.24 at 18h 18m 07s.xml">
       <configuration name="ParserTests.test" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ParserTests_test - 2019.09.27 at 13h 13m 49s.xml">
+      <configuration name="ParserTests.test" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14355000" />
+    <option name="totallyTimeSpent" value="17632000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22527473" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22771673" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Learn" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Favorites" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32987553" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32987553" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Tool Output" order="9" weight="0.32891566" />
+      <window_info anchor="bottom" id="Tool Output" order="9" visible="true" weight="0.32883817" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="ANTLR Preview" order="13" visible="true" weight="0.32987553" />
+      <window_info anchor="bottom" id="ANTLR Preview" order="13" weight="0.32987553" />
       <window_info anchor="bottom" id="Inspection Results" order="14" />
-      <window_info anchor="bottom" id="Messages" order="15" />
+      <window_info anchor="bottom" id="Messages" order="15" weight="0.32987553" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -362,7 +373,9 @@
     <MESSAGE value="Added basic lexer(keyword) antlr grammar" />
     <MESSAGE value="Renamed SqlLexer to SqlTokens and imported it in the Sql main grammar file" />
     <MESSAGE value="Added test input file in tests/" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test input file in tests/" />
+    <MESSAGE value="Updated SqlTokens with DATE + TIME valid typenames and added createinput.txt" />
+    <MESSAGE value="Renamed Sql.g4 and SqlTokens.g4 to OldSql and OldSqlTokens" />
+    <option name="LAST_COMMIT_MESSAGE" value="Renamed Sql.g4 and SqlTokens.g4 to OldSql and OldSqlTokens" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/gen/parser/antlr/testLexer.interp" />
@@ -400,7 +413,6 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/parser/ParserTest.groovy" />
-    <entry file="file://$PROJECT_DIR$/tests/parser/ParserTests.java" />
     <entry file="uml://JAVA/parser.Parser">
       <provider selected="true" editor-type-id="UmlEditorProvider">
         <state>
@@ -425,9 +437,6 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/createinput.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlTokens.tokens">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/gen/parser/antlr/Sql.interp">
@@ -470,27 +479,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlTokens.tokens">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/parser/ParserTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/parser/antlr/test.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        <state relative-caret-position="23">
+          <caret line="1" column="3" lean-forward="true" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/parser/antlr/Sql.g4">
+    <entry file="file://$PROJECT_DIR$/src/dbms/Dbms.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/parser/antlr/OldSqlTokens.g4">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="13" selection-start-column="13" selection-end-column="13" />
+          <caret column="10" selection-start-column="10" selection-end-column="10" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/parser/antlr/SqlTokens.g4">
+    <entry file="file://$PROJECT_DIR$/src/parser/antlr/OldSql.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
-          <folding>
-            <element signature="e#484#996#0" />
-          </folding>
+        <state relative-caret-position="46">
+          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
         </state>
       </provider>
     </entry>
