@@ -6,7 +6,7 @@ ALPHA: [a-zA-Z] ; // Any one character
 DIGIT : [0-9] ; // Any single-digit number
 
 integer: DIGIT+;
-identifier: ALPHA (ALPHA | DIGIT) ;
+identifier: ALPHA ( ALPHA | DIGIT )*;
 string_literal: '"' (ALPHA | DIGIT)+ '"' ;
 
 // Batch 1
