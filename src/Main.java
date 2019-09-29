@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.SqlBaseListener;
 import parser.antlr.SQLGrammarLexer;
 import parser.antlr.SQLGrammarParser;
@@ -16,8 +17,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
-        /* Uncomment when we're ready to load files
-        String filePath = "src/text.txt";
+        String filePath = "tests/sqlInput.txt";
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
@@ -26,21 +26,21 @@ public class Main {
             if(line.length() != 0)
                 lines.add(line);
         }
-        */
 
         SqlBaseListener listener = new SqlBaseListener();
-        // for(String line : lines) {
-        CharStream charStream = CharStreams.fromString("hello13");
-        SQLGrammarLexer lexer = new SQLGrammarLexer(charStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        SQLGrammarParser parser = new SQLGrammarParser(tokenStream);
+        for(String line : lines) {
+            CharStream charStream = CharStreams.fromString(line);
+            SQLGrammarLexer lexer = new SQLGrammarLexer(charStream);
+            CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+            SQLGrammarParser parser = new SQLGrammarParser(tokenStream);
 
-        lexer.removeErrorListeners();
-        parser.removeErrorListeners();
+            lexer.removeErrorListeners();
+            parser.removeErrorListeners();
 
-        String text = parser.literal().getText();
-        // System.out.println()
+            SQLGrammarParser.ProgramContext programContext = parser.program();
+            ParseTreeWalker walker = new ParseTreeWalker();
 
-        // }
+            walker.walk(listener, programContext);
+        }
     }
 }
