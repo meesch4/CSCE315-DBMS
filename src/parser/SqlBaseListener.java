@@ -39,8 +39,8 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
         List<String> primaryKeys = parseArguments(children.get(7).getText());
 
-        List<String> columnNames = new ArrayList<>();
-        List<Type> columnTypes = new ArrayList<>();
+        List<String> columnNames = parseColumnNames(children.get(3));
+        List<Type> columnTypes = parseColumnTypes(children.get(3));
 
         // Pass all of these values to Dbms
         dbms.createTable(tableName, columnNames, columnTypes, primaryKeys);
@@ -100,31 +100,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
     @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
 
-    // Return a Type, either Varchar or Integer
-    @Override public void enterType(SQLGrammarParser.TypeContext ctx) {
-        // Check whether it's a varchar or integer
-        List<ParseTree> children = ctx.children;
-        String typeName = children.get(0).getText();
-        Type type;
-
-        if(typeName.equals("VARCHAR")) {
-            int size = Integer.parseInt(children.get(2).getText());
-
-            type = new Varchar(size);
-        } else { // Integer
-            type = new IntType();
-        }
-
-        types.addLast(type);
-    }
-    @Override public void exitType(SQLGrammarParser.TypeContext ctx) { }
-
-    // Return a List<Type>
-    @Override public void enterTyped_attribute_list(SQLGrammarParser.Typed_attribute_listContext ctx) { }
-    @Override public void exitTyped_attribute_list(SQLGrammarParser.Typed_attribute_listContext ctx) {
-        // Get all of the relations & types, then get them as a list
-    }
-
     // Void?
     @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
     @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) { }
@@ -178,6 +153,39 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         return null;
     }
 
+    // Given like nameVARCHAR(20), kindINTEGER, returns [name, kind]
+    private List<String> parseColumnNames(ParseTree tree) {
+        List<String> ret = new ArrayList<>();
+        for(int i = 0; i < tree.getChildCount(); i+=3) {
+            ParseTree child = tree.getChild(i);
+
+            ret.add(child.getText());
+        }
+
+        return ret;
+    }
+
+    private List<Type> parseColumnTypes(ParseTree tree) {
+        List<Type> ret = new ArrayList<>();
+        for(int i = 1; i < tree.getChildCount(); i+= 3) {
+            ParseTree typeTree = tree.getChild(i);
+            String typeName = typeTree.getChild(0).getText();
+
+            Type type;
+            if(typeName.equals("VARCHAR")) {
+                int size = Integer.parseInt(typeTree.getChild(2).getText());
+
+                type = new Varchar(size);
+            } else { // Integer
+                type = new IntType();
+            }
+
+            ret.add(type);
+        }
+
+        return ret;
+    }
+
     // Given like "name,kind,etc" returns a list like ["name", "kind", "etc"]
     public List<String> parseArguments(String arg) {
         return new ArrayList<String>(
@@ -195,6 +203,12 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         for(int i = 0; i < children.size(); i++) {
             ParseTree child = children.get(i);
             System.out.println(i + " " + child.getText());
+        }
+    }
+
+    private void printChildren(ParseTree tree) {
+        for(int i = 0; i < tree.getChildCount(); i++) {
+            System.out.println(i + " " + tree.getChild(i).getText());
         }
     }
 }
