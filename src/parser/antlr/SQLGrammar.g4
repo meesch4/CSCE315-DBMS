@@ -4,7 +4,7 @@ OPERATOR: '==' | '!=' | '<' | '>' | '<=' | '>=' ;
 ALPHA: [a-zA-Z_] ;
 DIGIT : [0-9] ;
 integer: DIGIT+;
-identifier: ALPHA (ALPHA | DIGIT)+ ;
+identifier: ALPHA (ALPHA | DIGIT)* ;
 string_literal: '"' (ALPHA | DIGIT)+ '"' ;
 // Batch 1
 literal: (string_literal | integer) ;
@@ -42,11 +42,9 @@ insert_cmd : 'INSERT INTO' relation_name 'VALUES FROM' '('literal (',' literal)*
 delete_cmd : 'DELETE FROM' relation_name 'WHERE' condition ;
 // Batch 5
 // I dont think the grammar is handling the ";" character at the ends of full lines of input
-command : '(' open_cmd | close_cmd | write_cmd | exit_cmd | show_cmd
-            | create_cmd | update_cmd | insert_cmd | delete_cmd ')' ';' ;
+command : ( open_cmd | close_cmd | write_cmd | exit_cmd | show_cmd
+            | create_cmd | update_cmd | insert_cmd | delete_cmd  ';' ) ;
 query : relation_name '<-' expr ';' ;
-program : (query | command)* ;
-// Batch 0 white space removal 
+program : (query | command) ;
+// Batch 0 white space removal
 WHITE_SPACE : [ \n\t\r]+ -> skip ;
-
-
