@@ -41,9 +41,9 @@ insert_cmd : 'INSERT INTO' relation_name 'VALUES FROM' '('literal (',' literal)*
                 | 'INSERT INTO' relation_name 'VALUES FROM RELATION' expr ;
 delete_cmd : 'DELETE FROM' relation_name 'WHERE' condition ;
 // Batch 5
-// I dont think the grammar is handling the ";" character at the ends of full lines of input
+// Semicolon issues fixed && query issues fixed
 command : ( open_cmd | close_cmd | write_cmd | exit_cmd | show_cmd
-            | create_cmd | update_cmd | insert_cmd | delete_cmd  ';' ) ;
+            | create_cmd | update_cmd | insert_cmd | delete_cmd  ) ';' ;
 query : relation_name '<-' expr ';' ;
 program : (query | command) ;
 // Batch 0 white space removal
