@@ -61,7 +61,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) { }
 
-    // Should all be straightforward
     @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) { }
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) { }
     @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
@@ -69,16 +68,18 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) { }
     @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) { }
 
-    @Override public void exitRelation_name(SQLGrammarParser.Relation_nameContext ctx) {
-        // What the hell do we do with relation name
-        // System.out.println("Exit relation name");
-        // String name = ctx.children.get(0).getText();
-        String name = ctx.getText();
-        relationNames.addLast(name);
-    }
 
-    @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
-    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) { }
+    /********** QUERY METHODS ***********/
+
+    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) {
+        // If we're exiting the query, that means whatever expression that was on the right side of the <-
+        // has already been calculated, thus we should have a (temp) table at the bottom of the queue
+        String tempTable = relationNames.removeLast();
+
+        String queryTableName = relationNames.removeLast(); // The table we're going to assign
+
+        // TODO: Assign the tempTable variable's name/key to queryTableName
+    }
 
     @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
         // Do something with the resulting expression
@@ -104,18 +105,21 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         relationNames.addLast(tempTable); // Insert it into place
     }
 
-    @Override public void exitRenaming(SQLGrammarParser.RenamingContext ctx) { }
+    @Override public void exitRenaming(SQLGrammarParser.RenamingContext ctx) {
+        List<String> newColumnNames = parseArguments(ctx.children.get(2).getText());
 
-    @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
-    @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
+        String tableName = relationNames.removeLast();
 
-    // Void?
+        String tempTableName = dbms.rename(tableName, newColumnNames);
 
-    @Override public void exitCondition(SQLGrammarParser.ConditionContext ctx) { }
-    @Override public void exitConjunction(SQLGrammarParser.ConjunctionContext ctx) { }
+        relationNames.addLast(tempTableName);
+    }
+
+    // Don't think we need
+    // @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
+
     @Override public void exitComparison(SQLGrammarParser.ComparisonContext ctx) { }
-    @Override public void exitExpr(SQLGrammarParser.ExprContext ctx) { }
-    @Override public void exitAtomic_expr(SQLGrammarParser.Atomic_exprContext ctx) { }
+
 
     // All return a table
     @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) {
@@ -146,6 +150,13 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
         relationNames.addLast(tempTable);
     }
+
+
+    @Override public void exitRelation_name(SQLGrammarParser.Relation_nameContext ctx) {
+        String name = ctx.getText();
+        relationNames.addLast(name);
+    }
+
 
     // Given { "Joe", "hello", 5 }, returns an array containing them
     private List<Object> parseLiterals(ParseTree tree) {

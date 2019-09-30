@@ -140,6 +140,11 @@ class FakeDbms implements IDbms {
     }
 
     @Override
+    public String rename(String tableName, List<String> newColumnNames) {
+        return "tempTable" + count++;
+    }
+
+    @Override
     public String union(String table1, String table2) {
         return "tempTable" + count++;
     }
