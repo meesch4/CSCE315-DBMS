@@ -140,6 +140,21 @@ class FakeDbms implements IDbms {
     }
 
     @Override
+    public String union(String table1, String table2) {
+        return "tempTable" + count++;
+    }
+
+    @Override
+    public String difference(String table1, String table2) {
+        return "tempTable" + count++;
+    }
+
+    @Override
+    public String product(String table1, String table2) {
+        return "tempTable" + count++;
+    }
+
+    @Override
     public Table getTable(String tableName) {
         return null;
     }
