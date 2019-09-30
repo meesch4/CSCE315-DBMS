@@ -13,14 +13,12 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     private IDbms dbms;
 
     private ArrayDeque<String> relationNames; // Table names, this could probably be a stack
-    private ArrayDeque<Type> types; // Only used for CREATE
 
     // Don't need anymore
 
     public SqlBaseListener(IDbms db) {
         this.dbms = db;
         relationNames = new ArrayDeque<>();
-        types = new ArrayDeque<>();
     }
 
     @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
@@ -31,7 +29,8 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         List<ParseTree> children = ctx.children;
         printChildren(children);
 
-        String tableName = ctx.children.get(1).getText();
+        // String tableName = ctx.children.get(1).getText();
+        String tableName = relationNames.removeFirst(); // Not sure which we need to do
 
         List<String> primaryKeys = parseArguments(children.get(7).getText());
 
@@ -45,7 +44,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitInsert_cmd(SQLGrammarParser.Insert_cmdContext ctx) {
         // Remove first or remove last? Sometimes it'll be the same
         String tableInsertInto = relationNames.removeFirst(); // Table name we're inserting values into
-        printChildren(ctx.children);
 
         String insertType = ctx.children.get(2).getText();
         if(insertType.equals("VALUES FROM RELATION")) {
@@ -59,21 +57,15 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         }
     }
 
-    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) { }
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) { }
+
+    // Should all be straightforward
+    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) { }
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) { }
-
-    // Return a string
-    @Override public void exitLiteral(SQLGrammarParser.LiteralContext ctx) {
-        String text = ctx.getText();
-        Object obj = text;
-
-        if(text.substring(0, 1).matches("[0-9]")) {
-            obj = Integer.parseInt(text);
-        }
-
-        // literals.addLast(obj);
-    }
+    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
+    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) { }
+    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) { }
+    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) { }
 
     @Override public void exitRelation_name(SQLGrammarParser.Relation_nameContext ctx) {
         // What the hell do we do with relation name
@@ -83,21 +75,10 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         relationNames.addLast(name);
     }
 
-    // Don't actually need
-    @Override public void exitAttribute_name(SQLGrammarParser.Attribute_nameContext ctx) {
-        String name = ctx.getText();
-        // String name = ctx.children.get(0).getText();
-        // attributeNames.addLast(name);
-    }
-
     @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
     @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
 
     // Void?
-    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
-    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) { }
-    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) { }
-    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) { }
 
     @Override public void exitCondition(SQLGrammarParser.ConditionContext ctx) { }
     @Override public void exitConjunction(SQLGrammarParser.ConjunctionContext ctx) { }
@@ -117,16 +98,13 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     // Could call something on enterProjection to see how many attributes are in it before we enter it?
     // That way we know how much to get out
     @Override public void exitProjection(SQLGrammarParser.ProjectionContext ctx) {
-        List<String> columnNames = new ArrayList<>();
-        List<ParseTree> children = ctx.children;
+        List<String> columnNames = parseArguments(ctx.children.get(2).getText());
 
-        // How many attributes do we remove? Could there ever be more attributes in the stack that aren't for projection here?
-        // Remove first or remove last?
-
-        String tableFrom = children.get(4).getText();
+        String tableFrom = relationNames.removeLast();
+        // String tableFrom = ctx.children.get(4).getText();
 
         // Pass in the parameters to project, and it'll return a table name for a temporary table
-        String tempTable = "tempTableName"; // = dbms.project(parameters)
+        String tempTable = dbms.projection(tableFrom, columnNames); // = dbms.project(parameters)
 
         // Insert that temporary table name into relationName for whatever to use
         relationNames.addLast(tempTable); // Insert it into place
