@@ -6,15 +6,12 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import parser.antlr.SQLGrammarLexer;
 import parser.antlr.SQLGrammarParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 import static org.junit.Assert.*;
 
@@ -69,7 +66,7 @@ public class SqlBaseListenerTests {
         run(input, fake);
 
         assertEquals(expectedTableName, fake.tableName);
-        assertEquals(expectedTableInsertFrom, fake.tableInsertFrom);
+        assertEquals(expectedTableInsertFrom, fake.table2);
     }
 
     @Test
@@ -83,7 +80,7 @@ public class SqlBaseListenerTests {
         run(input, fake);
 
         assertEquals(expectedTableName, fake.tableName);
-        assertEquals(expectedTableInsertFrom, fake.tableInsertFrom);
+        assertEquals(expectedTableInsertFrom, fake.table2);
     }
 
     private void run(String input, IDbms db) {
@@ -111,7 +108,7 @@ class FakeDbms implements IDbms {
     List<String> primaryKeys;
 
     List<Object> valuesFrom;
-    String tableInsertFrom;
+    String table2;
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
@@ -124,7 +121,7 @@ class FakeDbms implements IDbms {
     @Override
     public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
         this.tableName = tableInsertInto;
-        this.tableInsertFrom = tableInsertFrom;
+        this.table2 = tableInsertFrom;
     }
 
     @Override
@@ -136,28 +133,50 @@ class FakeDbms implements IDbms {
     private int count = 0;
     @Override
     public String projection(String tableFrom, List<String> columnNames) {
+        this.tableName = tableFrom;
+        this.columnNames = columnNames;
+
         return "tempTable" + count++;
     }
 
     @Override
     public String rename(String tableName, List<String> newColumnNames) {
+        this.tableName = tableName;
+        this.columnNames = newColumnNames;
+
         return "tempTable" + count++;
     }
 
     @Override
     public String union(String table1, String table2) {
+        this.tableName = table1;
+        this.table2 = table2;
+
         return "tempTable" + count++;
     }
 
     @Override
     public String difference(String table1, String table2) {
+        this.tableName = table1;
+        this.table2 = table2;
+
         return "tempTable" + count++;
     }
 
     @Override
     public String product(String table1, String table2) {
+        this.tableName = table1;
+        this.table2 = table2;
+
         return "tempTable" + count++;
     }
+
+    @Override public void show(String table) { }
+    @Override public void delete(String table) { }
+    @Override public void open(String table) { }
+    @Override public void close(String table) { }
+    @Override public void write(String table) { }
+    @Override public void exit(String table) { }
 
     @Override
     public Table getTable(String tableName) {
