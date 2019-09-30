@@ -115,33 +115,35 @@ public class Dbms implements IDbms {
      *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
      */
     public class Attribute {
-        Attribute(String name, int sz, boolean VCorInt, int ind){
+        Attribute(String name, int ind, Type type){
             attrName = name;
-            size = sz;
-            isVarchar = VCorInt;
             index = ind;
         }
         int index;  //used to denote the index of the attribute within the row
         String attrName; //name of attribute, e.g. "age" for an age column
-        boolean isVarchar; //1 == varchar, 0 == int
-        int size; //size of varChar if necessary,  if an int, simply set to 0, as it will not be used
+        Type type;
+
         public int getSize(){
-            return size;
+            if(getVC())
+                return ((Varchar) type).length;
+
+            return 0;
         }
         public String getName() {
             return attrName;
         }
+
         public boolean getVC(){
-            return isVarchar;
+            return type instanceof Varchar;
         }
+
         public void setSize(int sz){
-            this.size = sz;
+            if(getVC())
+                ((Varchar) type).length = sz;
         }
+
         public void setName(String nm){
             this.attrName = nm;
-        }
-        public void setVC(boolean isVC){
-            this.isVarchar = isVC;
         }
     }
 
