@@ -12,13 +12,17 @@ import java.util.*;
 public class SqlBaseListener extends SQLGrammarBaseListener {
     private IDbms dbms;
 
-    private ArrayDeque<String> relationNames; // Table names, this could probably be a stack
+    private ArrayDeque<String> relationNames; // Used for both shunting-yard & for general combination of queries(i.e. project (...) (select (...) table))
+    private Stack<Operator> operators;
+    private Stack<String> operands; // Might be able to be a literal?
 
     // Don't need anymore
 
     public SqlBaseListener(IDbms db) {
         this.dbms = db;
-        relationNames = new ArrayDeque<>();
+        this.relationNames = new ArrayDeque<>();
+        this.operators = new Stack<>();
+        this.operands = new Stack<>();
     }
 
 
