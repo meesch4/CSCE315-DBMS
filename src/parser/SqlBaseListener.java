@@ -59,10 +59,18 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         }
     }
 
+    // TODO: Implement Update
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
+        String tableName = relationNames.removeLast();
+
+        String setList = ctx.children.get(2).getText(); // Needs a better name
+
+        String condition = ctx.children.get(4).getText(); // Parse this
+
 
     }
 
+    // TODO: Implement Delete
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
         String tableName = relationNames.removeFirst();
 

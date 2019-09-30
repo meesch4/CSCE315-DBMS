@@ -9,6 +9,8 @@ public interface IDbms {
     void insertFromRelation(String tableInsertInto, String tableInsertFrom);
     void insertFromValues(String tableInsertInto, List<Object> valuesFrom);
 
+    void update(String table, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition);
+
     // Should return a (temporary) table name
     String projection(String tableFrom, List<String> columnNames);
     // String select(String tableFrom, ) // Need to represent expression as something
