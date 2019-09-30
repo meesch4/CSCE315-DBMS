@@ -72,38 +72,41 @@ public class Dbms implements IDbms {
         return tempTable;
     }
 
-    @Override
-    public void show(String table) {
+    // Will also tk
+    @Override public void delete(String table) {
 
     }
 
-    @Override
-    public void delete(String table) {
+    // Should print out the given table
+    @Override public void show(String table) {
 
     }
 
-    @Override
-    public void open(String table) {
+    // Opens a table(table + .db) from storage
+    @Override public void open(String table) {
+        String fileName = table = ".db";
+
+        // Call XMLStorageManager and load it in
+    }
+
+    // Save all changes to the relation(table) and close it(remove it from the table map?)
+    @Override public void close(String table) {
 
     }
 
-    @Override
-    public void close(String table) {
+    // Write the table to the disk? Might want to change this to accept a default filepath
+    @Override public void write(String table) {
+        String fileName = table + ".db"; // Assuming table is in the tables map
+
+        // Call XMLStorageManager and save it
+    }
+
+    // Exit from the interpreter, dunno what should happen here
+    @Override public void exit() {
 
     }
 
-    @Override
-    public void write(String table) {
-
-    }
-
-    @Override
-    public void exit() {
-
-    }
-
-    @Override
-    public Table getTable(String tableName) {
+    @Override public Table getTable(String tableName) {
         return null;
     }
 
