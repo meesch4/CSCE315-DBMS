@@ -6,17 +6,54 @@ import java.util.*;
  * The internal representation of our database
  * Contains all of the tables, and maybe their rows as well?
  */
-public class Dbms {
+public class Dbms implements IDbms {
     // Maps each table name to their internal representation
     // Includes temporary tables as well
-    HashMap<String, Object> tables;
+    private HashMap<String, Object> tables;
+
+    // Should we have a temporary/local tables?
 
     public Dbms() {
         tables = new HashMap();
     }
 
-    // Returns a temporary table name. Need to ensure we dont' use them, could use a rolling count?
-    public String getTempTableName() {
-        return "";
+    @Override
+    public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
+
+    }
+
+    @Override
+    public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
+
+    }
+
+    @Override
+    public void insertFromValues(String tableInsertInto, List<Object> valuesFrom) {
+
+    }
+
+    @Override
+    public String projection(String tableFrom, List<String> columnNames) {
+        return null;
+    }
+
+    @Override
+    public String union(String table1, String table2) {
+        return null;
+    }
+
+    @Override
+    public String difference(String table1, String table2) {
+        return null;
+    }
+
+    @Override
+    public String product(String table1, String table2) {
+        return null;
+    }
+
+    @Override
+    public Table getTable(String tableName) {
+        return null;
     }
 }
