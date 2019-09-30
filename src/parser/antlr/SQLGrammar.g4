@@ -41,10 +41,11 @@ natural_join : atomic_expr '&' atomic_expr ;
 // Batch 4
 show_cmd : 'SHOW' atomic_expr ;
 create_cmd : 'CREATE TABLE' relation_name '(' typed_attribute_list ')' 'PRIMARY KEY' '('attribute_list')' ;
-update_cmd : 'UPDATE' relation_name 'SET' attribute_name '=' literal
-                ( ',' attribute_name '=' literal)* 'WHERE' condition ;
+update_cmd : 'UPDATE' relation_name
+             'SET' attribute_name '=' literal ( ',' attribute_name '=' literal)*
+             'WHERE' condition ;
 insert_cmd : 'INSERT INTO' relation_name 'VALUES FROM' '('literal_list')'
-                | 'INSERT INTO' relation_name 'VALUES FROM RELATION' expr ;
+           | 'INSERT INTO' relation_name 'VALUES FROM RELATION' expr ;
 delete_cmd : 'DELETE FROM' relation_name 'WHERE' condition ;
 // Batch 5
 // Semicolon issues fixed && query issues fixed
