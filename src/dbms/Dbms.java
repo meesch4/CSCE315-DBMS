@@ -34,26 +34,44 @@ public class Dbms implements IDbms {
 
     @Override
     public String projection(String tableFrom, List<String> columnNames) {
-        return null;
+        String tempTable = getTempTableName();
+
+        return tempTable;
+    }
+
+    @Override
+    public String rename(String tableName, List<String> newColumnNames) {
+        String tempTable = getTempTableName();
+
+        return tempTable;
     }
 
     @Override
     public String union(String table1, String table2) {
-        return null;
+        String tempTable = getTempTableName();
+
+        return tempTable;
     }
 
     @Override
     public String difference(String table1, String table2) {
-        return null;
+        String tempTable = getTempTableName();
+
+        return tempTable;
     }
 
     @Override
     public String product(String table1, String table2) {
-        return null;
+        String tempTable = getTempTableName();
+
+        return tempTable;
     }
 
     @Override
     public Table getTable(String tableName) {
         return null;
     }
+
+    private int tempCount = 0;
+    private String getTempTableName() { return ("temp" + tempCount++); }
 }
