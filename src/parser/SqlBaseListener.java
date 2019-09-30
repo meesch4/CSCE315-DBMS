@@ -16,15 +16,11 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     private ArrayDeque<Type> types; // Only used for CREATE
 
     // Don't need anymore
-    private ArrayDeque<String> attributeNames; // Variable names, column names, etc
-    private ArrayDeque<Object> literals; // Can be strings or numbers, should be a Queue b/c we want it in order
 
     public SqlBaseListener(IDbms db) {
         this.dbms = db;
         relationNames = new ArrayDeque<>();
-        attributeNames = new ArrayDeque<>();
         types = new ArrayDeque<>();
-        literals = new ArrayDeque<>();
     }
 
     @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
@@ -49,20 +45,17 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitInsert_cmd(SQLGrammarParser.Insert_cmdContext ctx) {
         // Remove first or remove last? Sometimes it'll be the same
         String tableInsertInto = relationNames.removeFirst(); // Table name we're inserting values into
+        printChildren(ctx.children);
 
         String insertType = ctx.children.get(2).getText();
         if(insertType.equals("VALUES FROM RELATION")) {
             String tableInsertFrom = relationNames.removeFirst(); // Table we're inserting values from. Can be a temporary table
 
-
+            dbms.insertFromRelation(tableInsertInto, tableInsertFrom);
         } else { // We're just entering values from a list of literals
-            List<Object> valuesToInsert = new ArrayList<>();
+            List<Object> valuesToInsert = parseLiterals(ctx.children.get(4));
 
-            while(!literals.isEmpty()) {
-                valuesToInsert.add(literals.removeFirst());
-            }
-
-            //
+            dbms.insertFromValues(tableInsertInto, valuesToInsert);
         }
     }
 
@@ -79,7 +72,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
             obj = Integer.parseInt(text);
         }
 
-        literals.addLast(obj);
+        // literals.addLast(obj);
     }
 
     @Override public void exitRelation_name(SQLGrammarParser.Relation_nameContext ctx) {
@@ -94,7 +87,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitAttribute_name(SQLGrammarParser.Attribute_nameContext ctx) {
         String name = ctx.getText();
         // String name = ctx.children.get(0).getText();
-        attributeNames.addLast(name);
+        // attributeNames.addLast(name);
     }
 
     @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
@@ -147,10 +140,23 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitProduct(SQLGrammarParser.ProductContext ctx) { }
 
     // Given { "Joe", "hello", 5 }, returns an array containing them
-    public List<Object> parseLiterals(String arg) {
-        String[] split = arg.split(",");
+    private List<Object> parseLiterals(ParseTree tree) {
+        List<Object> ret = new ArrayList<>();
+        for(int i = 0; i < tree.getChildCount(); i+=2) { // Skip over commas
+            String literal = tree.getChild(i).getText();
 
-        return null;
+            Object obj;
+            if(literal.contains("\"")) { // Then a string
+                obj = literal.substring(1, literal.length() - 1); // Remove the quotes
+
+            } else {
+                obj = Integer.parseInt(literal);
+            }
+
+            ret.add(obj);
+        }
+
+        return ret;
     }
 
     // Given like nameVARCHAR(20), kindINTEGER, returns [name, kind]
