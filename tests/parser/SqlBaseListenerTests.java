@@ -52,7 +52,7 @@ public class SqlBaseListenerTests {
         run(input, fake);
 
         assertEquals(fake.tableName, expectedTableName);
-        assertEquals(fake.valuesFrom, expectedLiterals);
+        assertEquals(fake.values, expectedLiterals);
     }
 
     @Test
@@ -83,6 +83,26 @@ public class SqlBaseListenerTests {
         assertEquals(expectedTableInsertFrom, fake.table2);
     }
 
+    @Test
+    public void update_normalInput_passesCorrectArguments() {
+        String input = "UPDATE tableName SET column = \"value\", column2 = 25 WHERE column = \"somethingelse\"";
+        String expectedTableName = "tableName";
+        List<String> expectedColumnNames = new ArrayList<>(
+                Arrays.asList("column", "column2")
+        );
+        List<Object> expectedValues = new ArrayList<>(
+                Arrays.asList("value", 25)
+        );
+
+        FakeDbms fake = new FakeDbms();
+
+        run(input, fake);
+
+        assertEquals(expectedTableName, fake.tableName);
+        assertEquals(expectedColumnNames, fake.columnNames);
+        assertEquals(expectedValues, fake.values);
+    }
+
     private void run(String input, IDbms db) {
         SqlBaseListener listener = new SqlBaseListener(db);
 
@@ -101,14 +121,19 @@ public class SqlBaseListenerTests {
     }
 }
 
+/**
+ * This class's purpose is basically to just retrieve the arguments that IDbms gets and stores them as members/fields,
+ * so we can assert that they're what we're expecting
+ */
 class FakeDbms implements IDbms {
     String tableName;
     List<String> columnNames;
     List<Type> columnTypes;
     List<String> primaryKeys;
 
-    List<Object> valuesFrom;
+    List<Object> values;
     String table2;
+    Condition condition;
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
@@ -127,7 +152,15 @@ class FakeDbms implements IDbms {
     @Override
     public void insertFromValues(String tableInsertInto, List<Object> valuesFrom) {
         this.tableName = tableInsertInto;
-        this.valuesFrom = valuesFrom;
+        this.values = valuesFrom;
+    }
+
+    @Override
+    public void update(String table, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition) {
+        this.tableName = table;
+        this.columnNames = columnsToSet;
+        this.values = valuesToSetTo;
+        this.condition = condition;
     }
 
     private int count = 0;

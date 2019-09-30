@@ -26,7 +26,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
 
-    // @Override public void enterCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) { }
     @Override public void exitCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) {
         List<ParseTree> children = ctx.children;
         printChildren(children);
@@ -53,21 +52,24 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
             dbms.insertFromRelation(tableInsertInto, tableInsertFrom);
         } else { // We're just entering values from a list of literals
-            List<Object> valuesToInsert = parseLiterals(ctx.children.get(4));
+            List<Object> valuesToInsert = parseLiterals(ctx.children.get(4), 0, 2);
 
             dbms.insertFromValues(tableInsertInto, valuesToInsert);
         }
     }
 
-    // TODO: Implement Update
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
+        printChildren(ctx.children);
         String tableName = relationNames.removeLast();
 
-        String setList = ctx.children.get(2).getText(); // Needs a better name
+        // Parallel arrays
+        List<String> columnsToSet = parseSetColumnNames(ctx.children.get(3));
+        List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
-        String condition = ctx.children.get(4).getText(); // Parse this
+        // TODO: Implement ShuntingYard
+        Condition condition = ShuntingYard.evaulate(ctx.children.get(5).getText());
 
-
+        dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
 
     // TODO: Implement Delete
@@ -194,9 +196,9 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
 
     // Given { "Joe", "hello", 5 }, returns an array containing them
-    private List<Object> parseLiterals(ParseTree tree) {
+    private List<Object> parseLiterals(ParseTree tree, int start, int offset) {
         List<Object> ret = new ArrayList<>();
-        for(int i = 0; i < tree.getChildCount(); i+=2) { // Skip over commas
+        for(int i = start; i < tree.getChildCount(); i+=offset) { // Skip over commas
             String literal = tree.getChild(i).getText();
 
             Object obj;
@@ -251,6 +253,16 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         return new ArrayList<String>(
                 Arrays.asList(arg.split(","))
         );
+    }
+
+    private List<String> parseSetColumnNames(ParseTree tree) {
+        List<String> ret = new ArrayList<>();
+        printChildren(tree);
+
+        for(int i = 0; i < tree.getChildCount(); i+=4)
+            ret.add(tree.getChild(i).getText());
+
+        return ret;
     }
 
     private void printQueue(ArrayDeque<String> toPrint) {

@@ -33,6 +33,11 @@ public class Dbms implements IDbms {
     }
 
     @Override
+    public void update(String table, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition) {
+
+    }
+
+    @Override
     public String projection(String tableFrom, List<String> columnNames) {
         String tempTable = getTempTableName();
 
