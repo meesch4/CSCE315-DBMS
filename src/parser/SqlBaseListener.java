@@ -21,8 +21,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         relationNames = new ArrayDeque<>();
     }
 
-    @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
-    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) { }
 
     // @Override public void enterCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) { }
     @Override public void exitCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) {
@@ -75,16 +73,8 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         relationNames.addLast(name);
     }
 
-    @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
-    @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
-
-    // Void?
-
-    @Override public void exitCondition(SQLGrammarParser.ConditionContext ctx) { }
-    @Override public void exitConjunction(SQLGrammarParser.ConjunctionContext ctx) { }
-    @Override public void exitComparison(SQLGrammarParser.ComparisonContext ctx) { }
-    @Override public void exitExpr(SQLGrammarParser.ExprContext ctx) { }
-    @Override public void exitAtomic_expr(SQLGrammarParser.Atomic_exprContext ctx) { }
+    @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
+    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) { }
 
     @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
         // Do something with the resulting expression
@@ -111,6 +101,17 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
     @Override public void exitRenaming(SQLGrammarParser.RenamingContext ctx) { }
+
+    @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
+    @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
+
+    // Void?
+
+    @Override public void exitCondition(SQLGrammarParser.ConditionContext ctx) { }
+    @Override public void exitConjunction(SQLGrammarParser.ConjunctionContext ctx) { }
+    @Override public void exitComparison(SQLGrammarParser.ComparisonContext ctx) { }
+    @Override public void exitExpr(SQLGrammarParser.ExprContext ctx) { }
+    @Override public void exitAtomic_expr(SQLGrammarParser.Atomic_exprContext ctx) { }
 
     // All return a table
     @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) { }
