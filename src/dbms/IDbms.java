@@ -19,11 +19,13 @@ public interface IDbms {
     String product(String table1, String table2);
 
     void show(String table);
-    void delete(String table); // I think?
     void open(String table);
     void close(String table);
     void write(String table);
-    void exit(String table);
+    void exit();
+
+    // Need to update delete with expressions
+    void delete(String table); // I think?
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
     Table getTable(String tableName);

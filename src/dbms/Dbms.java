@@ -93,7 +93,7 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void exit(String table) {
+    public void exit() {
 
     }
 

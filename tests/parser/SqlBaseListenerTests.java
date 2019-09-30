@@ -176,7 +176,7 @@ class FakeDbms implements IDbms {
     @Override public void open(String table) { }
     @Override public void close(String table) { }
     @Override public void write(String table) { }
-    @Override public void exit(String table) { }
+    @Override public void exit() { }
 
     @Override
     public Table getTable(String tableName) {

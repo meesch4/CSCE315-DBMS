@@ -59,14 +59,41 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         }
     }
 
-    @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) { }
+    @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
 
-    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) { }
-    @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) { }
-    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
-    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) { }
-    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) { }
-    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) { }
+    }
+
+    @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+
+        String condition = ctx.children.get(3).getText(); // Parse this
+
+        dbms.delete(tableName);
+    }
+
+    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.show(tableName);
+    }
+
+    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.open(tableName);
+    }
+
+    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.close(tableName);
+    }
+
+    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.write(tableName);
+    }
+
+    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) {
+        dbms.exit();
+    }
 
 
     /********** QUERY METHODS ***********/
