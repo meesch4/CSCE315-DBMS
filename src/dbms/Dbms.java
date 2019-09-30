@@ -110,9 +110,11 @@ public class Dbms implements IDbms {
     private int tempCount = 0;
     private String getTempTableName() { return ("temp" + tempCount++); }
 
-    public class Attribute { //This class is only used to describe the attribute types; it will be used to check if a
-        //row has the proper attributes before adding it to a table.  If it is missing some attributes, they can be made
-        //null
+    /**
+     *  This class is only used to describe the attribute types; it will be used to check if a row has the
+     *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
+     */
+    public class Attribute {
         Attribute(String name, int sz, boolean VCorInt, int ind){
             attrName = name;
             size = sz;
@@ -125,42 +127,41 @@ public class Dbms implements IDbms {
         int size; //size of varChar if necessary,  if an int, simply set to 0, as it will not be used
         public int getSize(){
             return size;
-        };
+        }
         public String getName() {
             return attrName;
-        };
+        }
         public boolean getVC(){
             return isVarchar;
-        };
+        }
         public void setSize(int sz){
             this.size = sz;
-        };
+        }
         public void setName(String nm){
             this.attrName = nm;
-        };
+        }
         public void setVC(boolean isVC){
             this.isVarchar = isVC;
-        };
+        }
     }
 
-    //use new to instantiate a table root node, with the name and attribute list.
-    //similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
-
-    public class tableRootNode { //node containing relation name and attributes of table (column types)
-        public tableRootNode(String name, ArrayList<Attribute> attributes){
+    /**
+     *  Use new to instantiate a table root node, with the name and attribute list.
+     *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
+     */
+    public class TableRootNode { //node containing relation name and attributes of table (column types)
+        public TableRootNode(String name, ArrayList<Attribute> attributes){
             relationName = name;
             attList = attributes;
         }
         String relationName;
         ArrayList<Attribute> attList;
 
-
-
-        List<rowNode> children;
+        List<RowNode> children;
         public void setName(String nm){
             this.relationName = nm;
         }
-        public void addRow(rowNode row){
+        public void addRow(RowNode row){
             this.children.add(row);
         }
         public Attribute getAttribute(int index){
@@ -178,16 +179,13 @@ public class Dbms implements IDbms {
         public ArrayList<Attribute> getAttributeList(){
             return this.attList;
         }
-
-
-
     }
 
-    public class rowNode{
-        rowNode(Object[] objects){ //can be used to pass a premade Object array to the class
+    public class RowNode {
+        RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
             dataFields = objects;
         }
-        tableRootNode parent;
+        TableRootNode parent;
         Object[] dataFields = new Object[this.parent.getAttributeSize()];
         //this Object array contains all the VARCHARS and integers in the rows
         public Object getDataField(int index){
