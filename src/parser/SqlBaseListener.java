@@ -114,9 +114,34 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitAtomic_expr(SQLGrammarParser.Atomic_exprContext ctx) { }
 
     // All return a table
-    @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) { }
-    @Override public void exitDifference(SQLGrammarParser.DifferenceContext ctx) { }
-    @Override public void exitProduct(SQLGrammarParser.ProductContext ctx) { }
+    @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) {
+        printChildren(ctx.children);
+
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
+
+    @Override public void exitDifference(SQLGrammarParser.DifferenceContext ctx) {
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
+
+    @Override public void exitProduct(SQLGrammarParser.ProductContext ctx) {
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
 
     // Given { "Joe", "hello", 5 }, returns an array containing them
     private List<Object> parseLiterals(ParseTree tree) {
@@ -172,7 +197,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
     // Given like "name,kind,etc" returns a list like ["name", "kind", "etc"]
-    public List<String> parseArguments(String arg) {
+    private List<String> parseArguments(String arg) {
         return new ArrayList<String>(
                 Arrays.asList(arg.split(","))
         );

@@ -13,6 +13,10 @@ public interface IDbms {
     String projection(String tableFrom, List<String> columnNames);
     // String select(String tableFrom, ) // Need to represent expression as something
 
+    String union(String table1, String table2);
+    String difference(String table1, String table2);
+    String product(String table1, String table2);
+
     // Attempt to get the Table with name tableName from the tables map(or whatever)
     Table getTable(String tableName);
 }
