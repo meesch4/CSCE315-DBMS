@@ -9,145 +9,278 @@ import dbms.*;
 
 import java.util.*;
 
-// From following the "Guide - ANTLR4 Listener Setup" here: https://docs.google.com/document/d/1kCv5ODfAh8HZZ8uugMLcqMqJLvs9RQDmhvBGt3l2Fzo/edit
 public class SqlBaseListener extends SQLGrammarBaseListener {
-    private Dbms dbms;
+    private IDbms dbms;
 
-    private ArrayDeque<String> relationNames; // Table names
-    private ArrayDeque<String> attributeNames; // Variable names, column names, etc
-    private ArrayDeque<Type> types; // Only used for CREATE
-    private ArrayDeque<Object> literals; // Can be strings or numbers
+    private ArrayDeque<String> relationNames; // Used for both shunting-yard & for general combination of queries(i.e. project (...) (select (...) table))
+    private Stack<Operator> operators;
+    private Stack<String> operands; // Might be able to be a literal?
 
-    public SqlBaseListener() {
-        this.dbms = new Dbms();
-        relationNames = new ArrayDeque<>();
-        attributeNames = new ArrayDeque<>();
-        types = new ArrayDeque<>();
-        literals = new ArrayDeque<>();
+    // Don't need anymore
+
+    public SqlBaseListener(IDbms db) {
+        this.dbms = db;
+        this.relationNames = new ArrayDeque<>();
+        this.operators = new Stack<>();
+        this.operands = new Stack<>();
     }
 
-    @Override public void enterQuery(SQLGrammarParser.QueryContext ctx) { }
-    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) { }
 
-    // @Override public void enterCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) { }
     @Override public void exitCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) {
-        String tableName = ctx.children.get(1).getText();
-        System.out.println(tableName);
+        List<ParseTree> children = ctx.children;
+        printChildren(children);
 
-        List<String> primaryKeys = new ArrayList<>();
-        List<String> columnNames = new ArrayList<>();
-        List<Type> columnTypes = new ArrayList<>();
+        // String tableName = ctx.children.get(1).getText();
+        String tableName = relationNames.removeFirst(); // Not sure which we need to do
 
-        int i = 0;
-        while(!types.isEmpty()) { // Get the columns and their according types
-            columnNames.add(attributeNames.removeFirst());
-            columnTypes.add(types.removeFirst());
-            // System.out.println("Colummn name " + columnNames.get(i++));
-        }
+        List<String> primaryKeys = parseArguments(children.get(7).getText());
 
-        i = 0;
-        while(!attributeNames.isEmpty()) {
-            primaryKeys.add(attributeNames.removeFirst());
-            // System.out.println("Primary Key " + primaryKeys.get(i++));
-        }
+        List<String> columnNames = parseColumnNames(children.get(3));
+        List<Type> columnTypes = parseColumnTypes(children.get(3));
 
         // Pass all of these values to Dbms
+        dbms.createTable(tableName, columnNames, columnTypes, primaryKeys);
     }
 
     @Override public void exitInsert_cmd(SQLGrammarParser.Insert_cmdContext ctx) {
-        String tableToInsert = relationNames.removeFirst();
+        // Remove first or remove last? Sometimes it'll be the same
+        String tableInsertInto = relationNames.removeFirst(); // Table name we're inserting values into
 
         String insertType = ctx.children.get(2).getText();
         if(insertType.equals("VALUES FROM RELATION")) {
-            // Get the table we're going to get values from
+            String tableInsertFrom = relationNames.removeFirst(); // Table we're inserting values from. Can be a temporary table
 
+            dbms.insertFromRelation(tableInsertInto, tableInsertFrom);
         } else { // We're just entering values from a list of literals
+            List<Object> valuesToInsert = parseLiterals(ctx.children.get(4), 0, 2);
 
+            dbms.insertFromValues(tableInsertInto, valuesToInsert);
         }
     }
 
-    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) { }
-    @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) { }
-    @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) { }
+    @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
+        printChildren(ctx.children);
+        String tableName = relationNames.removeLast();
 
-    // Return a string
-    @Override public void exitLiteral(SQLGrammarParser.LiteralContext ctx) {
-        String text = ctx.getText();
-        Object obj = text;
+        // Parallel arrays
+        List<String> columnsToSet = parseSetColumnNames(ctx.children.get(3));
+        List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
-        if(text.substring(0, 1).matches("[0-9]")) {
-            obj = Integer.parseInt(text);
-        }
+        // TODO: Implement ShuntingYard
+        Condition condition = ShuntingYard.evaulate(ctx.children.get(5).getText());
 
-        literals.addLast(obj);
+        dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
+
+    // TODO: Implement Delete
+    @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+
+        String condition = ctx.children.get(3).getText(); // Parse this
+
+        dbms.delete(tableName);
+    }
+
+    @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.show(tableName);
+    }
+
+    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.open(tableName);
+    }
+
+    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.close(tableName);
+    }
+
+    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+        dbms.write(tableName);
+    }
+
+    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) {
+        dbms.exit();
+    }
+
+
+    /********** QUERY METHODS ***********/
+
+    @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) {
+        // If we're exiting the query, that means whatever expression that was on the right side of the <-
+        // has already been calculated, thus we should have a (temp) table at the bottom of the queue
+        String tempTable = relationNames.removeLast();
+
+        String queryTableName = relationNames.removeLast(); // The table we're going to assign
+
+        // TODO: Assign the tempTable variable's name/key to queryTableName
+    }
+
+    @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
+        // Do something with the resulting expression
+        String tableFrom = relationNames.removeLast(); // Get the table we're getting values from?
+
+        String tempTable = "tempTableName";
+
+        relationNames.addLast(tempTable);
+    }
+
+    // Could call something on enterProjection to see how many attributes are in it before we enter it?
+    // That way we know how much to get out
+    @Override public void exitProjection(SQLGrammarParser.ProjectionContext ctx) {
+        List<String> columnNames = parseArguments(ctx.children.get(2).getText());
+
+        String tableFrom = relationNames.removeLast();
+        // String tableFrom = ctx.children.get(4).getText();
+
+        // Pass in the parameters to project, and it'll return a table name for a temporary table
+        String tempTable = dbms.projection(tableFrom, columnNames); // = dbms.project(parameters)
+
+        // Insert that temporary table name into relationName for whatever to use
+        relationNames.addLast(tempTable); // Insert it into place
+    }
+
+    @Override public void exitRenaming(SQLGrammarParser.RenamingContext ctx) {
+        List<String> newColumnNames = parseArguments(ctx.children.get(2).getText());
+
+        String tableName = relationNames.removeLast();
+
+        String tempTableName = dbms.rename(tableName, newColumnNames);
+
+        relationNames.addLast(tempTableName);
+    }
+
+    // Don't think we need
+    // @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
+
+    @Override public void exitComparison(SQLGrammarParser.ComparisonContext ctx) { }
+
+
+    // All return a table
+    @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) {
+        printChildren(ctx.children);
+
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
+
+    @Override public void exitDifference(SQLGrammarParser.DifferenceContext ctx) {
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
+
+    @Override public void exitProduct(SQLGrammarParser.ProductContext ctx) {
+        String table2 = relationNames.removeLast();
+        String table1 = relationNames.removeLast();
+
+        String tempTable = dbms.union(table1, table2);
+
+        relationNames.addLast(tempTable);
+    }
+
 
     @Override public void exitRelation_name(SQLGrammarParser.Relation_nameContext ctx) {
-        // What the hell do we do with relation name
-        System.out.println("Exit relation name");
-        // oString name = ctx.children.get(0).getText();
         String name = ctx.getText();
         relationNames.addLast(name);
     }
 
-    @Override public void exitAttribute_name(SQLGrammarParser.Attribute_nameContext ctx) {
-        String name = ctx.getText();
-        // String name = ctx.children.get(0).getText();
-        attributeNames.addLast(name);
-    }
 
-    @Override public void enterOperand(SQLGrammarParser.OperandContext ctx) { }
-    @Override public void exitOperand(SQLGrammarParser.OperandContext ctx) { }
+    // Given { "Joe", "hello", 5 }, returns an array containing them
+    private List<Object> parseLiterals(ParseTree tree, int start, int offset) {
+        List<Object> ret = new ArrayList<>();
+        for(int i = start; i < tree.getChildCount(); i+=offset) { // Skip over commas
+            String literal = tree.getChild(i).getText();
 
-    // Return a Type, either Varchar or Integer
-    @Override public void enterType(SQLGrammarParser.TypeContext ctx) {
-        // Check whether it's a varchar or integer
-        List<ParseTree> children = ctx.children;
-        String typeName = children.get(0).getText();
-        Type type;
+            Object obj;
+            if(literal.contains("\"")) { // Then a string
+                obj = literal.substring(1, literal.length() - 1); // Remove the quotes
 
-        if(typeName.equals("VARCHAR")) {
-            int size = Integer.parseInt(children.get(2).getText());
+            } else {
+                obj = Integer.parseInt(literal);
+            }
 
-            type = new Varchar(size);
-        } else { // Integer
-            type = new IntType();
+            ret.add(obj);
         }
 
-        types.addLast(type);
-    }
-    @Override public void exitType(SQLGrammarParser.TypeContext ctx) { }
-
-    // Return a List<Type>
-    @Override public void enterTyped_attribute_list(SQLGrammarParser.Typed_attribute_listContext ctx) { }
-    @Override public void exitTyped_attribute_list(SQLGrammarParser.Typed_attribute_listContext ctx) {
-        // Get all of the relations & types, then get them as a list
+        return ret;
     }
 
-    // Void?
-    @Override public void exitOpen_cmd(SQLGrammarParser.Open_cmdContext ctx) { }
-    @Override public void exitClose_cmd(SQLGrammarParser.Close_cmdContext ctx) { }
-    @Override public void exitWrite_cmd(SQLGrammarParser.Write_cmdContext ctx) { }
-    @Override public void exitExit_cmd(SQLGrammarParser.Exit_cmdContext ctx) { }
+    // Given like nameVARCHAR(20), kindINTEGER, returns [name, kind]
+    private List<String> parseColumnNames(ParseTree tree) {
+        List<String> ret = new ArrayList<>();
+        for(int i = 0; i < tree.getChildCount(); i+=3) {
+            ParseTree child = tree.getChild(i);
 
-    @Override public void exitCondition(SQLGrammarParser.ConditionContext ctx) { }
-    @Override public void exitConjunction(SQLGrammarParser.ConjunctionContext ctx) { }
-    @Override public void exitComparison(SQLGrammarParser.ComparisonContext ctx) { }
-    @Override public void exitExpr(SQLGrammarParser.ExprContext ctx) { }
-    @Override public void exitAtomic_expr(SQLGrammarParser.Atomic_exprContext ctx) { }
-    @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) { }
-    @Override public void exitProjection(SQLGrammarParser.ProjectionContext ctx) { }
+            ret.add(child.getText());
+        }
 
-    // Void?
-    @Override public void exitRenaming(SQLGrammarParser.RenamingContext ctx) { }
+        return ret;
+    }
 
-    // Probably returns a Table
-    @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) { }
-    @Override public void exitDifference(SQLGrammarParser.DifferenceContext ctx) { }
-    @Override public void exitProduct(SQLGrammarParser.ProductContext ctx) { }
+    private List<Type> parseColumnTypes(ParseTree tree) {
+        List<Type> ret = new ArrayList<>();
+        for(int i = 1; i < tree.getChildCount(); i+= 3) {
+            ParseTree typeTree = tree.getChild(i);
+            String typeName = typeTree.getChild(0).getText();
 
-    @Override public void exitProgram(SQLGrammarParser.ProgramContext ctx) { }
-    @Override public void exitEveryRule(ParserRuleContext ctx) { }
-    @Override public void visitTerminal(TerminalNode node) { }
-    @Override public void visitErrorNode(ErrorNode node) { }
+            Type type;
+            if(typeName.equals("VARCHAR")) {
+                int size = Integer.parseInt(typeTree.getChild(2).getText());
+
+                type = new Varchar(size);
+            } else { // Integer
+                type = new IntType();
+            }
+
+            ret.add(type);
+        }
+
+        return ret;
+    }
+
+    // Given like "name,kind,etc" returns a list like ["name", "kind", "etc"]
+    private List<String> parseArguments(String arg) {
+        return new ArrayList<String>(
+                Arrays.asList(arg.split(","))
+        );
+    }
+
+    private List<String> parseSetColumnNames(ParseTree tree) {
+        List<String> ret = new ArrayList<>();
+        printChildren(tree);
+
+        for(int i = 0; i < tree.getChildCount(); i+=4)
+            ret.add(tree.getChild(i).getText());
+
+        return ret;
+    }
+
+    private void printQueue(ArrayDeque<String> toPrint) {
+        for(String o : toPrint) {
+            System.out.println(o);
+        }
+    }
+
+    private void printChildren(List<ParseTree> children) {
+        for(int i = 0; i < children.size(); i++) {
+            ParseTree child = children.get(i);
+            System.out.println(i + " " + child.getText());
+        }
+    }
+
+    private void printChildren(ParseTree tree) {
+        for(int i = 0; i < tree.getChildCount(); i++) {
+            System.out.println(i + " " + tree.getChild(i).getText());
+        }
+    }
 }
