@@ -43,7 +43,7 @@ public class SqlBaseListenerTests {
     }
 
     @Test
-    public void insertCmd_valuesFrom_passesCorrectArguments() {
+    public void insertCmdFromValues_normalInput_passesCorrectArguments() {
         String input = "INSERT INTO tableName VALUES FROM (\"Joe\", \"cat\", 4);";
         String expectedTableName = "tableName";
         List<Object> expectedLiterals = new ArrayList<>(
@@ -56,6 +56,34 @@ public class SqlBaseListenerTests {
 
         assertEquals(fake.tableName, expectedTableName);
         assertEquals(fake.valuesFrom, expectedLiterals);
+    }
+
+    @Test
+    public void insertCmdFromRelation_singleTable_passesCorrectArguments() {
+        String input = "INSERT INTO tableName VALUES FROM RELATION animals;";
+        String expectedTableName = "tableName";
+        String expectedTableInsertFrom = "animals";
+
+        FakeDbms fake = new FakeDbms();
+
+        run(input, fake);
+
+        assertEquals(expectedTableName, fake.tableName);
+        assertEquals(expectedTableInsertFrom, fake.tableInsertFrom);
+    }
+
+    @Test
+    public void insertCmdFromRelation_projection_passesCorrectArguments() {
+        String input = "INSERT INTO tableName VALUES FROM RELATION project (kind) animals;";
+        String expectedTableName = "tableName";
+        String expectedTableInsertFrom = "tempTable0";
+
+        FakeDbms fake = new FakeDbms();
+
+        run(input, fake);
+
+        assertEquals(expectedTableName, fake.tableName);
+        assertEquals(expectedTableInsertFrom, fake.tableInsertFrom);
     }
 
     private void run(String input, IDbms db) {
@@ -95,7 +123,8 @@ class FakeDbms implements IDbms {
 
     @Override
     public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
-
+        this.tableName = tableInsertInto;
+        this.tableInsertFrom = tableInsertFrom;
     }
 
     @Override
@@ -104,9 +133,10 @@ class FakeDbms implements IDbms {
         this.valuesFrom = valuesFrom;
     }
 
+    private int count = 0;
     @Override
     public String projection(String tableFrom, List<String> columnNames) {
-        return null;
+        return "tempTable" + count++;
     }
 
     @Override
