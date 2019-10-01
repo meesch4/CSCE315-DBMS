@@ -9,13 +9,15 @@ import java.util.*;
 public class Dbms implements IDbms {
     // Maps each table name to their internal representation
     // Includes temporary tables as well
-    private HashMap<String, Object> tables;
+    private HashMap<String, tableRootNode> tables;
+    //private HashMap<String, Object> tempTables;
 
     // Should we have a temporary/local tables?
 
     public Dbms() {
         tables = new HashMap();
     }
+    //public Dbms() { tempTables = new HashMap(); }
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
@@ -101,17 +103,34 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public String rename(String tableName, List<String> newColumnNames) {
-        String tempTable = getTempTableName();
-
-        return tempTable;
+    public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
+        String newName = tableName + "temp";
+        ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        List<rowNode> kids = tables.get(tableName).getRowNodes();
+        tableRootNode tempTable = new tableRootNode(newName, attributes, kids);
+        int i = 0;
+        for(String name : newColumnNames){
+            tempTable.setAttributeName(name, i);
+            i++;
+        }
+        tables.put(newName, tempTable);
+        return newName;
     }
 
     @Override
     public String union(String table1, String table2) {
-        String tempTable = getTempTableName();
+        String newTable = table1 + " " + table2; //the output table name will be a combination of the two table names
+        ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
+        List<rowNode> newRows = tables.get(table1).getRowNodes();
+        List<rowNode> newRows2 = tables.get(table2).getRowNodes();
+        newRows.addAll(newRows2);
+        Set<rowNode> noDupes = new HashSet<>(newRows); //remove duplicates
+        newRows.clear(); //clear list
+        newRows.addAll(noDupes);  //add new children without duplicates
 
-        return tempTable;
+        tableRootNode newTableRoot = new tableRootNode(newTable, newAttributes, newRows);
+        tables.put(newTable, newTableRoot); //add the union to the tables hashmap
+        return newTable;
     }
 
     @Override
@@ -137,6 +156,11 @@ public class Dbms implements IDbms {
     public void delete(String table) {
         //iterate through children, deleting the objects,
         //then delete the main node
+        tableRootNode toDelete = (tableRootNode) tables.get(table);
+        toDelete.children = null;
+        toDelete = null;
+        tables.remove(table);
+        return;
     }
 
     @Override
@@ -161,7 +185,10 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public Table getTable(String tableName) {
+    public Table getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
+        //I can go through and modify this to accomodate that type, but it's already handled by the root node type.
+        //alternatively, we can do fewer modifications by simply making the Table type refer to tableRootNode
+        //return tables.get(tableName);
         return null;
     }
 
@@ -216,6 +243,11 @@ public class Dbms implements IDbms {
             relationName = name;
             attList = attributes;
         }
+        public tableRootNode(String name, ArrayList<Attribute> attributes, List<rowNode> kids){
+            relationName = name;
+            attList = attributes;
+            children = kids;
+        }
         String relationName;
         ArrayList<Attribute> attList;
 
@@ -225,6 +257,11 @@ public class Dbms implements IDbms {
         }
         public void addRow(rowNode row){
             this.children.add(row);
+        }
+        public void setAttributeName(String name, int index){
+            Attribute tempAtt = attList.get(index); //get attribute that is being changed
+            tempAtt.setName(name); //change name of attribute
+            attList.set(index, tempAtt); //set in arraylist
         }
         public ArrayList<Attribute> getAttributes() { return this.attList; }
         public List<rowNode> getRowNodes() { return this.children; }
