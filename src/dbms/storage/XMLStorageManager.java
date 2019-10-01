@@ -1,6 +1,6 @@
 package dbms.storage;
 
-import dbms.Dbms.TableRootNode;
+import dbms.Dbms.tableRootNode;
 
 import java.util.HashMap;
 
@@ -10,8 +10,8 @@ import java.util.HashMap;
 public class XMLStorageManager {
     // Might return a list of tables? Which can be parsed into a HashMap?
 
-    public HashMap<String, TableRootNode> readFile(String filePath) {
-        HashMap<String, TableRootNode> tables = new HashMap<>();
+    public HashMap<String, tableRootNode> readFile(String filePath) {
+        HashMap<String, tableRootNode> tables = new HashMap<>();
 
         return tables;
     }
