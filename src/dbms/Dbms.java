@@ -23,7 +23,7 @@ public class Dbms implements IDbms {
             System.out.println("Improper input");
             return;
         }
-        ArrayList<Attribute> attributesList = new ArrayList<Attribute>;
+        ArrayList<Attribute> attributesList = new ArrayList<Attribute>();
         Iterator<String> iter = primaryKeys.iterator();
         Iterator<Type> iterType = columnTypes.iterator();
         int i = 0;
@@ -31,7 +31,7 @@ public class Dbms implements IDbms {
             String pkeyel = iter.next();
             Type typeel = iterType.next();
             Attribute temp;
-            temp = new Attribute(element, i, typeel, pkeyel););
+            temp = new Attribute(element, i, typeel, pkeyel);
             i++;
             attributesList.add(temp); ///this creates the attributes list
         }
@@ -60,7 +60,7 @@ public class Dbms implements IDbms {
         for(rowNode rowFrom : rowListFrom){ //pulls each row node from table from
             tableInto.addRow(rowFrom);  //inserts them into table into
         }
-        
+
 
     }
 
