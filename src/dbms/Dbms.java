@@ -14,12 +14,12 @@ public class Dbms implements IDbms {
     // Should we have a temporary/local tables?
 
     public Dbms() {
-        tables = new HashMap();
+        tables = new HashMap<>();
     }
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
-
+        // Create table root Node
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Dbms implements IDbms {
         return null;
     }
 
-    private int tempCount = 0;
+    private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
 
     /**
