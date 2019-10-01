@@ -19,21 +19,41 @@ public class Dbms implements IDbms {
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
-
+        if((columnNames.size() != columnTypes.size())|| (columnTypes.size() != primaryKeys.size())){
+            System.out.println("Improper input");
+            return;
+        }
+        ArrayList<Attribute> attributesList = new ArrayList<Attribute>;
+        Iterator<String> iter = primaryKeys.iterator();
+        Iterator<Type> iterType = columnTypes.iterator();
+        int i = 0;
+        for(String element : columnNames){ //iterate through, make the attribute list
+            String pkeyel = iter.next();
+            Type typeel = iterType.next();
+            Attribute temp;
+            temp = new Attribute(element, i, typeel, pkeyel););
+            i++;
+            attributesList.add(temp); ///this creates the attributes list
+        }
+        tableRootNode table = new tableRootNode(tableName, attributesList); //creates table
+        tables.put(tableName, table); //puts new table root node into hashmap with name as key
     }
 
     @Override
     public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
+        //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
+        //essentially just take the arraylist of row nodes in tablefrom and append it to the array list of rownodes in insert into
 
     }
 
     @Override
     public void insertFromValues(String tableInsertInto, List<Object> valuesFrom) {
-
+        //verify that the attributes match up, and then add a new node to rownodes
     }
 
     @Override
     public void update(String table, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition) {
+        //e.g. update animals set age == 10 if age >= 10.
 
     }
 
@@ -79,7 +99,8 @@ public class Dbms implements IDbms {
 
     @Override
     public void delete(String table) {
-
+        //iterate through children, deleting the objects,
+        //then delete the main node
     }
 
     @Override
@@ -99,7 +120,8 @@ public class Dbms implements IDbms {
 
     @Override
     public void exit() {
-
+        //end the entire program, and save data
+        //just call write and then kill the listener
     }
 
     @Override
@@ -115,13 +137,15 @@ public class Dbms implements IDbms {
      *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
      */
     public class Attribute {
-        Attribute(String name, int ind, Type type){
+        Attribute(String name, int ind, Type type, String pkey){
             attrName = name;
             index = ind;
+            primaryKey = pkey;
         }
         int index;  //used to denote the index of the attribute within the row
         String attrName; //name of attribute, e.g. "age" for an age column
         Type type;
+        String primaryKey;
 
         public int getSize(){
             if(getVC())
@@ -151,8 +175,8 @@ public class Dbms implements IDbms {
      *  Use new to instantiate a table root node, with the name and attribute list.
      *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
      */
-    public class TableRootNode { //node containing relation name and attributes of table (column types)
-        public TableRootNode(String name, ArrayList<Attribute> attributes){
+    public class tableRootNode { //node containing relation name and attributes of table (column types)
+        public tableRootNode(String name, ArrayList<Attribute> attributes){
             relationName = name;
             attList = attributes;
         }
