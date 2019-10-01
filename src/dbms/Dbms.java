@@ -112,4 +112,95 @@ public class Dbms implements IDbms {
 
     private int tempCount = 0;
     private String getTempTableName() { return ("temp" + tempCount++); }
+
+    /**
+     *  This class is only used to describe the attribute types; it will be used to check if a row has the
+     *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
+     */
+    public class Attribute {
+        Attribute(String name, int ind, Type type){
+            attrName = name;
+            index = ind;
+        }
+        int index;  //used to denote the index of the attribute within the row
+        String attrName; //name of attribute, e.g. "age" for an age column
+        Type type;
+
+        public int getSize(){
+            if(getVC())
+                return ((Varchar) type).length;
+
+            return 0;
+        }
+        public String getName() {
+            return attrName;
+        }
+
+        public boolean getVC(){
+            return type instanceof Varchar;
+        }
+
+        public void setSize(int sz){
+            if(getVC())
+                ((Varchar) type).length = sz;
+        }
+
+        public void setName(String nm){
+            this.attrName = nm;
+        }
+    }
+
+    /**
+     *  Use new to instantiate a table root node, with the name and attribute list.
+     *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
+     */
+    public class TableRootNode { //node containing relation name and attributes of table (column types)
+        public TableRootNode(String name, ArrayList<Attribute> attributes){
+            relationName = name;
+            attList = attributes;
+        }
+        String relationName;
+        ArrayList<Attribute> attList;
+
+        List<RowNode> children;
+        public void setName(String nm){
+            this.relationName = nm;
+        }
+        public void addRow(RowNode row){
+            this.children.add(row);
+        }
+        public Attribute getAttribute(int index){
+            return this.attList.get(index);
+        }
+        public void printAttributes(){
+            System.out.println(this.attList);
+        }
+        public int getAttributeSize(){
+            return this.attList.size();
+        }
+        //public void removeAttribute(int index){
+        //    attList.remove(index);
+        //}
+        public ArrayList<Attribute> getAttributeList(){
+            return this.attList;
+        }
+    }
+
+    public class RowNode {
+        RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
+            dataFields = objects;
+        }
+        TableRootNode parent;
+        Object[] dataFields = new Object[this.parent.getAttributeSize()];
+        //this Object array contains all the VARCHARS and integers in the rows
+        public Object getDataField(int index){
+            return dataFields[index];
+        }
+        public void setDataField(int index, Object data){
+            dataFields[index] = data;
+        }
+        public String getRelation(){
+            return this.parent.relationName;
+        }
+    }
 }
