@@ -212,7 +212,7 @@ class FakeDbms implements IDbms {
     @Override public void exit() { }
 
     @Override
-    public Table getTable(String tableName) {
+    public tableRootNode getTable(String tableName) {
         return null;
     }
 }

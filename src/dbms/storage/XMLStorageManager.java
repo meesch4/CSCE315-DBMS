@@ -1,6 +1,6 @@
 package dbms.storage;
 
-import dbms.Dbms.tableRootNode;
+import dbms.tableRootNode;
 
 import java.util.HashMap;
 

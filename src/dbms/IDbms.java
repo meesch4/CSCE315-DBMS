@@ -30,5 +30,5 @@ public interface IDbms {
     void delete(String table); // I think?
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
-    Table getTable(String tableName);
+    tableRootNode getTable(String tableName);
 }

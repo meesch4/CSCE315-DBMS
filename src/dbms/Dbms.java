@@ -190,7 +190,7 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public Table getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
+    public tableRootNode getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
         //I can go through and modify this to accomodate that type, but it's already handled by the root node type.
         //alternatively, we can do fewer modifications by simply making the Table type refer to tableRootNode
         //return tables.get(tableName);
@@ -200,108 +200,6 @@ public class Dbms implements IDbms {
     private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
 
-    /**
-     *  This class is only used to describe the attribute types; it will be used to check if a row has the
-     *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
-     */
-    public class Attribute {
-        Attribute(String name, int ind, Type type, String pkey){
-            attrName = name;
-            index = ind;
-            primaryKey = pkey;
-        }
-        int index;  //used to denote the index of the attribute within the row
-        String attrName; //name of attribute, e.g. "age" for an age column
-        Type type;
-        String primaryKey;
 
-        public int getSize(){
-            if(getVC())
-                return ((Varchar) type).length;
 
-            return 0;
-        }
-        public String getName() {
-            return attrName;
-        }
-
-        public boolean getVC(){
-            return type instanceof Varchar;
-        }
-
-        public void setSize(int sz){
-            if(getVC())
-                ((Varchar) type).length = sz;
-        }
-
-        public void setName(String nm){
-            this.attrName = nm;
-        }
-    }
-
-    /**
-     *  Use new to instantiate a table root node, with the name and attribute list.
-     *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
-     */
-    public class tableRootNode { //node containing relation name and attributes of table (column types)
-        public tableRootNode(String name, ArrayList<Attribute> attributes){
-            relationName = name;
-            attList = attributes;
-        }
-        public tableRootNode(String name, ArrayList<Attribute> attributes, List<rowNode> kids){
-            relationName = name;
-            attList = attributes;
-            children = kids;
-        }
-        String relationName;
-        ArrayList<Attribute> attList;
-
-        List<rowNode> children;
-        public void setName(String nm){
-            this.relationName = nm;
-        }
-        public void addRow(rowNode row){
-            this.children.add(row);
-        }
-        public void setAttributeName(String name, int index){
-            Attribute tempAtt = attList.get(index); //get attribute that is being changed
-            tempAtt.setName(name); //change name of attribute
-            attList.set(index, tempAtt); //set in arraylist
-        }
-        public ArrayList<Attribute> getAttributes() { return this.attList; }
-        public List<rowNode> getRowNodes() { return this.children; }
-        public Attribute getAttribute(int index){
-            return this.attList.get(index);
-        }
-        public void printAttributes(){
-            System.out.println(this.attList);
-        }
-        public int getAttributeSize(){
-            return this.attList.size();
-        }
-        //public void removeAttribute(int index){
-        //    attList.remove(index);
-        //}
-        public ArrayList<Attribute> getAttributeList(){
-            return this.attList;
-        }
-    }
-
-    public class rowNode {
-        rowNode(Object[] objects){ //can be used to pass a premade Object array to the class
-            dataFields = objects;
-        }
-        tableRootNode parent;
-        Object[] dataFields = new Object[this.parent.getAttributeSize()];
-        //this Object array contains all the VARCHARS and integers in the rows
-        public Object getDataField(int index){
-            return dataFields[index];
-        }
-        public void setDataField(int index, Object data){
-            dataFields[index] = data;
-        }
-        public String getRelation(){
-            return this.parent.relationName;
-        }
-    }
 }
