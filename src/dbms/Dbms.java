@@ -135,9 +135,18 @@ public class Dbms implements IDbms {
 
     @Override
     public String difference(String table1, String table2) {
-        String tempTable = getTempTableName();
+        //String tempTable = getTempTableName();
+        String tempTableName = table1 + "-" + table2;
+        ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
+        tableRootNode tempTable = new tableRootNode(tempTableName, tempAttributes);
+        for(rowNode row : tables.get(table1).children){ //for all row nodes in table 1
+            if(!(tables.get(table2).children.contains(row))){//if the row node is not in table 2
+                tempTable.addRow(row); //place it in the new temp table (create a table with all elements in table 1 but not in table 2)
+            }
+        }
+        tables.put(tempTableName, tempTable);//add new table to hash map
 
-        return tempTable;
+        return tempTableName;
     }
 
     @Override
