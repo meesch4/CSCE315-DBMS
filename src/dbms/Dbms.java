@@ -40,9 +40,27 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
+    public void insertFromRelation(String tableInsertInto, String tableInsertFrom) { //we will need to work on handling the
+        //creation of temporary tables for insert command
+
+
         //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
         //essentially just take the arraylist of row nodes in tablefrom and append it to the array list of rownodes in insert into
+        ArrayList<Attribute> attListFrom;
+        tableRootNode tableFrom = (tableRootNode) tables.get(tableInsertFrom);
+        attListFrom = tableFrom.getAttributes();
+        ArrayList<Attribute> attListInto;
+        tableRootNode tableInto = (tableRootNode) tables.get(tableInsertInto);
+        attListInto = tableInto.getAttributes();
+        if(attListFrom != attListInto){ //may not work properly as a comparison, if so just remove since data should be clean
+            System.out.println("Mismatched attirbutes");
+            return;
+        }
+        List<rowNode> rowListFrom = tableFrom.getRowNodes();
+        for(rowNode rowFrom : rowListFrom){ //pulls each row node from table from
+            tableInto.addRow(rowFrom);  //inserts them into table into
+        }
+        
 
     }
 
@@ -183,13 +201,15 @@ public class Dbms implements IDbms {
         String relationName;
         ArrayList<Attribute> attList;
 
-        List<RowNode> children;
+        List<rowNode> children;
         public void setName(String nm){
             this.relationName = nm;
         }
-        public void addRow(RowNode row){
+        public void addRow(rowNode row){
             this.children.add(row);
         }
+        public ArrayList<Attribute> getAttributes() { return this.attList; }
+        public List<rowNode> getRowNodes() { return this.children; }
         public Attribute getAttribute(int index){
             return this.attList.get(index);
         }
@@ -207,11 +227,11 @@ public class Dbms implements IDbms {
         }
     }
 
-    public class RowNode {
-        RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
+    public class rowNode {
+        rowNode(Object[] objects){ //can be used to pass a premade Object array to the class
             dataFields = objects;
         }
-        TableRootNode parent;
+        tableRootNode parent;
         Object[] dataFields = new Object[this.parent.getAttributeSize()];
         //this Object array contains all the VARCHARS and integers in the rows
         public Object getDataField(int index){
