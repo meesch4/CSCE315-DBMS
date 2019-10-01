@@ -67,6 +67,24 @@ public class Dbms implements IDbms {
     @Override
     public void insertFromValues(String tableInsertInto, List<Object> valuesFrom) {
         //verify that the attributes match up, and then add a new node to rownodes
+        //this verification is currently fairly naive, as it simply checks the length of the list versus
+        //the size of the attribute list of the table it's being inserted into.
+
+        tableRootNode temp = (tableRootNode) tables.get(tableInsertInto);
+        int lengAttributes = temp.getAttributeSize();
+        if(valuesFrom.size() != lengAttributes){
+            System.out.println("Mismatched attribute length");
+            return;
+        }
+        Object[] rowVals = new Object[lengAttributes];
+        int i = 0;
+        for(Object val : valuesFrom){
+            rowVals[i] = val;
+            i++;
+        }
+        rowNode newRowNode = new rowNode(rowVals);//creates new row node
+        temp.addRow(newRowNode);//adds row node
+
     }
 
     @Override
