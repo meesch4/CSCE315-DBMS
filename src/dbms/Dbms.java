@@ -11,7 +11,7 @@ public class Dbms implements IDbms {
     // Includes temporary tables as well
     private HashMap<String, tableRootNode> tables;
     //private HashMap<String, Object> tempTables;
-
+    public int rowNodeKey = 0;
     // Should we have a temporary/local tables?
 
     public Dbms() {
@@ -294,8 +294,12 @@ public class Dbms implements IDbms {
     public class rowNode {
         rowNode(Object[] objects){ //can be used to pass a premade Object array to the class
             dataFields = objects;
+            key = rowNodeKey;
+            rowNodeKey++;
         }
         tableRootNode parent;
+        int key;
+
         Object[] dataFields = new Object[this.parent.getAttributeSize()];
         //this Object array contains all the VARCHARS and integers in the rows
         public Object getDataField(int index){
@@ -306,6 +310,46 @@ public class Dbms implements IDbms {
         }
         public String getRelation(){
             return this.parent.relationName;
+        }
+
+
+        @Override
+        public boolean equals(Object obj)
+        {
+
+            // checking if both the object references are
+            // referring to the same object.
+            if(this == obj)
+                return true;
+
+            // it checks if the argument is of the
+            // type rowNode by comparing the classes
+            // of the passed argument and this object.
+            // if(!(obj instanceof rowNode)) return false; ---> avoid.
+            if(obj == null || obj.getClass()!= this.getClass())
+                return false;
+
+            // type casting of the argument.
+            rowNode row = (rowNode) obj;
+
+            // comparing the state of argument with
+            // the state of 'this' Object.
+
+            for(int i = 0; i < this.dataFields.length; i++){
+                if(this.dataFields[i] != row.dataFields[i]){
+                    return false; //DOES NOT ACCOUNT FOR ATTRIBUTES BEING IN THE SAME ORDER
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode()
+        {
+
+
+            return this.key; //Not a great method
+            //if you can figure out a way to return the first datafield, that would probably be a better hash code.
         }
     }
 }
