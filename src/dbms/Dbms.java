@@ -9,7 +9,7 @@ import java.util.*;
 public class Dbms implements IDbms {
     // Maps each table name to their internal representation
     // Includes temporary tables as well
-    private HashMap<String, tableRootNode> tables;
+    private HashMap<String, TableRootNode> tables;
     //private HashMap<String, Object> tempTables;
 
     // Should we have a temporary/local tables?
@@ -37,7 +37,7 @@ public class Dbms implements IDbms {
             i++;
             attributesList.add(temp); ///this creates the attributes list
         }
-        tableRootNode table = new tableRootNode(tableName, attributesList); //creates table
+        TableRootNode table = new TableRootNode(tableName, attributesList); //creates table
         tables.put(tableName, table); //puts new table root node into hashmap with name as key
     }
 
@@ -49,17 +49,17 @@ public class Dbms implements IDbms {
         //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
         //essentially just take the arraylist of row nodes in tablefrom and append it to the array list of rownodes in insert into
         ArrayList<Attribute> attListFrom;
-        tableRootNode tableFrom = (tableRootNode) tables.get(tableInsertFrom);
+        TableRootNode tableFrom = (TableRootNode) tables.get(tableInsertFrom);
         attListFrom = tableFrom.getAttributes();
         ArrayList<Attribute> attListInto;
-        tableRootNode tableInto = (tableRootNode) tables.get(tableInsertInto);
+        TableRootNode tableInto = (TableRootNode) tables.get(tableInsertInto);
         attListInto = tableInto.getAttributes();
         if(attListFrom != attListInto){ //may not work properly as a comparison, if so just remove since data should be clean
             System.out.println("Mismatched attirbutes");
             return;
         }
-        List<rowNode> rowListFrom = tableFrom.getRowNodes();
-        for(rowNode rowFrom : rowListFrom){ //pulls each row node from table from
+        List<RowNode> rowListFrom = tableFrom.getRowNodes();
+        for(RowNode rowFrom : rowListFrom){ //pulls each row node from table from
             tableInto.addRow(rowFrom);  //inserts them into table into
         }
 
@@ -72,7 +72,7 @@ public class Dbms implements IDbms {
         //this verification is currently fairly naive, as it simply checks the length of the list versus
         //the size of the attribute list of the table it's being inserted into.
 
-        tableRootNode temp = (tableRootNode) tables.get(tableInsertInto);
+        TableRootNode temp = (TableRootNode) tables.get(tableInsertInto);
         int lengAttributes = temp.getAttributeSize();
         if(valuesFrom.size() != lengAttributes){
             System.out.println("Mismatched attribute length");
@@ -84,7 +84,7 @@ public class Dbms implements IDbms {
             rowVals[i] = val;
             i++;
         }
-        rowNode newRowNode = new rowNode(rowVals);//creates new row node
+        RowNode newRowNode = new RowNode(rowVals);//creates new row node
         temp.addRow(newRowNode);//adds row node
 
     }
@@ -106,8 +106,8 @@ public class Dbms implements IDbms {
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
         String newName = tableName + "temp";
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
-        List<rowNode> kids = tables.get(tableName).getRowNodes();
-        tableRootNode tempTable = new tableRootNode(newName, attributes, kids);
+        List<RowNode> kids = tables.get(tableName).getRowNodes();
+        TableRootNode tempTable = new TableRootNode(newName, attributes, kids);
         int i = 0;
         for(String name : newColumnNames){
             tempTable.setAttributeName(name, i);
@@ -121,14 +121,14 @@ public class Dbms implements IDbms {
     public String union(String table1, String table2) {
         String newTable = table1 + " " + table2; //the output table name will be a combination of the two table names
         ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
-        List<rowNode> newRows = tables.get(table1).getRowNodes();
-        List<rowNode> newRows2 = tables.get(table2).getRowNodes();
+        List<RowNode> newRows = tables.get(table1).getRowNodes();
+        List<RowNode> newRows2 = tables.get(table2).getRowNodes();
         newRows.addAll(newRows2);
-        Set<rowNode> noDupes = new HashSet<>(newRows); //remove duplicates
+        Set<RowNode> noDupes = new HashSet<>(newRows); //remove duplicates
         newRows.clear(); //clear list
         newRows.addAll(noDupes);  //add new children without duplicates
 
-        tableRootNode newTableRoot = new tableRootNode(newTable, newAttributes, newRows);
+        TableRootNode newTableRoot = new TableRootNode(newTable, newAttributes, newRows);
         tables.put(newTable, newTableRoot); //add the union to the tables hashmap
         return newTable;
     }
@@ -156,7 +156,7 @@ public class Dbms implements IDbms {
     public void delete(String table) {
         //iterate through children, deleting the objects,
         //then delete the main node
-        tableRootNode toDelete = (tableRootNode) tables.get(table);
+        TableRootNode toDelete = (TableRootNode) tables.get(table);
         toDelete.children = null;
         toDelete = null;
         tables.remove(table);
@@ -190,9 +190,9 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public tableRootNode getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
+    public TableRootNode getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
         //I can go through and modify this to accomodate that type, but it's already handled by the root node type.
-        //alternatively, we can do fewer modifications by simply making the Table type refer to tableRootNode
+        //alternatively, we can do fewer modifications by simply making the Table type refer to TableRootNode
         //return tables.get(tableName);
         return null;
     }
