@@ -1,9 +1,9 @@
 package parser;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.antlr.*;
 import dbms.*;
 
