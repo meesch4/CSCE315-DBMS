@@ -151,9 +151,37 @@ public class Dbms implements IDbms {
 
     @Override
     public String product(String table1, String table2) {
-        String tempTable = getTempTableName();
+        String tempName = table1 + "cross" + table2;
+        ArrayList<Attribute> tempAttributes;
+        tempAttributes = tables.get(table1).getAttributes();
+        tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
+        tableRootNode tempTable = new tableRootNode(tempName, tempAttributes); //new table
+        List<rowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
+        List<rowNode> tableTwoLeaves = tables.get(table2).getRowNodes(); //leaves from table 2
 
-        return tempTable;
+        for(rowNode rowOne : tableOneLeaves){
+            for(rowNode rowTwo : tableTwoLeaves){
+
+
+                int lengOne = rowOne.getDataFields().length;
+                int lengTwo = rowTwo.getDataFields().length;
+                int leng = lengOne + lengTwo;
+                Object[] newDataFields = new Object[leng];
+
+                for(int i = 0; i < lengOne; i++){
+                    newDataFields[i] = rowOne.getDataField(i);
+                }
+                for(int j = 0; j < lengTwo; j++){
+                    newDataFields[j+lengOne] = rowTwo.getDataField(j);
+                }
+                rowNode newRow = new rowNode(newDataFields);
+                tempTable.addRow(newRow);
+
+
+            }
+        }
+
+        return tempName;
     }
 
     @Override
@@ -305,6 +333,7 @@ public class Dbms implements IDbms {
         public Object getDataField(int index){
             return dataFields[index];
         }
+        public Object[] getDataFields(){return dataFields;}
         public void setDataField(int index, Object data){
             dataFields[index] = data;
         }
