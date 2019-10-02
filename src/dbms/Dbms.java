@@ -124,7 +124,7 @@ public class Dbms implements IDbms {
         List<RowNode> newRows = tables.get(table1).getRowNodes();
         List<RowNode> newRows2 = tables.get(table2).getRowNodes();
         newRows.addAll(newRows2);
-        Set<rowNode> noDupes = new HashSet<>(newRows); //remove duplicates
+        Set<RowNode> noDupes = new HashSet<>(newRows); //remove duplicates
         newRows.clear(); //clear list
         newRows.addAll(noDupes);  //add new children without duplicates
 
@@ -138,8 +138,8 @@ public class Dbms implements IDbms {
         //String tempTable = getTempTableName();
         String tempTableName = table1 + "-" + table2;
         ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
-        tableRootNode tempTable = new tableRootNode(tempTableName, tempAttributes);
-        for(rowNode row : tables.get(table1).children){ //for all row nodes in table 1
+        TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
+        for(RowNode row : tables.get(table1).children){ //for all row nodes in table 1
             if(!(tables.get(table2).children.contains(row))){//if the row node is not in table 2
                 tempTable.addRow(row); //place it in the new temp table (create a table with all elements in table 1 but not in table 2)
             }
@@ -155,12 +155,12 @@ public class Dbms implements IDbms {
         ArrayList<Attribute> tempAttributes;
         tempAttributes = tables.get(table1).getAttributes();
         tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
-        tableRootNode tempTable = new tableRootNode(tempName, tempAttributes); //new table
-        List<rowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
-        List<rowNode> tableTwoLeaves = tables.get(table2).getRowNodes(); //leaves from table 2
+        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
+        List<RowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
+        List<RowNode> tableTwoLeaves = tables.get(table2).getRowNodes(); //leaves from table 2
 
-        for(rowNode rowOne : tableOneLeaves){
-            for(rowNode rowTwo : tableTwoLeaves){
+        for(RowNode rowOne : tableOneLeaves){
+            for(RowNode rowTwo : tableTwoLeaves){
 
 
                 int lengOne = rowOne.getDataFields().length;
@@ -174,7 +174,7 @@ public class Dbms implements IDbms {
                 for(int j = 0; j < lengTwo; j++){
                     newDataFields[j+lengOne] = rowTwo.getDataField(j);
                 }
-                rowNode newRow = new rowNode(newDataFields);
+                RowNode newRow = new RowNode(newDataFields);
                 tempTable.addRow(newRow);
 
 
@@ -236,154 +236,4 @@ public class Dbms implements IDbms {
 
     private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
-
-    /**
-     *  This class is only used to describe the attribute types; it will be used to check if a row has the
-     *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
-     */
-    public class Attribute {
-        Attribute(String name, int ind, Type type, String pkey){
-            attrName = name;
-            index = ind;
-            primaryKey = pkey;
-        }
-        int index;  //used to denote the index of the attribute within the row
-        String attrName; //name of attribute, e.g. "age" for an age column
-        Type type;
-        String primaryKey;
-
-        public int getSize(){
-            if(getVC())
-                return ((Varchar) type).length;
-
-            return 0;
-        }
-        public String getName() {
-            return attrName;
-        }
-
-        public boolean getVC(){
-            return type instanceof Varchar;
-        }
-
-        public void setSize(int sz){
-            if(getVC())
-                ((Varchar) type).length = sz;
-        }
-
-        public void setName(String nm){
-            this.attrName = nm;
-        }
-    }
-
-    /**
-     *  Use new to instantiate a table root node, with the name and attribute list.
-     *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
-     */
-    public class tableRootNode { //node containing relation name and attributes of table (column types)
-        public tableRootNode(String name, ArrayList<Attribute> attributes){
-            relationName = name;
-            attList = attributes;
-        }
-        public tableRootNode(String name, ArrayList<Attribute> attributes, List<rowNode> kids){
-            relationName = name;
-            attList = attributes;
-            children = kids;
-        }
-        String relationName;
-        ArrayList<Attribute> attList;
-
-        List<rowNode> children;
-        public void setName(String nm){
-            this.relationName = nm;
-        }
-        public void addRow(rowNode row){
-            this.children.add(row);
-        }
-        public void setAttributeName(String name, int index){
-            Attribute tempAtt = attList.get(index); //get attribute that is being changed
-            tempAtt.setName(name); //change name of attribute
-            attList.set(index, tempAtt); //set in arraylist
-        }
-        public ArrayList<Attribute> getAttributes() { return this.attList; }
-        public List<rowNode> getRowNodes() { return this.children; }
-        public Attribute getAttribute(int index){
-            return this.attList.get(index);
-        }
-        public void printAttributes(){
-            System.out.println(this.attList);
-        }
-        public int getAttributeSize(){
-            return this.attList.size();
-        }
-        //public void removeAttribute(int index){
-        //    attList.remove(index);
-        //}
-        public ArrayList<Attribute> getAttributeList(){
-            return this.attList;
-        }
-    }
-
-    public class rowNode {
-        rowNode(Object[] objects){ //can be used to pass a premade Object array to the class
-            dataFields = objects;
-            key = rowNodeKey;
-            rowNodeKey++;
-        }
-        tableRootNode parent;
-        int key;
-
-        Object[] dataFields = new Object[this.parent.getAttributeSize()];
-        //this Object array contains all the VARCHARS and integers in the rows
-        public Object getDataField(int index){
-            return dataFields[index];
-        }
-        public Object[] getDataFields(){return dataFields;}
-        public void setDataField(int index, Object data){
-            dataFields[index] = data;
-        }
-        public String getRelation(){
-            return this.parent.relationName;
-        }
-
-
-        @Override
-        public boolean equals(Object obj)
-        {
-
-            // checking if both the object references are
-            // referring to the same object.
-            if(this == obj)
-                return true;
-
-            // it checks if the argument is of the
-            // type rowNode by comparing the classes
-            // of the passed argument and this object.
-            // if(!(obj instanceof rowNode)) return false; ---> avoid.
-            if(obj == null || obj.getClass()!= this.getClass())
-                return false;
-
-            // type casting of the argument.
-            rowNode row = (rowNode) obj;
-
-            // comparing the state of argument with
-            // the state of 'this' Object.
-
-            for(int i = 0; i < this.dataFields.length; i++){
-                if(this.dataFields[i] != row.dataFields[i]){
-                    return false; //DOES NOT ACCOUNT FOR ATTRIBUTES BEING IN THE SAME ORDER
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-
-
-            return this.key; //Not a great method
-            //if you can figure out a way to return the first datafield, that would probably be a better hash code.
-        }
-    }
 }
