@@ -21,16 +21,17 @@ public class Dbms implements IDbms {
 
     @Override
     public void createTable(String tableName, List<String> columnNames, List<Type> columnTypes, List<String> primaryKeys) {
-        if((columnNames.size() != columnTypes.size())|| (columnTypes.size() != primaryKeys.size())){
+        if((columnNames.size() != columnTypes.size())) { // Doesn't need to be an equal amount of primaryKeys & columnTypes
             System.out.println("Improper input");
             return;
         }
         ArrayList<Attribute> attributesList = new ArrayList<Attribute>();
         Iterator<String> iter = primaryKeys.iterator();
         Iterator<Type> iterType = columnTypes.iterator();
-        int i = 0;
+        int i = 0; // Rename to columnIndex? Why not just do a for i = 0 loop?
         for(String element : columnNames){ //iterate through, make the attribute list
-            String pkeyel = iter.next();
+            String pkeyel = ""; // How is this even used?
+            // String pkeyel = iter.next();
             Type typeel = iterType.next();
             Attribute temp;
             temp = new Attribute(element, i, typeel, pkeyel);
@@ -42,8 +43,8 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void insertFromRelation(String tableInsertInto, String tableInsertFrom) { //we will need to work on handling the
-        //creation of temporary tables for insert command
+    public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
+        //we will need to work on handling the creation of temporary tables for insert command
 
 
         //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
@@ -227,11 +228,8 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public TableRootNode getTable(String tableName) { //tables are referenced by their root node, I haven't been using the table type
-        //I can go through and modify this to accomodate that type, but it's already handled by the root node type.
-        //alternatively, we can do fewer modifications by simply making the Table type refer to TableRootNode
-        //return tables.get(tableName);
-        return null;
+    public TableRootNode getTable(String tableName) {
+        return tables.get(tableName);
     }
 
     private int tempCount = 0; // current temp table we're on
