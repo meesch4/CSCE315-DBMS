@@ -1,6 +1,9 @@
 package parser;
 
 import dbms.*;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStreams;
