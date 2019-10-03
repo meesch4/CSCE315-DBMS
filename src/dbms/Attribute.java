@@ -40,5 +40,27 @@ public class Attribute {
     public void setName(String nm) {
         this.attrName = nm;
     }
+
+    @Override public boolean equals(Object obj) {
+        if(!(obj instanceof Attribute)) {
+            return false;
+        }
+
+        Attribute other = (Attribute) obj;
+
+        if(attrName.equals(other.attrName)) {
+            if(this.index == other.index) {
+                if(type.getClass().equals(other.type.getClass())) {
+                    if(type instanceof Varchar) { // Compare sizes if both Varchar
+                        return ((Varchar) type).length == ((Varchar) other.type).length;
+                    } else { // Both integers, return true
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }
 
