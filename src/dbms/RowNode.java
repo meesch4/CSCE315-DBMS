@@ -9,7 +9,7 @@ public class RowNode {
         // rowNodeKey++;
     }
 
-    TableRootNode parent;
+    TableRootNode parent; //NEEDS TO BE FIXED.  ADD PARENT TO CONSTRUCTOR
     int key;
 
     Object[] dataFields = new Object[this.parent.getAttributeSize()];

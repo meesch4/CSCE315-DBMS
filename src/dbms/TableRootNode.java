@@ -16,8 +16,8 @@ public class TableRootNode { //node containing relation name and attributes of t
         attList = attributes;
         children = kids;
     }
-    String relationName;
-    ArrayList<Attribute> attList;
+    String relationName;  //make private variables which have getters and setters.
+    ArrayList<Attribute> attList;  //rename to attributes
 
     List<RowNode> children;
     public void setName(String nm){
@@ -25,7 +25,7 @@ public class TableRootNode { //node containing relation name and attributes of t
     }
     public void addRow(RowNode row){
         this.children.add(row);
-    }
+    }   //delete unused funcitons
     public void setAttributeName(String name, int index){
         Attribute tempAtt = attList.get(index); //get attribute that is being changed
         tempAtt.setName(name); //change name of attribute
