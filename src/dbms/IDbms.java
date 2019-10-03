@@ -1,5 +1,7 @@
 package dbms;
 
+import types.Type;
+
 import java.util.List;
 
 // Functions that Dbms should implement
@@ -30,5 +32,5 @@ public interface IDbms {
     void delete(String table); // I think?
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
-    Table getTable(String tableName);
+    TableRootNode getTable(String tableName);
 }

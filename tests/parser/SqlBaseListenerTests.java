@@ -1,6 +1,9 @@
 package parser;
 
 import dbms.*;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -212,7 +215,7 @@ class FakeDbms implements IDbms {
     @Override public void exit() { }
 
     @Override
-    public Table getTable(String tableName) {
+    public TableRootNode getTable(String tableName) {
         return null;
     }
 }
