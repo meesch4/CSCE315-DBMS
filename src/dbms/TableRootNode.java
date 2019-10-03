@@ -48,5 +48,6 @@ public class TableRootNode { //node containing relation name and attributes of t
     public ArrayList<Attribute> getAttributeList(){
         return this.attList;
     }
+
 }
 

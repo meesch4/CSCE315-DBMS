@@ -1,3 +1,3 @@
-package dbms;
+package types;
 
 public abstract class Type { }

@@ -2,6 +2,8 @@ package dbms;
 
 import dbms.TableRootNode;
 
+import java.util.Arrays;
+
 public class RowNode {
     public RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
         dataFields = objects;
@@ -12,7 +14,7 @@ public class RowNode {
     TableRootNode parent; //NEEDS TO BE FIXED.  ADD PARENT TO CONSTRUCTOR
     int key;
 
-    Object[] dataFields = new Object[this.parent.getAttributeSize()];
+    Object[] dataFields;
     //this Object array contains all the VARCHARS and integers in the rows
     public Object getDataField(int index){
         return dataFields[index];
@@ -27,6 +29,7 @@ public class RowNode {
 
     @Override
     public boolean equals(Object obj) {
+        System.out.println("Equals");
 
         // checking if both the object references are
         // referring to the same object.
@@ -56,10 +59,7 @@ public class RowNode {
 
     @Override
     public int hashCode() {
-
-
-        return this.key; //Not a great method
-        //if you can figure out a way to return the first datafield, that would probably be a better hash code.
+        return Arrays.hashCode(dataFields);
     }
 }
 
