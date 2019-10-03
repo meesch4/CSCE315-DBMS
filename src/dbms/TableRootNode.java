@@ -10,12 +10,15 @@ public class TableRootNode { //node containing relation name and attributes of t
     public TableRootNode(String name, ArrayList<Attribute> attributes){
         relationName = name;
         attList = attributes;
+        children = new ArrayList<>();
     }
+
     public TableRootNode(String name, ArrayList<Attribute> attributes, List<RowNode> kids){
         relationName = name;
         attList = attributes;
         children = kids;
     }
+
     String relationName;
     ArrayList<Attribute> attList;
 

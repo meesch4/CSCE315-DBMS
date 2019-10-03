@@ -1,6 +1,5 @@
 package dbms;
 
-import dbms.RowNode;
 import org.junit.Test;
 import types.IntType;
 import types.Type;
