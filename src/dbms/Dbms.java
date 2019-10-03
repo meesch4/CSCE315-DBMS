@@ -137,16 +137,53 @@ public class Dbms implements IDbms {
 
     @Override
     public String difference(String table1, String table2) {
-        String tempTable = getTempTableName();
+        //String tempTable = getTempTableName();
+        String tempTableName = table1 + "-" + table2;
+        ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
+        TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
+        for(RowNode row : tables.get(table1).children){ //for all row nodes in table 1
+            if(!(tables.get(table2).children.contains(row))){//if the row node is not in table 2
+                tempTable.addRow(row); //place it in the new temp table (create a table with all elements in table 1 but not in table 2)
+            }
+        }
+        tables.put(tempTableName, tempTable);//add new table to hash map
 
-        return tempTable;
+        return tempTableName;
     }
 
     @Override
     public String product(String table1, String table2) {
-        String tempTable = getTempTableName();
+        String tempName = table1 + "cross" + table2;
+        ArrayList<Attribute> tempAttributes;
+        tempAttributes = tables.get(table1).getAttributes();
+        tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
+        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
+        List<RowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
+        List<RowNode> tableTwoLeaves = tables.get(table2).getRowNodes(); //leaves from table 2
 
-        return tempTable;
+        for(RowNode rowOne : tableOneLeaves){
+            for(RowNode rowTwo : tableTwoLeaves){
+
+
+                int lengOne = rowOne.getDataFields().length;
+                int lengTwo = rowTwo.getDataFields().length;
+                int leng = lengOne + lengTwo;
+                Object[] newDataFields = new Object[leng];
+
+                for(int i = 0; i < lengOne; i++){
+                    newDataFields[i] = rowOne.getDataField(i);
+                }
+                for(int j = 0; j < lengTwo; j++){
+                    newDataFields[j+lengOne] = rowTwo.getDataField(j);
+                }
+                RowNode newRow = new RowNode(newDataFields);
+                tempTable.addRow(newRow);
+
+
+            }
+        }
+
+        return tempName;
     }
 
     @Override
@@ -201,7 +238,4 @@ public class Dbms implements IDbms {
 
     private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
-
-
-
 }
