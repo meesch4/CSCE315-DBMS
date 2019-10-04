@@ -137,7 +137,35 @@ public class Dbms implements IDbms {
     @Override
     public String projection(String tableFrom, List<String> columnNames) {
         String tempTable = getTempTableName();
+        ArrayList<Attribute> origAttributes = tables.get(tableFrom).getAttributes();
+        List<Integer> indices = new List<Integer>;
+        ArrayList<Attribute> newAttributes;
 
+        int j = 0;
+        for(Attribute att : origAttributes){
+            if(columnNames.contains(att.getName())){
+                indices.add(att.index);
+                Attribute newAttribute;
+                newAttribute = new Attribute(att.getName(), j, att.getType(), "blah");
+                newAttributes.add(newAttribute);
+            }
+        } //find the indices of the columns we need to maintain
+
+
+        TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
+
+        for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through tableFrom's rows
+            Object[] data = new Object[]; //create new dataFields object[]
+
+            int i = 0;
+            for(Integer index : indices){//iterate through column indices we're interested in
+                data[i] = (row.dataFields[index]);//add data to dataFields
+                i++;
+            }
+            RowNode newRow = new RowNode(data);
+            newTable.addRow(newRow);
+        }
+        tables.put(tempTable, newTable);
         return tempTable;
     }
 
