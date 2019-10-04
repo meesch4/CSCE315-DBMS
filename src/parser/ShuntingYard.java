@@ -161,32 +161,6 @@ public class ShuntingYard {
     }
 
     // Delete this after we complete create_condition
-    /*
-    If the condition is: (kind == "cat" || (kind == "dog" && age > 5)), this is what the Condition object should look like
-    // In order, the condition objects are formed from the bottom condition(age > 5) upwards, hence the use of a stack
-        condition: {
-            op: ||
-            left: { // Nested condition
-                left: kind
-                right: "cat"
-                op: ==
-            }
-            right: { // Nested condition
-                operator: &&
-                left: { // Another nested condition
-                    operator: ==
-                    left: kind
-                    right: dog
-                }
-                right: {
-                    operator: >
-                    left: age
-                    right: 5
-                },
-            }
-       }
-
-     */
 
     /** Helper functions **/
     // Parses the according operator string into the Operator enum
