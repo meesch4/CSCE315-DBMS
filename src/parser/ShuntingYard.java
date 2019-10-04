@@ -68,12 +68,11 @@ public class ShuntingYard {
         }
 
         // TODO: Remove comment after checking it's right/wrong @Neil
-        // Honestly I'm not positive this is what you do, but op_stack isn't empty when we've ended this function
-        // and it never pushes on the operator, so I assume this is the right call
+        // @Gannon this is necessary because when passing condition.ctx into ShuntingYard the parens in ( condition ) are not included when passing ctx.getChildren(2)
+        // if we can determine a way to include the parens for condition itself we wouldn't need this since everything between paired parens would be popped
         while(!op_stack.empty()) {
             post_fixed.push(op_stack.pop());
         }
-
         return post_fixed;
     }
 
@@ -99,9 +98,9 @@ public class ShuntingYard {
         String text = input.getText();
 
         if (input instanceof SQLGrammarParser.OperandContext || input instanceof SQLGrammarParser.OperatorContext
-            || input instanceof SQLGrammarParser.OrContext || input instanceof SQLGrammarParser.AndContext) {
+                || input instanceof SQLGrammarParser.OrContext || input instanceof SQLGrammarParser.AndContext
+                || input instanceof SQLGrammarParser.ParencloseContext || input instanceof SQLGrammarParser.ParenopenContext) {
             parsed_leaves.add(input.getText());
-
             return;
         } else {
             for (int i = 0; i < input.getChildCount(); i++) {
