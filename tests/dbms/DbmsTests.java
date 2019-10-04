@@ -117,7 +117,23 @@ public class DbmsTests {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void update_doesUpdateTable() {
+        String tableName = "table";
+        createTable(tableName, 0);
 
+        List<Object> data = new ArrayList<>(Arrays.asList("one", 1));
+
+        db.insertFromValues(tableName, data);
+
+        List<String> columnsToSet = new ArrayList<>(Arrays.asList("varcharCol", "intCol"));
+        List<Object> valuesToSet = new ArrayList<>(Arrays.asList("two", 2));
+        Condition condition = createCondition(0);
+
+        db.update(tableName, columnsToSet, valuesToSet, condition);
+
+        // RowNode updated =
+    }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
     public void rowNode_hashCode_setRemovesDuplicates() {
@@ -132,6 +148,26 @@ public class DbmsTests {
 
         System.out.println(set.size());
         assertEquals(set.size(), 1);
+    }
+
+    private Condition createCondition(int which) {
+        Condition root = new Condition();
+        if(which == 0) { // varcharCol == "one" || intCol == 1
+            root.op = Operator.OR;
+            Condition left = new Condition();
+                left.op = Operator.EQUALS;
+                left.left = new Attribute("intCol");
+                left.right = "5";
+            Condition right = new Condition();
+                right.op = Operator.EQUALS;
+                right.left = new Attribute("");
+                right.right = "5";
+
+            root.left = left;
+            root.right = right;
+        }
+
+        return root;
     }
 
     // Creates a basic table

@@ -143,7 +143,6 @@ public class Dbms implements IDbms {
             // Not sure if RowNode is passed by reference or value, so this may not be necessary
             tableRows.set(rowIndex, row);
         }
-
     }
 
     @Override
