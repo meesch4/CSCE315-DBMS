@@ -154,7 +154,7 @@ public class DbmsTests {
                     Arrays.asList("varcharCol")
             );
             List<Type> columnTypes = new ArrayList<>(
-                    Arrays.asList(new Varchar(20), new IntType())
+                    Arrays.asList(new Varchar(20))
             );
             List<String> primaryKeys = new ArrayList<>(
                     Arrays.asList("varcharCol")
