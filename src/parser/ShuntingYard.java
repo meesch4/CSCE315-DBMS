@@ -174,6 +174,9 @@ public class ShuntingYard {
             case ">":  return Operator.GREATER;
             case "&&": return Operator.AND;
             case "||": return Operator.OR;
+            default:
+                // Throw an error
+                break;
         }
 
         return Operator.EQUALS;

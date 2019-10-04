@@ -203,11 +203,12 @@ public class DbmsTests {
         TableRootNode table1 = new TableRootNode(tableName1, attributes);
         TableRootNode table2 = new TableRootNode(tableName2, attributes);
 
-
         table0.addRow(row0);
         table0.addRow(row1);
+
         table1.addRow(row0);
         table1.addRow(row2);
+
         table2.addRow(row0);
         table2.addRow(row1);
         table2.addRow(row2);
@@ -235,6 +236,7 @@ public class DbmsTests {
         //System.out.println("unionTest end");
     }
 
+    // Creates a table with a row of {"one" 1} and updates it to {"two", 2}
     @Test
     public void update_doesUpdateTable() {
         String tableName = "table";
@@ -250,7 +252,10 @@ public class DbmsTests {
 
         db.update(tableName, columnsToSet, valuesToSet, condition);
 
-        // RowNode updated =
+        RowNode actual = db.tables.get(tableName).getRowNodes().get(0);
+        RowNode expected = new RowNode(valuesToSet.toArray());
+
+        assertEquals(actual, expected);
     }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
@@ -278,8 +283,8 @@ public class DbmsTests {
                 left.right = "5";
             Condition right = new Condition();
                 right.op = Operator.EQUALS;
-                right.left = new Attribute("");
-                right.right = "5";
+                right.left = new Attribute("varcharCol");
+                right.right = "one";
 
             root.left = left;
             root.right = right;

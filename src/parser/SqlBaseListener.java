@@ -64,9 +64,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         List<String> columnsToSet = parseSetColumnNames(ctx.children.get(3));
         List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
-        // TODO: Implement ShuntingYard
-        // Stack<String> stack = ShuntingYard.evaluate(ctx.children.get(5));
-        Condition condition = null;
+        Condition condition = ShuntingYard.evaluate(ctx.children.get(5));
 
         dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }

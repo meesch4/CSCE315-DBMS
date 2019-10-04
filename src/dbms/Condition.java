@@ -54,7 +54,9 @@ public class Condition {
                 return (int) value >= (int) literal;
             case GREATER:
                 return (int) value > (int) literal;
-            default: break;
+            default:
+                // Throw an error, unrecognized Operator(probably null)
+                break;
         }
 
         return false; // base case?
