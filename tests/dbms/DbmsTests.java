@@ -110,30 +110,80 @@ public class DbmsTests {
 
     @Test
     public void union_doesCombineTables() {
-        String tableName0 = "table0", tableName1 = "table1";
-        createTable(tableName0, 0);
-        createTable(tableName1, 1);
+        String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
+        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        attributes.add(col1);
+        attributes.add(col2);
 
-        Object[] data0 = new Object[] { "stuff", 2 };
-        Object[] data1 = new Object[] { "stuff" };
 
+        Object[] rowData0 = new Object[] { "string", 1};
+        Object[] rowData1 = new Object[] { "new", 1};
+        Object[] rowData2 = new Object[] { "test", 0};
+
+        RowNode row0 = new RowNode(rowData0);
+        RowNode row1 = new RowNode(rowData1);
+        RowNode row2 = new RowNode(rowData2);
+
+        TableRootNode table0 = new TableRootNode(tableName0, attributes);
+        TableRootNode table1 = new TableRootNode(tableName1, attributes);
+        TableRootNode table2 = new TableRootNode(tableName2, attributes);
+
+        table0.addRow(row0);
+        table0.addRow(row1);
+
+        table1.addRow(row0);
+        table1.addRow(row2);
+
+        table2.addRow(row0);
+        table2.addRow(row1);
+        table2.addRow(row2);
+
+        db.tables.put(tableName0, table0);
+        db.tables.put(tableName1, table1);
+        db.tables.put(tableName2, table2);
+
+        String newTable = db.union(tableName1, tableName2);
+        TableRootNode unionTable = (TableRootNode) db.tables.get(newTable);
         // Assumes insertFromValues works as well
-        db.insertFromValues(tableName0, Arrays.asList(data0));
-        db.insertFromValues(tableName1, Arrays.asList(data1));
+
 
         String newTableName = db.union(tableName0, tableName1);
 
-        TableRootNode newTable = db.getTable(newTableName);
+        TableRootNode unionNewTable = db.getTable(newTableName);
 
-        assertEquals(newTable.getRowNodes().size(), 2); // Should have two entries (since stuff should not exist in both tables.)
+        //System.out.println("union test");
+        assertEquals(unionTable.getRowNodes().size(), 3); // Should have three entries (since duplicate should be removed.)
 
-        RowNode actual = newTable.getRowNodes().get(1);
-        RowNode expected = new RowNode(new Object[] { "stuff", 2 });
+        List<RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
+        List<RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
 
-        assertEquals(expected, actual);
+        assertEquals(manualRowNodes, unionRowNodes);
+        //System.out.println("unionTest end");
     }
 
+    // Creates a table with a row of {"one" 1} and updates it to {"two", 2}
+    @Test
+    public void update_doesUpdateTable() {
+        String tableName = "table";
+        createTable(tableName, 0);
 
+        List<Object> data = new ArrayList<>(Arrays.asList("one", 1));
+
+        db.insertFromValues(tableName, data);
+
+        List<String> columnsToSet = new ArrayList<>(Arrays.asList("varcharCol", "intCol"));
+        List<Object> valuesToSet = new ArrayList<>(Arrays.asList("two", 2));
+        Condition condition = createCondition(0);
+
+        db.update(tableName, columnsToSet, valuesToSet, condition);
+
+        RowNode actual = db.tables.get(tableName).getRowNodes().get(0);
+        RowNode expected = new RowNode(valuesToSet.toArray());
+
+        assertEquals(actual, expected);
+    }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
     public void rowNode_hashCode_setRemovesDuplicates() {
@@ -148,6 +198,67 @@ public class DbmsTests {
 
         System.out.println(set.size());
         assertEquals(set.size(), 1);
+    }
+
+    private Condition createCondition(int which) {
+        Condition root = new Condition();
+        if(which == 0) { // varcharCol == "one" || intCol == 1
+            root.op = Operator.OR;
+            Condition left = new Condition();
+                left.op = Operator.EQUALS;
+                left.left = new Attribute("intCol");
+                left.right = "5";
+            Condition right = new Condition();
+                right.op = Operator.EQUALS;
+                right.left = new Attribute("varcharCol");
+                right.right = "one";
+
+            root.left = left;
+            root.right = right;
+        }
+
+        return root;
+    }
+
+    private Condition expected(int which) {
+        Condition root = new Condition();
+        if(which == 1) { // kind == "cat" || kind == "dog"
+            root.op = Operator.OR;
+            Condition left = new Condition();
+            left.op = Operator.EQUALS;
+            left.left = new Attribute("kind");
+            left.right = "cat";
+            Condition right = new Condition();
+            right.op = Operator.EQUALS;
+            right.left = new Attribute("kind");
+            right.right = "dog";
+
+            root.left = left;
+            root.right = right;
+        } else if(which == 2) { // kind == "cat" || (kind == "dog" && age > 5))
+            root.op = Operator.OR;
+            Condition b = new Condition();
+            b.op = Operator.AND;
+            Condition c = new Condition();
+            c.op = Operator.GREATER;
+            c.left = new Attribute("age");
+            c.right = 5;
+            Condition d = new Condition();
+            d.op = Operator.EQUALS;
+            d.left = new Attribute("kind");
+            d.right = "dog";
+            b.left = d;
+            b.right = c;
+            Condition e = new Condition();
+            e.op = Operator.EQUALS;
+            e.left = new Attribute("kind");
+            e.right = "cat";
+
+            root.left = e;
+            root.right = b;
+        }
+
+        return root;
     }
 
     // Creates a basic table
