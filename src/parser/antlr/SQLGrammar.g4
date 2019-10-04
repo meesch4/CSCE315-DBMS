@@ -4,6 +4,7 @@ grammar SQLGrammar;
 OPERATOR: '==' | '!=' | '<' | '>' | '<=' | '>=' ;
 ALPHA: [a-zA-Z_] ;
 DIGIT : [0-9] ;
+operator: OPERATOR;
 integer: DIGIT+;
 identifier: ALPHA (ALPHA | DIGIT)* ;
 string_literal: '"' (ALPHA | DIGIT)+ '"' ;
@@ -22,10 +23,13 @@ close_cmd : 'CLOSE' relation_name ;
 write_cmd : 'WRITE' relation_name ;
 exit_cmd : 'EXIT' ;
 
+or: '||';
+and: '&&';
+
 // Batch 2
-condition : conjunction ('||' conjunction)* ;
-conjunction : comparison ('&&' comparison)* ;
-comparison : operand OPERATOR operand | '('condition')' ;
+condition : conjunction (or conjunction)* ;
+conjunction : comparison (and comparison)* ;
+comparison : operand operator operand | '('condition')' ;
 
 // Batch 3
 expr : atomic_expr | selection | projection | renaming | union | difference | product | natural_join ;

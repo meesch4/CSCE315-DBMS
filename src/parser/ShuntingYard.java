@@ -2,6 +2,7 @@ package parser;
 
 import dbms.Condition;
 import org.antlr.v4.runtime.tree.ParseTree;
+import parser.antlr.SQLGrammarParser;
 
 import java.util.*;
 /**
@@ -13,8 +14,8 @@ public class ShuntingYard {
      *  Takes in parse tree as input and returns post_fixed stack
      *  Requires a ShuntingYard object to be created for internal data structures
      */
-    private static ArrayList<String> parsed_leaves;
-    private static Stack<String> post_fixed;
+    private static ArrayList<String> parsed_leaves = new ArrayList<>();
+    private static Stack<String> post_fixed = new Stack<>();
 
     public ShuntingYard() {
         // Empty constructor
@@ -69,6 +70,7 @@ public class ShuntingYard {
         return false;
     }
 
+
     private static boolean is_condition(String possible_cond) {
         if (possible_cond.equals("==") || possible_cond.equals("!=") || possible_cond.equals(">=")
                 || possible_cond.equals("<=") || possible_cond.equals(">") || possible_cond.equals("<")) {
@@ -78,9 +80,13 @@ public class ShuntingYard {
     }
 
     // Recursively finds all leaves in tree and appends to an arrayList in ShuntingYard class
-    private static void find_leaves(ParseTree input) {
-        if (input.getChildCount() == 0) {
+    public static void find_leaves(ParseTree input) {
+        String text = input.getText();
+
+        if (input instanceof SQLGrammarParser.OperandContext || input instanceof SQLGrammarParser.OperatorContext
+            || input instanceof SQLGrammarParser.OrContext || input instanceof SQLGrammarParser.AndContext) {
             parsed_leaves.add(input.getText());
+
             return;
         } else {
             for (int i = 0; i < input.getChildCount(); i++) {

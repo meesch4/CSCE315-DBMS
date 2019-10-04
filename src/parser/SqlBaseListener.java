@@ -67,9 +67,9 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
         // TODO: Implement ShuntingYard
-        Condition condition = ShuntingYard.evaulate(ctx.children.get(5).getText());
+        Stack<String> stack = ShuntingYard.evaluate(ctx.children.get(5));
 
-        dbms.update(tableName, columnsToSet, literalsToSet, condition);
+        // dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
 
     // TODO: Implement Delete
@@ -119,10 +119,14 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
     @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
+        printChildren(ctx);
         // Do something with the resulting expression
         String tableFrom = relationNames.removeLast(); // Get the table we're getting values from?
 
         String tempTable = "tempTableName";
+
+        ParseTree tree = ctx.children.get(2);
+        Stack<String> stack = ShuntingYard.evaluate(tree);
 
         relationNames.addLast(tempTable);
     }
