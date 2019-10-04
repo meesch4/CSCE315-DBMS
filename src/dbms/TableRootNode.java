@@ -9,42 +9,47 @@ import java.util.*;
 public class TableRootNode { //node containing relation name and attributes of table (column types)
     public TableRootNode(String name, ArrayList<Attribute> attributes){
         relationName = name;
-        this.attributes = attributes;
+        attList = attributes;
+        children = new ArrayList<>();
     }
+
     public TableRootNode(String name, ArrayList<Attribute> attributes, List<RowNode> kids){
         relationName = name;
-        this.attributes = attributes;
+        attList = attributes;
         children = kids;
     }
-    String relationName;  //make private variables which have getters and setters.
-    ArrayList<Attribute> attributes;  //rename to attributes
+
+    String relationName;
+    ArrayList<Attribute> attList;
 
     List<RowNode> children;
-
+    public void setName(String nm){
+        this.relationName = nm;
+    }
     public void addRow(RowNode row){
         this.children.add(row);
-    }   //delete unused funcitons
-    public void setAttributeName(String name, int index){
-        Attribute tempAtt = attributes.get(index); //get attribute that is being changed
-        tempAtt.setName(name); //change name of attribute
-        attributes.set(index, tempAtt); //set in arraylist
     }
-    public ArrayList<Attribute> getAttributes() { return this.attributes; }
+    public void setAttributeName(String name, int index){
+        Attribute tempAtt = attList.get(index); //get attribute that is being changed
+        tempAtt.setName(name); //change name of attribute
+        attList.set(index, tempAtt); //set in arraylist
+    }
+    public ArrayList<Attribute> getAttributes() { return this.attList; }
     public List<RowNode> getRowNodes() { return this.children; }
-    //public Attribute getAttribute(int index){
-    //    return this.attributes.get(index);
-    //}
-    //public void printAttributes(){
-    //    System.out.println(this.attributes);
-    //}
+    public Attribute getAttribute(int index){
+        return this.attList.get(index);
+    }
+    public void printAttributes(){
+        System.out.println(this.attList);
+    }
     public int getAttributeSize(){
-        return this.attributes.size();
+        return this.attList.size();
     }
     //public void removeAttribute(int index){
     //    attList.remove(index);
     //}
     public ArrayList<Attribute> getAttributeList(){
-        return this.attributes;
+        return this.attList;
     }
 
 }
