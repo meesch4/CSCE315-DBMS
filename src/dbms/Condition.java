@@ -34,108 +34,41 @@ public class Condition {
         //Split since the following for loop need not execute for the recursive evaluate calls
         int indexToCompare;
         int leftRight = -1;
-        for(int i = 0; i < table.getAttributeSize(); i++){
-            if(cond.left == table.getAttribute(i).attrName){
-                leftRight = 0;
-                indexToCompare = i;
-                i = table.getAttributeSize();
-            }else if(cond.right == table.getAttribute(i).attrName){
-                leftRight = 1;
-                indexToCompare = i;
-                i = table.getAttributeSize();
-            }
+        // Set value or literal
+
+        if(cond.left instanceof Attribute) {
+            value = getAttributeValue(table, ((Attribute) cond.left).attrName, row);
+            literal = cond.right;
+        } else {
+            literal = cond.left;
+            value = getAttributeValue(table, ((Attribute) cond.right).attrName, row);
         }
+
         switch (op){
             case EQUALS:
                 // At this point, cond.left (Or cond.right) is going to be an attribute
                 // We need to find what index this attribute is from the table(we only have it's name at this point)
                 // then retrieve that corresponding value from the RowNode. Only then can we compare
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if(cond.right == row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if (cond.left == row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-
+                return value.equals(literal);
             case NOT_EQUALS:
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if(cond.right != row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if (cond.left != row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return !value.equals(literal);
             case LESS_EQ: // <=
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if((int) cond.right <= (int) row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if ((int) cond.left <= (int) row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return (int) value <= (int) literal;
             case LESS:
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if((int) cond.right < (int) row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if ((int) cond.left < (int) row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return (int) value < (int) literal;
             case GREATER_EQ:
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if((int) cond.right >= (int) row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if ((int) cond.left >= (int) row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return (int) value >= (int) literal;
             case GREATER:
-                for(int i = 0; i < table.getRowNodes().size(); i++){
-                    if(leftRight == 0){
-                        if((int) cond.right > (int) row.getDataField(i)){
-                            return true;
-                        }
-                    }if(leftRight == 1) {
-                        if ((int) cond.left > (int) row.getDataField(i)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return (int) value > (int) literal;
             default: break;
         }
 
         return false; // base case?
     }
 
-    public Object getAttributeValue(TableRootNode table, Attribute attribute, RowNode row) {
-        int attrIndex = 0;
+    private static Object getAttributeValue(TableRootNode table, String attributeName, RowNode row) {
+        int attrIndex = table.getAttributeWithName(attributeName).index;
+
         return row.getDataField(attrIndex);
     }
 }
