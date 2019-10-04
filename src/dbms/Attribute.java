@@ -11,12 +11,13 @@ public class Attribute {
     Attribute(String name, int ind, Type type, String pkey){
         attrName = name;
         index = ind;
+        this.type = type;
         primaryKey = pkey;
     }
     int index;  //used to denote the index of the attribute within the row
     String attrName; //name of attribute, e.g. "age" for an age column
     Type type;
-    String primaryKey;
+    String primaryKey; // Is this even used? What is this supposed to mean?
 
     public int getSize(){
         if(getVC())
@@ -39,6 +40,28 @@ public class Attribute {
 
     public void setName(String nm){
         this.attrName = nm;
+    }
+
+    @Override public boolean equals(Object obj) {
+        if(!(obj instanceof Attribute)) {
+            return false;
+        }
+
+        Attribute other = (Attribute) obj;
+
+        if(attrName.equals(other.attrName)) {
+            if(this.index == other.index) {
+                if(type.getClass().equals(other.type.getClass())) {
+                    if(type instanceof Varchar) { // Compare sizes if both Varchar
+                        return ((Varchar) type).length == ((Varchar) other.type).length;
+                    } else { // Both integers, return true
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
 

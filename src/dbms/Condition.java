@@ -18,40 +18,38 @@ public class Condition {
     public Object right;
     public Operator op;
 
-
-
-
-//Syntax is garbage, and this needs to be properly implemented, but this explains the basic recursive structure of the evaluate funciton
-// I'll work through the specifics soon.
-
-
-}
-
-public class evaluate{
+    //Syntax is garbage, and this needs to be properly implemented, but this explains the basic recursive structure of the evaluate funciton
+    // I'll work through the specifics soon.
     public boolean evaluate(Condition cond, RowNode row) {
         Operator op = cond.op;
-        switch(op) {
-            case &&:
-                if (evaluate(cond.left, row) && evaluate(cond.right, row)) {
+        switch (op) {
+            case AND:
+                if (evaluate((Condition) cond.left, row) && evaluate(cond.right, row)) {
                     return true;
                 } else {
                     return false;
                 }
                 break;
-            case ||:
-                if(evaluate(cond.left, row) || evaluate(cond.right, row)) {
+            case OR:
+                if (evaluate(cond.left, row) || evaluate(cond.right, row)) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
                 break;
-            case <=:
-                if(cond.left <= cond.right) {
+            case LESS_EQ: // <=
+                if (cond.left <= cond.right) { // Need to cast
                     return true;
-                }
-                else return false;
+                } else return false;
                 break;
 
         }
-}
 
+        return false; // base case?
+    }
+
+    public Object getAttributeValue(TableRootNode table, Attribute attribute, RowNode row) {
+        int attrIndex = 0;
+        return row.getDataField(attrIndex);
+    }
+}
