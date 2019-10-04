@@ -110,14 +110,12 @@ public class DbmsTests {
         Object[] rowData1 = new Object[] { "dog", 1};    //should not be
         Object[] rowData2 = new Object[] { "dog", 10};   //should be
         Object[] rowData3 = new Object[] { "test", 100}; //should not be
-        Object[] rowData4 = new Object[] { "cat", 100}; //should not be
-
 
         RowNode row0 = new RowNode(rowData0);
         RowNode row1 = new RowNode(rowData1);
         RowNode row2 = new RowNode(rowData2);
         RowNode row3 = new RowNode(rowData3);
-        RowNode row4 = new RowNode(rowData4);
+
 
         TableRootNode tableFrom = new TableRootNode(tableName0, attributes);
         TableRootNode table1 = new TableRootNode(tableName1, attributes);
@@ -128,13 +126,13 @@ public class DbmsTests {
         tableFrom.addRow(row1);
         tableFrom.addRow(row2);
         tableFrom.addRow(row3);
-        tableFrom.addRow(row4);
+
 
         table1.addRow(row0);
+        table1.addRow(row1);
         table1.addRow(row2);
 
         table2.addRow(row0);
-        table2.addRow(row1);
         table2.addRow(row2);
 
         db.tables.put(tableName0, tableFrom);
@@ -150,8 +148,6 @@ public class DbmsTests {
         TableRootNode selectTable2 = (TableRootNode) db.tables.get(newTable2);
         // Assumes insertFromValues works as well
 
-        System.out.println("checking");
-
 
         List<RowNode> selectRows1 = selectTable1.getRowNodes();
         List<RowNode> selectRows2 = selectTable2.getRowNodes();
@@ -163,45 +159,10 @@ public class DbmsTests {
 
 
 
-        //assertEquals(testRows1, selectRows1);
-        //assertEquals(testRows2, selectRows2);
+        assertEquals(testRows1, selectRows1);
+        assertEquals(testRows2, selectRows2);
         //assertEquals(testRows1, selectRows2);
-        for(RowNode row: origRows){
-            Object[] data = row.getDataFields();
-            for(Object field : data){
-                System.out.println(field);
-            }
-        }
-        System.out.println("origRows");
-        for(RowNode row: selectRows1){
-            Object[] data = row.getDataFields();
-            for(Object field : data){
-                System.out.println(field);
-            }
-        }
-        System.out.println("selectRows1");
-        for(RowNode row: testRows1){
-            Object[] data = row.getDataFields();
-            for(Object field : data){
-                System.out.println(field);
-            }
-        }
-        System.out.println("testRows1");
-        for(RowNode row: selectRows2){
-            Object[] data = row.getDataFields();
-            for(Object field : data){
-                System.out.println(field);
-            }
-        }
-        System.out.println("selectRows2");
-        for(RowNode row: testRows2){
-            Object[] data = row.getDataFields();
-            for(Object field : data) {
-                System.out.println(field);
-            }
-        }
-        System.out.println("testRows2");
-        //System.out.println("unionTest end");
+
     }
 
     @Test
