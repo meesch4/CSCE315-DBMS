@@ -282,7 +282,50 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void show(String table) {
+    public void show(String tableName) {
+        String s;
+        ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        String line = "";
+        s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
+        for(int i = 0; i< attributes.size(); i++) {
+
+            line += " " + attributes.get(i).getName() ;
+
+            while(line.length()<=20) {
+                line += " ";
+            }
+
+            if(i != attributes.size()-1) {
+                line += "|";
+            }
+
+            s += line;
+            line = "";
+        }
+
+        s += "|\n";
+
+        TableRootNode table = (TableRootNode) tables.get(tableName);
+        List<RowNode> rowList = table.getRowNodes();
+        for(int i = 0; i< rowList.size(); i++) {
+            RowNode currRow = rowList.get(i);
+            for(int j = 0; j<currRow.getDataFields().length; j++) {
+                line += " " + currRow.getDataField(i) ;
+                while(line.length()<=20) {
+                    line += " ";
+                }
+
+                line += "|";
+                s += line;
+                line = "";
+            }
+
+            s += "\n";
+        }
+
+        System.out.println(s);
+
+
 
     }
 

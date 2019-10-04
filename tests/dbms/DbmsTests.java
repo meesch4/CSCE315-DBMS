@@ -69,6 +69,22 @@ public class DbmsTests {
     }
 
     @Test
+    public void show_tets(){
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 1);
+
+        Object[] data0 = new Object[] { "stuff", 2 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+        db.show(tableName0);
+        db.show(tableName1);
+    }
+
+    @Test
     public void insertFromRelation_alignedAttributes_doesInsert() {
         String tableName0 = "table0", tableName1 = "table1";
         createTable(tableName0, 0);
