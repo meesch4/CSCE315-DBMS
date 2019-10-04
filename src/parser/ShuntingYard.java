@@ -68,12 +68,11 @@ public class ShuntingYard {
         }
 
         // TODO: Remove comment after checking it's right/wrong @Neil
-        // Honestly I'm not positive this is what you do, but op_stack isn't empty when we've ended this function
-        // and it never pushes on the operator, so I assume this is the right call
+        // @Gannon this is necessary because when passing condition.ctx into ShuntingYard the parens in ( condition ) are not included when passing ctx.getChildren(2)
+        // if we can determine a way to include the parens for condition itself we wouldn't need this since everything between paired parens would be popped
         while(!op_stack.empty()) {
             post_fixed.push(op_stack.pop());
         }
-
         return post_fixed;
     }
 
@@ -99,9 +98,9 @@ public class ShuntingYard {
         String text = input.getText();
 
         if (input instanceof SQLGrammarParser.OperandContext || input instanceof SQLGrammarParser.OperatorContext
-            || input instanceof SQLGrammarParser.OrContext || input instanceof SQLGrammarParser.AndContext) {
+                || input instanceof SQLGrammarParser.OrContext || input instanceof SQLGrammarParser.AndContext
+                || input instanceof SQLGrammarParser.ParencloseContext || input instanceof SQLGrammarParser.ParenopenContext) {
             parsed_leaves.add(input.getText());
-
             return;
         } else {
             for (int i = 0; i < input.getChildCount(); i++) {
@@ -129,11 +128,10 @@ public class ShuntingYard {
                 Operator op = parse_operator(val);
                 // If curr already has an op, create another one(which will curr's child)
                 if(curr.op != null) {
-                    conditions.push(curr);
-
                     curr = new Condition();
                 }
 
+                conditions.push(curr);
                 curr.op = op;
 
             } else { // relationName, or varchar/int
@@ -141,18 +139,21 @@ public class ShuntingYard {
                 if(curr.right == null) {
                     curr.right = literal_or_relation;
                 } else if(curr.left == null) {
-                    curr.left = literal_or_relation;
-                } else {
-                    // We basically need to keep popping off until we can put this literal somewhere
-                    // The condition will be like while(right != null && left != null)
-                    curr = conditions.peek(); // Do a peek at first, then if they're both not null, pop
+                    curr.left = literal_or_relation; // WE've completed curr
 
-                    // if curr has a left & a right, then pop it off and go to the next one?
-                    // or, at this poin
+                    conditions.pop();
+                    if(!conditions.empty()) {
+                        Condition topOfStack = conditions.peek();
+
+                        if(topOfStack.right == null) {
+                            topOfStack.right = curr;
+                        } else if(topOfStack.left == null) {
+                            topOfStack.left = curr; // We've completed topOfStack
+
+                            conditions.pop();
+                        }
+                    }
                 }
-
-
-                // How to know whether to set this as left or right?
             }
         }
 

@@ -12,6 +12,7 @@ public class Attribute {
         index = -1;
         type = null;
         primaryKey = null;
+        this.attrName = name;
     }
 
     Attribute(String name, int ind, Type type, String pkey){
@@ -62,6 +63,9 @@ public class Attribute {
 
         if(attrName.equals(other.attrName)) {
             if(this.index == other.index) {
+                if(type == null && other.type == null)
+                    return true;
+
                 if(type.getClass().equals(other.type.getClass())) {
                     if(type instanceof Varchar) { // Compare sizes if both Varchar
                         return ((Varchar) type).length == ((Varchar) other.type).length;

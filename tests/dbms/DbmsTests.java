@@ -85,7 +85,7 @@ public class DbmsTests {
 
         TableRootNode table0 = db.getTable(tableName0);
 
-        assertEquals(table0.getRowNodes().size(), 2); // Should have two entries
+        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
 
         RowNode actual = table0.getRowNodes().get(1);
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
@@ -184,7 +184,7 @@ public class DbmsTests {
                     Arrays.asList("varcharCol")
             );
             List<Type> columnTypes = new ArrayList<>(
-                    Arrays.asList(new Varchar(20), new IntType())
+                    Arrays.asList(new Varchar(20))
             );
             List<String> primaryKeys = new ArrayList<>(
                     Arrays.asList("varcharCol")

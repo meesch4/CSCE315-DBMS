@@ -65,4 +65,15 @@ public class Condition {
 
         return row.getDataField(attrIndex);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Condition)) {
+            return false;
+        }
+
+        Condition other = (Condition) obj;
+
+        return op == other.op && left.equals(other.left) && right.equals(other.right);
+    }
 }
