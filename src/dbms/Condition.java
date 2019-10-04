@@ -22,27 +22,30 @@ public class Condition {
     // I'll work through the specifics soon.
     public boolean evaluate(Condition cond, RowNode row) {
         Operator op = cond.op;
+        Object value = null;
+        Object literal = null;
         switch (op) {
             case AND:
-                if (evaluate((Condition) cond.left, row) && evaluate(cond.right, row)) {
-                    return true;
-                } else {
-                    return false;
-                }
-                break;
+                return evaluate((Condition) cond.left, row) && evaluate((Condition) cond.right, row);
             case OR:
-                if (evaluate(cond.left, row) || evaluate(cond.right, row)) {
-                    return true;
-                } else {
-                    return false;
-                }
-                break;
-            case LESS_EQ: // <=
-                if (cond.left <= cond.right) { // Need to cast
-                    return true;
-                } else return false;
-                break;
+                return evaluate((Condition) cond.left, row) || evaluate((Condition) cond.right, row);
+            case EQUALS:
+                // At this point, cond.left (Or cond.right) is going to be an attribute
+                // We need to find what index this attribute is from the table(we only have it's name at this point)
+                // then retrieve that corresponding value from the RowNode. Only then can we compare
 
+                return value.equals(literal);
+            case NOT_EQUALS:
+                return !value.equals(literal);
+            case LESS_EQ: // <=
+                return (int) value <= (int) literal;
+            case LESS:
+                return (int) value < (int) literal;
+            case GREATER_EQ:
+                return (int) value >= (int) literal;
+            case GREATER:
+                return (int) value > (int) literal;
+            default: break;
         }
 
         return false; // base case?
