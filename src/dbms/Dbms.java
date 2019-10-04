@@ -184,7 +184,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
-        String newName = tableName + "temp";
+        String newName = getTempTableName();
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
         List<RowNode> kids = tables.get(tableName).getRowNodes();
         TableRootNode tempTable = new TableRootNode(newName, attributes, kids);
@@ -199,7 +199,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String union(String table1, String table2) {
-        String newTable = table1 + " " + table2; //the output table name will be a combination of the two table names
+        String newTable = getTempTableName(); //the output table name will be a combination of the two table names
         ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
         List<RowNode> newRows = tables.get(table1).getRowNodes();
         List<RowNode> newRows2 = tables.get(table2).getRowNodes();
@@ -234,7 +234,7 @@ public class Dbms implements IDbms {
     @Override
     public String difference(String table1, String table2) {
         //String tempTable = getTempTableName();
-        String tempTableName = table1 + "-" + table2;
+        String tempTableName = getTempTableName();
         ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
         TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
         for(RowNode row : tables.get(table1).children){ //for all row nodes in table 1
@@ -249,7 +249,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String product(String table1, String table2) {
-        String tempName = table1 + "cross" + table2;
+        String tempName = getTempTableName();
         ArrayList<Attribute> tempAttributes;
         tempAttributes = tables.get(table1).getAttributes();
         tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
