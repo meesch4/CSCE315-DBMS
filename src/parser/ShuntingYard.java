@@ -36,10 +36,12 @@ public class ShuntingYard {
         // * used because only comparisons and operators need to be pushed to op_stack, relation_names can go directly to post_fixed
 
         for (int i = 0; i < parsed_leaves.size(); i++) {
-            if (parsed_leaves.get(i).equals("(")) {
-                op_stack.push(parsed_leaves.get(i)); // push initial paren into op_stack
+            String parsedVal = parsed_leaves.get(i);
+
+            if (parsedVal.equals("(")) {
+                op_stack.push(parsedVal); // push initial paren into op_stack
             }
-            else if (parsed_leaves.get(i).equals(")")) {
+            else if (parsedVal.equals(")")) {
                 // pop off stack until closing paren is found and pop that off too
                 while (!op_stack.empty() && !op_stack.peek().equals('(')) {
                     // pop off all stuff in between '(' and ')'
@@ -50,18 +52,18 @@ public class ShuntingYard {
                     op_stack.pop(); // popping off last paren '(' at bottom of stack
                 }
             }
-            else if (is_op(parsed_leaves.get(i))) {
+            else if (is_op(parsedVal)) {
                 if (is_condition(op_stack.peek())) { // if operator on top of stack is a condition it takes precedence over operators and will be popped to post_fixed
                     post_fixed.push(op_stack.pop());
                 }
-                op_stack.push(parsed_leaves.get(i)); // operator is pushed after precedence is handled
+                op_stack.push(parsedVal); // operator is pushed after precedence is handled
             }
-            else if (is_condition(parsed_leaves.get(i))) {
-                op_stack.push(parsed_leaves.get(i)); // condition pushed to stack
+            else if (is_condition(parsedVal)) {
+                op_stack.push(parsedVal); // condition pushed to stack
             }
             else {
                 // if element is not an operator or a condition it is a relation or table name and is inserted into post_fix by default
-                post_fixed.push(parsed_leaves.get(i));
+                post_fixed.push(parsedVal);
             }
         }
 
