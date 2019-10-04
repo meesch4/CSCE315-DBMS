@@ -1,6 +1,9 @@
 package parser;
 
 import dbms.*;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -173,6 +176,14 @@ class FakeDbms implements IDbms {
     }
 
     @Override
+    public String select(String tableFrom, Condition condition) {
+        this.tableName = tableFrom;
+        this.condition = condition;
+
+        return "tempTable" + count++;
+    }
+
+    @Override
     public String rename(String tableName, List<String> newColumnNames) {
         this.tableName = tableName;
         this.columnNames = newColumnNames;
@@ -205,14 +216,18 @@ class FakeDbms implements IDbms {
     }
 
     @Override public void show(String table) { }
-    @Override public void delete(String table) { }
     @Override public void open(String table) { }
     @Override public void close(String table) { }
     @Override public void write(String table) { }
     @Override public void exit() { }
 
     @Override
-    public Table getTable(String tableName) {
+    public void delete(String table, Condition condition) {
+
+    }
+
+    @Override
+    public TableRootNode getTable(String tableName) {
         return null;
     }
 }

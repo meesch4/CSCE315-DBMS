@@ -1,5 +1,7 @@
 package dbms;
 
+import types.Type;
+
 import java.util.List;
 
 // Functions that Dbms should implement
@@ -13,7 +15,7 @@ public interface IDbms {
 
     // Should return a (temporary) table name
     String projection(String tableFrom, List<String> columnNames);
-    // String select(String tableFrom, ) // Need to represent expression as something
+    String select(String tableFrom, Condition condition); // Need to represent expression as something
     String rename(String tableName, List<String> newColumnNames);
 
     String union(String table1, String table2);
@@ -26,9 +28,8 @@ public interface IDbms {
     void write(String table);
     void exit();
 
-    // Need to update delete with expressions
-    void delete(String table); // I think?
+    void delete(String table, Condition condition);
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
-    Table getTable(String tableName);
+    TableRootNode getTable(String tableName);
 }

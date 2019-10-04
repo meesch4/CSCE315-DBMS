@@ -1,9 +1,9 @@
 package parser;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.antlr.*;
 import dbms.*;
 
@@ -67,18 +67,20 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
         // TODO: Implement ShuntingYard
-        Condition condition = ShuntingYard.evaulate(ctx.children.get(5).getText());
+        // Stack<String> stack = ShuntingYard.evaluate(ctx.children.get(5));
+        Condition condition = null;
 
         dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
 
     // TODO: Implement Delete
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
+        printChildren(ctx.children);
         String tableName = relationNames.removeFirst();
 
-        String condition = ctx.children.get(3).getText(); // Parse this
+        Condition condition = ShuntingYard.evaluate(ctx.children.get(3));
 
-        dbms.delete(tableName);
+        dbms.delete(tableName, condition);
     }
 
     @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) {
@@ -119,10 +121,14 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
     @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
+        printChildren(ctx);
         // Do something with the resulting expression
         String tableFrom = relationNames.removeLast(); // Get the table we're getting values from?
 
         String tempTable = "tempTableName";
+
+        ParseTree tree = ctx.children.get(2);
+        Condition condition = ShuntingYard.evaluate(tree);
 
         relationNames.addLast(tempTable);
     }

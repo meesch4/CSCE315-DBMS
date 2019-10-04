@@ -1,2 +1,2 @@
-CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+DELETE FROM animals WHERE (kind == "cat" || (kind == "dog" && age > 5));
 

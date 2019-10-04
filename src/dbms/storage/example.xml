@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- -->
+
+<tableList>
+    <table>
+        <name>Table-Name</name>  <!-- Can't have spaces in it-->
+        <attributes>
+            <attr>
+                <name>Attribute1</name>
+                <type>Varchar</type>
+                <size>20</size>
+                <!-- <index></index>--> <!-- Not sure if this should be included -->
+            </attr>
+            <attr>
+                <name>Attribute2</name>
+                <type>Integer</type>
+                <size>-1</size>
+            </attr>
+        </attributes>
+        <primaryKeys>
+            <key>Attribute1</key>
+            <key>Attribute2</key>
+        </primaryKeys>
+        <rows>
+
+        </rows>
+    </table>
+</tableList>
