@@ -11,7 +11,11 @@ import static org.junit.Assert.*;
 
 public class DbmsTests {
     Dbms db = new Dbms();
-
+    //union  I think this test is set up properly... I honestly don't really know
+    //difference
+    //product
+    //select
+    //
     @Test // Basically just tries to create table, then attempts to retrieve it from Dbms.getTable
     public void createTable_twoCols_createsCorrectAttributes() {
         // Arrange
@@ -80,7 +84,7 @@ public class DbmsTests {
 
         TableRootNode table0 = db.getTable(tableName0);
 
-        assertEquals(table0.getRowNodes().size(), 2); // Should have two entries
+        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
 
         RowNode actual = table0.getRowNodes().get(1);
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
@@ -90,8 +94,30 @@ public class DbmsTests {
 
     @Test
     public void union_doesCombineTables() {
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 1);
 
+        Object[] data0 = new Object[] { "stuff", 2 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+
+        String newTableName = db.union(tableName0, tableName1);
+
+        TableRootNode newTable = db.getTable(newTableName);
+
+        assertEquals(newTable.getRowNodes().size(), 2); // Should have two entries (since stuff should not exist in both tables.)
+
+        RowNode actual = newTable.getRowNodes().get(1);
+        RowNode expected = new RowNode(new Object[] { "stuff", 2 });
+
+        assertEquals(expected, actual);
     }
+
+
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
     public void rowNode_hashCode_setRemovesDuplicates() {
@@ -128,7 +154,7 @@ public class DbmsTests {
                     Arrays.asList("varcharCol")
             );
             List<Type> columnTypes = new ArrayList<>(
-                    Arrays.asList(new Varchar(20), new IntType())
+                    Arrays.asList(new Varchar(20))
             );
             List<String> primaryKeys = new ArrayList<>(
                     Arrays.asList("varcharCol")

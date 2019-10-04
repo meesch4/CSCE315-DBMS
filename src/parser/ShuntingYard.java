@@ -140,18 +140,21 @@ public class ShuntingYard {
                 if(curr.right == null) {
                     curr.right = literal_or_relation;
                 } else if(curr.left == null) {
-                    curr.left = literal_or_relation;
-                } else {
-                    // We basically need to keep popping off until we can put this literal somewhere
-                    // The condition will be like while(right != null && left != null)
-                    curr = conditions.peek(); // Do a peek at first, then if they're both not null, pop
+                    curr.left = literal_or_relation; // WE've completed curr
 
-                    // if curr has a left & a right, then pop it off and go to the next one?
-                    // or, at this poin
+                    conditions.pop();
+                    if(!conditions.empty()) {
+                        Condition topOfStack = conditions.peek();
+
+                        if(topOfStack.right == null) {
+                            topOfStack.right = curr;
+                        } else if(topOfStack.left == null) {
+                            topOfStack.left = curr; // We've completed topOfStack
+
+                            conditions.pop();
+                        }
+                    }
                 }
-
-
-                // How to know whether to set this as left or right?
             }
         }
 
