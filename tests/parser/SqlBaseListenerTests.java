@@ -216,11 +216,15 @@ class FakeDbms implements IDbms {
     }
 
     @Override public void show(String table) { }
-    @Override public void delete(String table) { }
     @Override public void open(String table) { }
     @Override public void close(String table) { }
     @Override public void write(String table) { }
     @Override public void exit() { }
+
+    @Override
+    public void delete(String table, Condition condition) {
+
+    }
 
     @Override
     public TableRootNode getTable(String tableName) {
