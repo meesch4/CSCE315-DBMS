@@ -20,7 +20,7 @@ public class Condition {
 
     //Syntax is garbage, and this needs to be properly implemented, but this explains the basic recursive structure of the evaluate funciton
     // I'll work through the specifics soon.
-    public boolean evaluate(Condition cond, RowNode row) {
+    public static boolean evaluate(Condition cond, RowNode row) {
         Operator op = cond.op;
         Object value = null;
         Object literal = null;
