@@ -305,7 +305,7 @@ public class Dbms implements IDbms {
 
             }
         }
-
+        tables.put(tempName, tempTable);
         return tempName;
     }
 
