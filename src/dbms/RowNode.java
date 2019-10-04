@@ -11,10 +11,8 @@ public class RowNode {
         // rowNodeKey++;
     }
 
-    TableRootNode parent; //NEEDS TO BE FIXED.  ADD PARENT TO CONSTRUCTOR
-    int key;
-
     Object[] dataFields;
+
     //this Object array contains all the VARCHARS and integers in the rows
     public Object getDataField(int index){
         return dataFields[index];
