@@ -12,6 +12,7 @@ public class RowNode {
     }
 
     Object[] dataFields;
+    int[] primaryKeyIndices; // Which columns correspond to the primary keys
 
     //this Object array contains all the VARCHARS and integers in the rows
     public Object getDataField(int index){
@@ -21,8 +22,15 @@ public class RowNode {
     public void setDataField(int index, Object data){
         dataFields[index] = data;
     }
-    public String getRelation(){
-        return this.parent.relationName;
+
+    public String getPrimaryKeyValue() {
+        String ret = ""; // Can probably use
+
+        for(int i = 0; i < primaryKeyIndices.length; i++) {
+            ret += dataFields[i].toString();
+        }
+
+        return ret;
     }
 
     @Override

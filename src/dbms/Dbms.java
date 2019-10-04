@@ -1,6 +1,7 @@
 package dbms;
 
 import types.Type;
+import types.Varchar;
 
 import java.util.*;
 
@@ -312,13 +313,20 @@ public class Dbms implements IDbms {
     public void show(String tableName) {
         String s;
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        final int colWidth = 30;
         String line = "";
         s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
         for(int i = 0; i< attributes.size(); i++) {
+            Attribute attr = attributes.get(i);
 
-            line += " " + attributes.get(i).getName() ;
+            line += " " + attr.getName();
+            if(attr.type instanceof Varchar) {
+                line += ": Varchar(" + ((Varchar) attr.type).length + ")";
+            } else {
+                line += ": Int";
+            }
 
-            while(line.length()<=20) {
+            while(line.length()<=colWidth) {
                 line += " ";
             }
 
@@ -337,8 +345,8 @@ public class Dbms implements IDbms {
         for(int i = 0; i< rowList.size(); i++) {
             RowNode currRow = rowList.get(i);
             for(int j = 0; j<currRow.getDataFields().length; j++) {
-                line += " " + currRow.getDataField(i) ;
-                while(line.length()<=20) {
+                line += " " + currRow.getDataField(j) ;
+                while(line.length()<=colWidth) {
                     line += " ";
                 }
 
