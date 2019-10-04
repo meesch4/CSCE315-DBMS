@@ -31,11 +31,8 @@ public class Condition {
             case OR:
                 return evaluate((Condition) cond.left, row, table) || evaluate((Condition) cond.right, row, table);
         }
-        //Split since the following for loop need not execute for the recursive evaluate calls
-        int indexToCompare;
-        int leftRight = -1;
-        // Set value or literal
 
+        // Set value or literal
         if(cond.left instanceof Attribute) {
             value = getAttributeValue(table, ((Attribute) cond.left).attrName, row);
             literal = cond.right;
@@ -46,13 +43,10 @@ public class Condition {
 
         switch (op){
             case EQUALS:
-                // At this point, cond.left (Or cond.right) is going to be an attribute
-                // We need to find what index this attribute is from the table(we only have it's name at this point)
-                // then retrieve that corresponding value from the RowNode. Only then can we compare
                 return value.equals(literal);
             case NOT_EQUALS:
                 return !value.equals(literal);
-            case LESS_EQ: // <=
+            case LESS_EQ:
                 return (int) value <= (int) literal;
             case LESS:
                 return (int) value < (int) literal;
