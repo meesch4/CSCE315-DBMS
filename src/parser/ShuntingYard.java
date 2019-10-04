@@ -128,11 +128,10 @@ public class ShuntingYard {
                 Operator op = parse_operator(val);
                 // If curr already has an op, create another one(which will curr's child)
                 if(curr.op != null) {
-                    conditions.push(curr);
-
                     curr = new Condition();
                 }
 
+                conditions.push(curr);
                 curr.op = op;
 
             } else { // relationName, or varchar/int
