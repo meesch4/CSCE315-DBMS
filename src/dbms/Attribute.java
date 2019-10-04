@@ -18,7 +18,7 @@ public class Attribute {
         attrName = name;
         index = ind;
         this.type = type;
-        primaryKey = pkey;
+        primaryKey = null;
     }
     int index;  //used to denote the index of the attribute within the row
     String attrName; //name of attribute, e.g. "age" for an age column
@@ -43,6 +43,11 @@ public class Attribute {
         if(getVC())
             ((Varchar) type).length = sz;
     }
+
+    public Type getType(){
+        return this.type;
+    }
+
 
     public void setName(String nm){
         this.attrName = nm;
