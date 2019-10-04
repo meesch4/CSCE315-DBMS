@@ -285,10 +285,10 @@ public class Dbms implements IDbms {
         String s;
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
         String line = "";
-        s = " " + tables.get(tableName) + "\n" + "------------------------------------------------------------------" + "\n";
+        s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
         for(int i = 0; i< attributes.size(); i++) {
 
-            line += " " + attributes.get(i) ;
+            line += " " + attributes.get(i).getName() ;
 
             while(line.length()<=20) {
                 line += " ";
@@ -308,8 +308,8 @@ public class Dbms implements IDbms {
         List<RowNode> rowList = table.getRowNodes();
         for(int i = 0; i< rowList.size(); i++) {
             RowNode currRow = rowList.get(i);
-            for(int j = 0; j<attributes.size(); j++) {
-                line += " " + currRow.get(j) ;
+            for(int j = 0; j<currRow.dataFields.length; j++) {
+                line += " " + currRow.getDataField(i) ;
                 while(line.length()<=20) {
                     line += " ";
                 }
@@ -321,6 +321,9 @@ public class Dbms implements IDbms {
 
             s += "\n";
         }
+
+        System.out.println(s);
+
 
 
     }
