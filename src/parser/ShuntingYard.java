@@ -67,6 +67,13 @@ public class ShuntingYard {
             }
         }
 
+        // TODO: Remove comment after checking it's right/wrong @Neil
+        // Honestly I'm not positive this is what you do, but op_stack isn't empty when we've ended this function
+        // and it never pushes on the operator, so I assume this is the right call
+        while(!op_stack.empty()) {
+            post_fixed.push(op_stack.pop());
+        }
+
         return post_fixed;
     }
 
@@ -103,44 +110,65 @@ public class ShuntingYard {
         }
     }
 
+    // Given a post fixed stack, create the according condition
     public static Condition create_condition(Stack<String> post_fixed) {
-        Condition condition = null;
+        Condition root = new Condition();
+        Object left = null;
+        Object right = null;
 
-        return condition;
+        // Honestly really just brainstorming right now, not positive what to do here
+
+        // Condition prev = null;
+        Condition curr = root;
+        while(!post_fixed.empty()) {
+            String val = post_fixed.pop();
+
+            if(is_condition(val)) { // && or ||
+                // What do we do now?
+                Operator op = parse_operator(val);
+                // If curr already has an op, go to the next one?
+
+                curr.op = op;
+
+            } else if(is_op(val)) { // A comparision
+                Operator op = parse_operator(val);
+                curr.op = op;
+
+            } else { // relationName, or varchar/int
+                Object literal_or_relation = parse_literal(val); // Terrible name
+
+                // How to know whether to set this as left or right?
+            }
+        }
+
+        return root;
     }
 
     /** Helper functions **/
-    public static Operator parseOperator(String opStr) {
+    // Parses the according operator string into the Operator enum
+    private static Operator parse_operator(String opStr) {
         switch(opStr) {
-            case "==":
-                return Operator.EQUALS;
-            case "!=":
-                return Operator.NOT_EQUALS;
-            case "<=":
-                return Operator.LESS_EQ;
-            case "<":
-                return Operator.LESS;
-            case ">=":
-                return Operator.GREATER_EQ;
-            case ">":
-                return Operator.GREATER;
-            case "&&":
-                return Operator.AND;
-            case "||":
-                return Operator.OR;
+            case "==": return Operator.EQUALS;
+            case "!=": return Operator.NOT_EQUALS;
+            case "<=": return Operator.LESS_EQ;
+            case "<":  return Operator.LESS;
+            case ">=": return Operator.GREATER_EQ;
+            case ">":  return Operator.GREATER;
+            case "&&": return Operator.AND;
+            case "||": return Operator.OR;
         }
 
         return Operator.EQUALS;
     }
 
     // Could be a relationName, String literal, or
-    public static Object parseLiteral(String str) {
-        char firstChar = str.charAt(0); // Check str length?
+    private static Object parse_literal(String str) {
+        char first_char = str.charAt(0); // Check str length?
 
-        if(firstChar == '\"') // String literal
+        if(first_char == '\"') // String literal
             // Shave off first and last characters(The quotes)
             return str.substring(1, str.length() - 1);
-        else if((firstChar + "").matches("[0..9]"))
+        else if((first_char + "").matches("[0..9]"))
             return Integer.parseInt(str);
         else
             return new Attribute(str);
