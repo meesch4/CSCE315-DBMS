@@ -104,7 +104,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         dbms.exit();
     }
 
-
     /********** QUERY METHODS ***********/
 
     @Override public void exitQuery(SQLGrammarParser.QueryContext ctx) {
