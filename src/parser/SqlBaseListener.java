@@ -127,7 +127,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         String tempTable = "tempTableName";
 
         ParseTree tree = ctx.children.get(2);
-        Stack<String> stack = ShuntingYard.evaluate(tree);
+        Condition condition = ShuntingYard.evaluate(tree);
 
         relationNames.addLast(tempTable);
     }
