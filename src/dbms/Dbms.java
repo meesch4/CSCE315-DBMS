@@ -105,9 +105,6 @@ public class Dbms implements IDbms {
         return tempTable;
     }
 
-
-
-
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
         String newName = tableName + "temp";
@@ -203,13 +200,9 @@ public class Dbms implements IDbms {
 
     @Override
     public void delete(String table) {
-        //iterate through children, deleting the objects,
-        //then delete the main node
-        TableRootNode toDelete = (TableRootNode) tables.get(table);
-        toDelete.children = null;
-        toDelete = null;
-        tables.remove(table);
-        return;
+        // As long these objects aren't referenced/pointed to anywhere else(they aren't, least shouldn't be),
+        // Java will garbage collect all of them, so no need to set them to null
+        tables.remove(table); // May need to check if it contains it?
     }
 
     // Opens a table(table + .db) from storage

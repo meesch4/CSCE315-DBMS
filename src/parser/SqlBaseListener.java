@@ -67,9 +67,10 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         List<Object> literalsToSet = parseLiterals(ctx.children.get(3), 2, 4);
 
         // TODO: Implement ShuntingYard
-        Stack<String> stack = ShuntingYard.evaluate(ctx.children.get(5));
+        // Stack<String> stack = ShuntingYard.evaluate(ctx.children.get(5));
+        Condition condition = null;
 
-        // dbms.update(tableName, columnsToSet, literalsToSet, condition);
+        dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
 
     // TODO: Implement Delete
