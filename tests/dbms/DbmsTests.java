@@ -14,6 +14,7 @@ public class DbmsTests {
 
     @Test // Basically just tries to create table, then attempts to retrieve it from Dbms.getTable
     public void createTable_twoCols_createsCorrectAttributes() {
+        // Arrange
         String tableName = "table0";
         List<String> columnNames = new ArrayList<>(
                 Arrays.asList("varcharCol", "intCol")
@@ -26,8 +27,11 @@ public class DbmsTests {
         );
 
         Dbms sut = new Dbms();
+
+        // Act
         sut.createTable(tableName, columnNames, columnTypes, primaryKeys);
 
+        // Assert
         TableRootNode result= sut.getTable(tableName);
         // assertNotNull(result); // First make sure this key actually exists
 

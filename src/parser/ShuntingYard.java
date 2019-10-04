@@ -1,5 +1,6 @@
 package parser;
 
+import dbms.Attribute;
 import dbms.Condition;
 import dbms.Operator;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,13 +16,10 @@ public class ShuntingYard {
      *  Takes in parse tree as input and returns post_fixed stack
      *  Requires a ShuntingYard object to be created for internal data structures
      */
-    // private static ArrayList<String> parsed_leaves = new ArrayList<>();
-    // private static Stack<String> post_fixed = new Stack<>();
 
     public ShuntingYard() {
         // Empty constructor
     }
-
 
     public static Condition evaluate(ParseTree input) {
         List<String> parsed_leaves = new ArrayList<>(); // Assigned by find_leaves, as its passed by reference
@@ -30,7 +28,6 @@ public class ShuntingYard {
 
         return create_condition(post_fixed);
     }
-
 
     private static Stack<String> build_stack(List<String> parsed_leaves) {
         // Comparisons have precedence over operators
@@ -134,4 +131,16 @@ public class ShuntingYard {
         return Operator.EQUALS;
     }
 
+    // Could be a relationName, String literal, or
+    public static Object parseLiteral(String str) {
+        char firstChar = str.charAt(0); // Check str length?
+
+        if(firstChar == '\"') // String literal
+            // Shave off first and last characters(The quotes)
+            return str.substring(1, str.length() - 1);
+        else if((firstChar + "").matches("[0..9]"))
+            return Integer.parseInt(str);
+        else
+            return new Attribute(str);
+    }
 }
