@@ -1,9 +1,10 @@
 package parser;
 
-import dbms.Attribute;
-import dbms.Condition;
-import dbms.Operator;
+import dbms.*;
 import org.junit.Test;
+import types.IntType;
+import types.Type;
+import types.Varchar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,8 @@ import java.util.Stack;
 import static org.junit.Assert.*;
 
 public class ShuntingYardTests {
+    Dbms db = new Dbms();
+
     @Test
     public void create_condition_doesCreateCorrectly1() {
         Stack<String> post_fix = createPostfix(1);
@@ -31,6 +34,29 @@ public class ShuntingYardTests {
         Condition expected = expected(2);
 
         assertEquals(expected, ret);
+    }
+
+    // Test Condition.evaluate()
+    @Test
+    public void condition_evalute() {
+        String tableName = "table";
+        createTable(tableName);
+
+        Condition c = expected(2);
+
+        TableRootNode table = db.getTable(tableName);
+
+        RowNode row1 = new RowNode(new Object[] { "cat", 6});
+        RowNode row2 = new RowNode(new Object[] { "dog", 6});
+        RowNode row3 = new RowNode(new Object[] { "dog", 4}); // Shouldn't evaulate as true
+
+        boolean result1 = Condition.evaluate(c, row1, table);
+        boolean result2 = Condition.evaluate(c, row2, table);
+        boolean result3 = Condition.evaluate(c, row3, table);
+
+        assertTrue(result1);
+        assertTrue(result2);
+        assertFalse(result3);
     }
 
     private Condition expected(int which) {
@@ -97,5 +123,17 @@ public class ShuntingYardTests {
         }
 
         return ret;
+    }
+
+    private void createTable(String tableName) {
+        List<String> columnNames = new ArrayList<>(
+                Arrays.asList("kind", "age")
+        );
+        List<Type> columnTypes = new ArrayList<>(
+                Arrays.asList(new Varchar(20), new IntType())
+        );
+        List<String> primaryKeys = new ArrayList<>();
+
+        db.createTable(tableName, columnNames, columnTypes, primaryKeys);
     }
 }
