@@ -43,7 +43,7 @@ public class ShuntingYard {
             }
             else if (parsedVal.equals(")")) {
                 // pop off stack until closing paren is found and pop that off too
-                while (!op_stack.empty() && !op_stack.peek().equals('(')) {
+                while (!op_stack.empty() && !op_stack.peek().equals("(")) {
                     // pop off all stuff in between '(' and ')'
                     // parens not pushed into final stack
                     post_fixed.push(op_stack.pop());
