@@ -11,7 +11,7 @@ import java.util.*;
 public class Dbms implements IDbms {
     // Maps each table name to their internal representation
     // Includes temporary tables as well
-    private HashMap<String, TableRootNode> tables;
+    public HashMap<String, TableRootNode> tables;
     //private HashMap<String, Object> tempTables;
 
     // Should we have a temporary/local tables?
