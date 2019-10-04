@@ -103,7 +103,7 @@ public class Dbms implements IDbms {
         List<RowNode> tableRows = table.getRowNodes();
         for(int i = 0; i < tableRows.size(); i++) {
             // Evaluate the condition and add it to rowsToUpdate if it's true
-            if(Condition.evaluate(condition, tableRows.get(i))) { // Might need to pass in table
+            if(Condition.evaluate(condition, tableRows.get(i), table)){ // Might need to pass in table
                 rowsToUpdate.add(i); // Add its according index
             }
         }
@@ -174,8 +174,9 @@ public class Dbms implements IDbms {
 
     @Override
     public String select(String tableFrom, Condition condition){
+        String tempTableName = tableFrom + "temp";
 
-        return"Blah";
+        return tempTableName;
     }
 
     @Override
