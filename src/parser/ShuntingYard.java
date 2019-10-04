@@ -117,25 +117,40 @@ public class ShuntingYard {
         Object right = null;
 
         // Honestly really just brainstorming right now, not positive what to do here
+        // Should push the conditions we make into a stack?
+        Stack<Condition> conditions = new Stack<>();
 
-        // Condition prev = null;
         Condition curr = root;
         while(!post_fixed.empty()) {
             String val = post_fixed.pop();
 
-            if(is_condition(val)) { // && or ||
+            if(is_op(val) || is_condition(val)) { // any operator should be handled the same
                 // What do we do now?
                 Operator op = parse_operator(val);
-                // If curr already has an op, go to the next one?
+                // If curr already has an op, create another one(which will curr's child)
+                if(curr.op != null) {
+                    conditions.push(curr);
 
-                curr.op = op;
+                    curr = new Condition();
+                }
 
-            } else if(is_op(val)) { // A comparision
-                Operator op = parse_operator(val);
                 curr.op = op;
 
             } else { // relationName, or varchar/int
                 Object literal_or_relation = parse_literal(val); // Terrible name
+                if(curr.right == null) {
+                    curr.right = literal_or_relation;
+                } else if(curr.left == null) {
+                    curr.left = literal_or_relation;
+                } else {
+                    // We basically need to keep popping off until we can put this literal somewhere
+                    // The condition will be like while(right != null && left != null)
+                    curr = conditions.peek(); // Do a peek at first, then if they're both not null, pop
+
+                    // if curr has a left & a right, then pop it off and go to the next one?
+                    // or, at this poin
+                }
+
 
                 // How to know whether to set this as left or right?
             }
@@ -143,6 +158,34 @@ public class ShuntingYard {
 
         return root;
     }
+
+    // Delete this after we complete create_condition
+    /*
+    If the condition is: (kind == "cat" || (kind == "dog" && age > 5)), this is what the Condition object should look like
+    // In order, the condition objects are formed from the bottom condition(age > 5) upwards, hence the use of a stack
+        condition: {
+            op: ||
+            left: { // Nested condition
+                left: kind
+                right: "cat"
+                op: ==
+            }
+            right: { // Nested condition
+                operator: &&
+                left: { // Another nested condition
+                    operator: ==
+                    left: kind
+                    right: dog
+                }
+                right: {
+                    operator: >
+                    left: age
+                    right: 5
+                },
+            }
+       }
+
+     */
 
     /** Helper functions **/
     // Parses the according operator string into the Operator enum
