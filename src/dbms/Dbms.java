@@ -175,7 +175,16 @@ public class Dbms implements IDbms {
     @Override
     public String select(String tableFrom, Condition condition){
         String tempTableName = tableFrom + "temp";
-
+        TableRootNode table = tables.get(tableFrom);
+        ArrayList<Attribute> attributes = table.getAttributes();
+        TableRootNode newTable = new TableRootNode(tempTableName, attributes);
+        for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through row nodes
+            boolean include = Condition.evaluate(condition, row, table);
+            if(include == true){
+                newTable.addRow(row);
+            }
+        }
+        tables.put(tempTableName, newTable);
         return tempTableName;
     }
 
