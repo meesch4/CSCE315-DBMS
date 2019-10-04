@@ -111,5 +111,27 @@ public class ShuntingYard {
     }
 
     /** Helper functions **/
+    public static Operator parseOperator(String opStr) {
+        switch(opStr) {
+            case "==":
+                return Operator.EQUALS;
+            case "!=":
+                return Operator.NOT_EQUALS;
+            case "<=":
+                return Operator.LESS_EQ;
+            case "<":
+                return Operator.LESS;
+            case ">=":
+                return Operator.GREATER_EQ;
+            case ">":
+                return Operator.GREATER;
+            case "&&":
+                return Operator.AND;
+            case "||":
+                return Operator.OR;
+        }
+
+        return Operator.EQUALS;
+    }
 
 }
