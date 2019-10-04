@@ -138,8 +138,8 @@ public class Dbms implements IDbms {
     public String projection(String tableFrom, List<String> columnNames) {
         String tempTable = getTempTableName();
         ArrayList<Attribute> origAttributes = tables.get(tableFrom).getAttributes();
-        List<Integer> indices = new List<Integer>;
-        ArrayList<Attribute> newAttributes;
+        ArrayList<Integer> indices = new ArrayList<>();
+        ArrayList<Attribute> newAttributes = new ArrayList<>();
 
         int j = 0;
         for(Attribute att : origAttributes){
@@ -148,6 +148,7 @@ public class Dbms implements IDbms {
                 Attribute newAttribute;
                 newAttribute = new Attribute(att.getName(), j, att.getType(), "blah");
                 newAttributes.add(newAttribute);
+                j++;
             }
         } //find the indices of the columns we need to maintain
 
@@ -155,7 +156,7 @@ public class Dbms implements IDbms {
         TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
 
         for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through tableFrom's rows
-            Object[] data = new Object[]; //create new dataFields object[]
+            Object[] data = new Object[j]; //create new dataFields object[]
 
             int i = 0;
             for(Integer index : indices){//iterate through column indices we're interested in
