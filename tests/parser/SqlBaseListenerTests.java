@@ -176,6 +176,14 @@ class FakeDbms implements IDbms {
     }
 
     @Override
+    public String select(String tableFrom, Condition condition) {
+        this.tableName = tableFrom;
+        this.condition = condition;
+
+        return "tempTable" + count++;
+    }
+
+    @Override
     public String rename(String tableName, List<String> newColumnNames) {
         this.tableName = tableName;
         this.columnNames = newColumnNames;

@@ -93,8 +93,44 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void update(String table, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition) {
+    public void update(String tableName, List<String> columnsToSet, List<Object> valuesToSetTo, Condition condition) {
+        TableRootNode table = tables.get(tableName);
+
         //e.g. update animals set age == 10 if age >= 10.
+        List<Integer> rowsToUpdate = new ArrayList<>(); // Contains the rows to update, by which rowIndex they are in
+
+        // Iterate through all of table.rows
+        List<RowNode> tableRows = table.getRowNodes();
+        for(int i = 0; i < tableRows.size(); i++) {
+            // Evaluate the condition and add it to rowsToUpdate if it's true
+            if(Condition.evaluate(condition, tableRows.get(i))) { // Might need to pass in table
+                rowsToUpdate.add(i); // Add its according index
+            }
+        }
+
+        // Mapped as (column index : value to update column with)
+        Map<Integer, Object> colsToUpdate = new HashMap<>();
+
+        for(int i = 0; i < columnsToSet.size(); i++) {
+            String colName = columnsToSet.get(i);
+            Object valueToSet = valuesToSetTo.get(i);
+
+            int colIndex = table.getAttributeWithName(colName).index;
+            colsToUpdate.put(colIndex, valueToSet);
+        }
+
+        // Update the according rows
+        for(int rowIndex : rowsToUpdate) {
+            RowNode row = tableRows.get(rowIndex); // Pass by reference?
+
+            // Iterate through colIndicesToUpdate and set the according value from valuesToSetTo
+            for(Map.Entry<Integer, Object> colValuePair : colsToUpdate.entrySet()) {
+                row.setDataField(colValuePair.getKey(), colValuePair.getValue());
+            }
+
+            // Not sure if RowNode is passed by reference or value, so this may not be necessary
+            tableRows.set(rowIndex, row);
+        }
 
     }
 
@@ -104,9 +140,6 @@ public class Dbms implements IDbms {
 
         return tempTable;
     }
-
-
-
 
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
@@ -203,13 +236,9 @@ public class Dbms implements IDbms {
 
     @Override
     public void delete(String table) {
-        //iterate through children, deleting the objects,
-        //then delete the main node
-        TableRootNode toDelete = (TableRootNode) tables.get(table);
-        toDelete.children = null;
-        toDelete = null;
-        tables.remove(table);
-        return;
+        // As long these objects aren't referenced/pointed to anywhere else(they aren't, least shouldn't be),
+        // Java will garbage collect all of them, so no need to set them to null
+        tables.remove(table); // May need to check if it contains it?
     }
 
     // Opens a table(table + .db) from storage

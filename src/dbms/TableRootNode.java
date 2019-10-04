@@ -36,11 +36,18 @@ public class TableRootNode { //node containing relation name and attributes of t
     public int getAttributeSize(){
         return this.attributes.size();
     }
-    //public void removeAttribute(int index){
-    //    attList.remove(index);
-    //}
     public ArrayList<Attribute> getAttributeList(){
         return this.attributes;
+    }
+
+    public Attribute getAttributeWithName(String name) { // This is why attributes should be a Map
+        for(Attribute attribute : this.attributes) {
+            if(attribute.attrName.equals(name)) {
+                return attribute;
+            }
+        }
+
+        return null;
     }
 
     // Below used for testing

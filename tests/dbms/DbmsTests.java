@@ -10,7 +10,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class DbmsTests {
-    Dbms db;
+    Dbms db = new Dbms();
 
     @Test // Basically just tries to create table, then attempts to retrieve it from Dbms.getTable
     public void createTable_twoCols_createsCorrectAttributes() {
@@ -42,7 +42,7 @@ public class DbmsTests {
     @Test // Insert values into the table and check that the correct row was created
     public void insertFromValues_alignedAttributes_doesInsert() {
         String tableName = "table0";
-        createTable(tableName);
+        createTable(tableName, 0);
 
         Object[] data = new Object[] { "string", 2 };
 
@@ -57,6 +57,36 @@ public class DbmsTests {
 
         RowNode expected = new RowNode(data);
         assertEquals(ret, expected);
+    }
+
+    @Test
+    public void insertFromRelation_alignedAttributes_doesInsert() {
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 1);
+
+        Object[] data0 = new Object[] { "string", 2 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+
+        db.insertFromRelation(tableName0, tableName1);
+
+        TableRootNode table0 = db.getTable(tableName0);
+
+        assertEquals(table0.getRowNodes().size(), 2); // Should have two entries
+
+        RowNode actual = table0.getRowNodes().get(1);
+        RowNode expected = new RowNode(new Object[] { "stuff", 0 });
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void union_doesCombineTables() {
+
     }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
@@ -75,19 +105,32 @@ public class DbmsTests {
     }
 
     // Creates a basic table
-    private void createTable(String tableName) {
-        db = new Dbms();
+    // Which is just a selector
+    private void createTable(String tableName, int which) {
+        if(which == 0) {
+            List<String> columnNames = new ArrayList<>(
+                    Arrays.asList("varcharCol", "intCol")
+            );
+            List<Type> columnTypes = new ArrayList<>(
+                    Arrays.asList(new Varchar(20), new IntType())
+            );
+            List<String> primaryKeys = new ArrayList<>(
+                    Arrays.asList("varcharCol")
+            );
 
-        List<String> columnNames = new ArrayList<>(
-                Arrays.asList("varcharCol", "intCol")
-        );
-        List<Type> columnTypes = new ArrayList<>(
-                Arrays.asList(new Varchar(20), new IntType())
-        );
-        List<String> primaryKeys = new ArrayList<>(
-                Arrays.asList("varcharCol")
-        );
+            db.createTable(tableName, columnNames, columnTypes, primaryKeys);
+        } else if(which == 1) {
+            List<String> columnNames = new ArrayList<>(
+                    Arrays.asList("varcharCol")
+            );
+            List<Type> columnTypes = new ArrayList<>(
+                    Arrays.asList(new Varchar(20), new IntType())
+            );
+            List<String> primaryKeys = new ArrayList<>(
+                    Arrays.asList("varcharCol")
+            );
 
-        db.createTable(tableName, columnNames, columnTypes, primaryKeys);
+            db.createTable(tableName, columnNames, columnTypes, primaryKeys);
+        }
     }
 }
