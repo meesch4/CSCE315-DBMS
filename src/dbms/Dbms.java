@@ -104,6 +104,9 @@ public class Dbms implements IDbms {
         return tempTable;
     }
 
+
+
+
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
         String newName = tableName + "temp";
@@ -133,6 +136,12 @@ public class Dbms implements IDbms {
         TableRootNode newTableRoot = new TableRootNode(newTable, newAttributes, newRows);
         tables.put(newTable, newTableRoot); //add the union to the tables hashmap
         return newTable;
+    }
+
+    @Override
+    public String select(String tableFrom, Condition condition){
+
+        return"Blah";
     }
 
     @Override
