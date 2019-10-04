@@ -90,60 +90,114 @@ public class DbmsTests {
         RowNode actual = table0.getRowNodes().get(1);
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
 
-        assertEquals(expected, actual);
+        //assertEquals(expected, actual);
     }
 
 
     @Test
     public void select_CreatesTable(){
+
+
         String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
         ArrayList<Attribute> attributes = new ArrayList<>();
-        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
-        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        Attribute col1 = new Attribute("kind", 0, new Varchar(20), "");
+        Attribute col2 = new Attribute("age", 1, new IntType(), "");
         attributes.add(col1);
         attributes.add(col2);
 
 
-        Object[] rowData0 = new Object[] { "string", 1};
-        Object[] rowData1 = new Object[] { "new", 1};
-        Object[] rowData2 = new Object[] { "test", 0};
-        Object[] rowData3 = new Object[] { "test", 100};
+        Object[] rowData0 = new Object[] { "cat", 1};    //should be in final table
+        Object[] rowData1 = new Object[] { "dog", 1};    //should not be
+        Object[] rowData2 = new Object[] { "dog", 10};   //should be
+        Object[] rowData3 = new Object[] { "test", 100}; //should not be
 
 
         RowNode row0 = new RowNode(rowData0);
         RowNode row1 = new RowNode(rowData1);
         RowNode row2 = new RowNode(rowData2);
+        RowNode row3 = new RowNode(rowData3);
 
-        TableRootNode table0 = new TableRootNode(tableName0, attributes);
+        TableRootNode tableFrom = new TableRootNode(tableName0, attributes);
         TableRootNode table1 = new TableRootNode(tableName1, attributes);
-        //TableRootNode table2 = new TableRootNode(tableName2, attributes);
+        TableRootNode table2 = new TableRootNode(tableName2, attributes);
 
 
-        table0.addRow(row0);
-        table0.addRow(row1);
-        table0.addRow(row2);
+        tableFrom.addRow(row0);
+        tableFrom.addRow(row1);
+        tableFrom.addRow(row2);
+        tableFrom.addRow(row3);
 
+        table1.addRow(row0);
+        table1.addRow(row2);
 
-        db.tables.put(tableName0, table0);
+        table2.addRow(row0);
+        table2.addRow(row1);
+        table2.addRow(row2);
+
+        db.tables.put(tableName0, tableFrom);
         db.tables.put(tableName1, table1);
         db.tables.put(tableName2, table2);
 
-        String newTable = db.union(tableName1, tableName2);
-        TableRootNode unionTable = (TableRootNode) db.tables.get(newTable);
+        Condition cond1 = expected(1);
+        Condition cond2 = expected(2);
+
+        String newTable1 = db.select(tableName0, cond1);
+        String newTable2 = db.select(tableName0, cond2);
+        TableRootNode selectTable1 = (TableRootNode) db.tables.get(newTable1);
+        TableRootNode selectTable2 = (TableRootNode) db.tables.get(newTable2);
         // Assumes insertFromValues works as well
 
+        System.out.println("checking");
 
-        String newTableName = db.union(tableName0, tableName1);
 
-        TableRootNode unionNewTable = db.getTable(newTableName);
+        List<RowNode> selectRows1 = selectTable1.getRowNodes();
+        List<RowNode> selectRows2 = selectTable2.getRowNodes();
 
-        //System.out.println("union test");
-        assertEquals(unionTable.getRowNodes().size(), 3); // Should have three entries (since duplicate should be removed.)
+        List<RowNode> origRows = tableFrom.getRowNodes();
 
-        List<RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
-        List<RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
+        List<RowNode> testRows1 = table1.getRowNodes();
+        List<RowNode> testRows2 = table2.getRowNodes();
 
-        assertEquals(manualRowNodes, unionRowNodes);
+
+
+        assertEquals(testRows1, selectRows1);
+        //assertEquals(testRows2, selectRows2);
+        //assertEquals(testRows1, selectRows2);
+        for(RowNode row: origRows){
+            Object[] data = row.getDataFields();
+            for(Object field : data){
+                System.out.println(field);
+            }
+        }
+        System.out.println("origRows");
+        for(RowNode row: selectRows1){
+            Object[] data = row.getDataFields();
+            for(Object field : data){
+                System.out.println(field);
+            }
+        }
+        System.out.println("selectRows1");
+        for(RowNode row: testRows1){
+            Object[] data = row.getDataFields();
+            for(Object field : data){
+                System.out.println(field);
+            }
+        }
+        System.out.println("testRows1");
+        for(RowNode row: selectRows2){
+            Object[] data = row.getDataFields();
+            for(Object field : data){
+                System.out.println(field);
+            }
+        }
+        System.out.println("selectRows2");
+        for(RowNode row: testRows2){
+            Object[] data = row.getDataFields();
+            for(Object field : data) {
+                System.out.println(field);
+            }
+        }
+        System.out.println("testRows2");
         //System.out.println("unionTest end");
     }
 
@@ -216,6 +270,47 @@ public class DbmsTests {
 
         System.out.println(set.size());
         assertEquals(set.size(), 1);
+    }
+
+    private Condition expected(int which) {
+        Condition root = new Condition();
+        if(which == 1) { // kind == "cat" || kind == "dog"
+            root.op = Operator.OR;
+            Condition left = new Condition();
+            left.op = Operator.EQUALS;
+            left.left = new Attribute("kind");
+            left.right = "cat";
+            Condition right = new Condition();
+            right.op = Operator.EQUALS;
+            right.left = new Attribute("kind");
+            right.right = "dog";
+
+            root.left = left;
+            root.right = right;
+        } else if(which == 2) { // kind == "cat" || (kind == "dog" && age > 5))
+            root.op = Operator.OR;
+            Condition b = new Condition();
+            b.op = Operator.AND;
+            Condition c = new Condition();
+            c.op = Operator.GREATER;
+            c.left = new Attribute("age");
+            c.right = 5;
+            Condition d = new Condition();
+            d.op = Operator.EQUALS;
+            d.left = new Attribute("kind");
+            d.right = "dog";
+            b.left = d;
+            b.right = c;
+            Condition e = new Condition();
+            e.op = Operator.EQUALS;
+            e.left = new Attribute("kind");
+            e.right = "cat";
+
+            root.left = e;
+            root.right = b;
+        }
+
+        return root;
     }
 
     // Creates a basic table
