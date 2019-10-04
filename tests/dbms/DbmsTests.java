@@ -93,6 +93,60 @@ public class DbmsTests {
         assertEquals(expected, actual);
     }
 
+
+    @Test
+    public void select_CreatesTable(){
+        String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
+        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        attributes.add(col1);
+        attributes.add(col2);
+
+
+        Object[] rowData0 = new Object[] { "string", 1};
+        Object[] rowData1 = new Object[] { "new", 1};
+        Object[] rowData2 = new Object[] { "test", 0};
+        Object[] rowData3 = new Object[] { "test", 100};
+
+
+        RowNode row0 = new RowNode(rowData0);
+        RowNode row1 = new RowNode(rowData1);
+        RowNode row2 = new RowNode(rowData2);
+
+        TableRootNode table0 = new TableRootNode(tableName0, attributes);
+        TableRootNode table1 = new TableRootNode(tableName1, attributes);
+        //TableRootNode table2 = new TableRootNode(tableName2, attributes);
+
+
+        table0.addRow(row0);
+        table0.addRow(row1);
+        table0.addRow(row2);
+
+
+        db.tables.put(tableName0, table0);
+        db.tables.put(tableName1, table1);
+        db.tables.put(tableName2, table2);
+
+        String newTable = db.union(tableName1, tableName2);
+        TableRootNode unionTable = (TableRootNode) db.tables.get(newTable);
+        // Assumes insertFromValues works as well
+
+
+        String newTableName = db.union(tableName0, tableName1);
+
+        TableRootNode unionNewTable = db.getTable(newTableName);
+
+        //System.out.println("union test");
+        assertEquals(unionTable.getRowNodes().size(), 3); // Should have three entries (since duplicate should be removed.)
+
+        List<RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
+        List<RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
+
+        assertEquals(manualRowNodes, unionRowNodes);
+        //System.out.println("unionTest end");
+    }
+
     @Test
     public void union_doesCombineTables() {
         String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
