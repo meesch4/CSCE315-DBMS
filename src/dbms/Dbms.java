@@ -315,6 +315,13 @@ public class Dbms implements IDbms {
         //just call write and then kill the listener
     }
 
+    // Removes the (key, value) pair with oldName and replaces it with newName
+    public void renameTable(String oldName, String newName) {
+        TableRootNode table = tables.remove(oldName);
+        table.relationName = newName;
+        tables.put(newName, table);
+    }
+
     @Override
     public TableRootNode getTable(String tableName) {
         return tables.get(tableName);
