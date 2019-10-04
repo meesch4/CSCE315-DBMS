@@ -6,6 +6,7 @@ import types.Type;
 import types.Varchar;
 
 import java.util.*;
+import java.lang.*;
 
 import static org.junit.Assert.*;
 
@@ -94,27 +95,56 @@ public class DbmsTests {
 
     @Test
     public void union_doesCombineTables() {
-        String tableName0 = "table0", tableName1 = "table1";
-        createTable(tableName0, 0);
-        createTable(tableName1, 1);
+        String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
+        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        attributes.add(col1);
+        attributes.add(col2);
 
-        Object[] data0 = new Object[] { "stuff", 2 };
-        Object[] data1 = new Object[] { "stuff" };
 
+        Object[] rowData0 = new Object[] { "string", 1};
+        Object[] rowData1 = new Object[] { "new", 1};
+        Object[] rowData2 = new Object[] { "test", 0};
+
+        RowNode row0 = new RowNode(rowData0);
+        RowNode row1 = new RowNode(rowData1);
+        RowNode row2 = new RowNode(rowData2);
+
+        TableRootNode table0 = new TableRootNode(tableName0, attributes);
+        TableRootNode table1 = new TableRootNode(tableName1, attributes);
+        TableRootNode table2 = new TableRootNode(tableName2, attributes);
+
+
+        table0.addRow(row0);
+        table0.addRow(row1);
+        table1.addRow(row0);
+        table1.addRow(row2);
+        table2.addRow(row0);
+        table2.addRow(row1);
+        table2.addRow(row2);
+
+        db.tables.put(tableName0, table0);
+        db.tables.put(tableName1, table1);
+        db.tables.put(tableName2, table2);
+
+        String newTable = db.union(tableName1, tableName2);
+        TableRootNode unionTable = (TableRootNode) db.tables.get(newTable);
         // Assumes insertFromValues works as well
-        db.insertFromValues(tableName0, Arrays.asList(data0));
-        db.insertFromValues(tableName1, Arrays.asList(data1));
+
 
         String newTableName = db.union(tableName0, tableName1);
 
-        TableRootNode newTable = db.getTable(newTableName);
+        TableRootNode unionNewTable = db.getTable(newTableName);
 
-        assertEquals(newTable.getRowNodes().size(), 2); // Should have two entries (since stuff should not exist in both tables.)
+        //System.out.println("union test");
+        assertEquals(unionTable.getRowNodes().size(), 3); // Should have three entries (since duplicate should be removed.)
 
-        RowNode actual = newTable.getRowNodes().get(1);
-        RowNode expected = new RowNode(new Object[] { "stuff", 2 });
+        List<RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
+        List<RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
 
-        assertEquals(expected, actual);
+        assertEquals(manualRowNodes, unionRowNodes);
+        //System.out.println("unionTest end");
     }
 
 
