@@ -51,25 +51,37 @@ public class Dbms implements IDbms {
 
         //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
         //essentially just take the arraylist of row nodes in tablefrom and append it to the array list of rownodes in insert into
-        ArrayList<Attribute> attListFrom;
-        TableRootNode tableFrom = (TableRootNode) tables.get(tableInsertFrom);
-        attListFrom = tableFrom.getAttributes();
-        ArrayList<Attribute> attListInto;
-        TableRootNode tableInto = (TableRootNode) tables.get(tableInsertInto);
-        attListInto = tableInto.getAttributes();
-        if(attListFrom != attListInto){ //may not work properly as a comparison, if so just remove since data should be clean
+        TableRootNode tableFrom = tables.get(tableInsertFrom);
+        ArrayList<Attribute> attListFrom = tableFrom.getAttributes();
+        TableRootNode tableInto = tables.get(tableInsertInto);
+        ArrayList<Attribute> attListInto = tableInto.getAttributes();
+        /* if(attListFrom != attListInto){ //may not work properly as a comparison, if so just remove since data should be clean
             System.out.println("Mismatched attirbutes");
             return;
+        } */
+
+        // Find what attributes attListFrom is missing and add them to this list
+        List<Attribute> missingAttributes = new ArrayList<>();
+        for(Attribute attributeInto : attListInto) {
+            boolean found = false;
+            for(Attribute attributeFrom : attListFrom) {
+
+            }
+
+            if(!found) {
+                missingAttributes.add(attributeInto);
+            }
         }
+
         List<RowNode> rowListFrom = tableFrom.getRowNodes();
         for(RowNode rowFrom : rowListFrom){ //pulls each row node from table from
+            Object[] dataFieldsFrom = new Object[attListInto.size()];
+
             tableInto.addRow(rowFrom);  //inserts them into table into
         }
-
-
     }
 
-    @Override
+    @Override // Should be done
     public void insertFromValues(String tableInsertInto, List<Object> valuesFrom) {
         //verify that the attributes match up, and then add a new node to rownodes
         //this verification is currently fairly naive, as it simply checks the length of the list versus
