@@ -32,4 +32,6 @@ public interface IDbms {
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
     TableRootNode getTable(String tableName);
+
+    void renameTable(String oldName, String newName);
 }

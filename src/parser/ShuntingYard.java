@@ -128,11 +128,10 @@ public class ShuntingYard {
                 Operator op = parse_operator(val);
                 // If curr already has an op, create another one(which will curr's child)
                 if(curr.op != null) {
-                    conditions.push(curr);
-
                     curr = new Condition();
                 }
 
+                conditions.push(curr);
                 curr.op = op;
 
             } else { // relationName, or varchar/int
@@ -213,7 +212,7 @@ public class ShuntingYard {
         if(first_char == '\"') // String literal
             // Shave off first and last characters(The quotes)
             return str.substring(1, str.length() - 1);
-        else if((first_char + "").matches("[0..9]"))
+        else if(Character.isDigit(first_char))
             return Integer.parseInt(str);
         else
             return new Attribute(str);

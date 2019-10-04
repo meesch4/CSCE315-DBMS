@@ -11,7 +11,7 @@ import java.util.*;
 public class Dbms implements IDbms {
     // Maps each table name to their internal representation
     // Includes temporary tables as well
-    private HashMap<String, TableRootNode> tables;
+    public HashMap<String, TableRootNode> tables;
     //private HashMap<String, Object> tempTables;
 
     // Should we have a temporary/local tables?
@@ -143,7 +143,6 @@ public class Dbms implements IDbms {
             // Not sure if RowNode is passed by reference or value, so this may not be necessary
             tableRows.set(rowIndex, row);
         }
-
     }
 
     @Override
@@ -184,7 +183,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
-        String newName = tableName + "temp";
+        String newName = getTempTableName();
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
         List<RowNode> kids = tables.get(tableName).getRowNodes();
         TableRootNode tempTable = new TableRootNode(newName, attributes, kids);
@@ -199,7 +198,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String union(String table1, String table2) {
-        String newTable = table1 + " " + table2; //the output table name will be a combination of the two table names
+        String newTable = getTempTableName(); //the output table name will be a combination of the two table names
         ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
         List<RowNode> newRows = tables.get(table1).getRowNodes();
         List<RowNode> newRows2 = tables.get(table2).getRowNodes();
@@ -215,12 +214,14 @@ public class Dbms implements IDbms {
 
     @Override
     public String select(String tableFrom, Condition condition){
-        String tempTableName = tableFrom + "temp";
+        String tempTableName = getTempTableName();
+
         TableRootNode table = tables.get(tableFrom);
         ArrayList<Attribute> attributes = table.getAttributes();
         TableRootNode newTable = new TableRootNode(tempTableName, attributes);
         for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through row nodes
             boolean include = Condition.evaluate(condition, row, table);
+
             if(include == true){
                 newTable.addRow(row);
             }
@@ -232,7 +233,7 @@ public class Dbms implements IDbms {
     @Override
     public String difference(String table1, String table2) {
         //String tempTable = getTempTableName();
-        String tempTableName = table1 + "-" + table2;
+        String tempTableName = getTempTableName();
         ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
         TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
         for(RowNode row : tables.get(table1).children){ //for all row nodes in table 1
@@ -247,7 +248,7 @@ public class Dbms implements IDbms {
 
     @Override
     public String product(String table1, String table2) {
-        String tempName = table1 + "cross" + table2;
+        String tempName = getTempTableName();
         ArrayList<Attribute> tempAttributes;
         tempAttributes = tables.get(table1).getAttributes();
         tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
@@ -357,6 +358,13 @@ public class Dbms implements IDbms {
     public void exit() {
         //end the entire program, and save data
         //just call write and then kill the listener
+    }
+
+    // Removes the (key, value) pair with oldName and replaces it with newName
+    public void renameTable(String oldName, String newName) {
+        TableRootNode table = tables.remove(oldName);
+        table.relationName = newName;
+        tables.put(newName, table);
     }
 
     @Override

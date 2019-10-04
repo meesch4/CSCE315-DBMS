@@ -230,4 +230,9 @@ class FakeDbms implements IDbms {
     public TableRootNode getTable(String tableName) {
         return null;
     }
+
+    @Override
+    public void renameTable(String oldName, String newName) {
+
+    }
 }
