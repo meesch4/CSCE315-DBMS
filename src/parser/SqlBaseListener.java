@@ -28,7 +28,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     @Override public void exitCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) {
         List<ParseTree> children = ctx.children;
-        printChildren(children);
 
         // String tableName = ctx.children.get(1).getText();
         String tableName = relationNames.removeFirst(); // Not sure which we need to do
@@ -59,7 +58,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     }
 
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
-        printChildren(ctx.children);
         String tableName = relationNames.removeLast();
 
         // Parallel arrays
@@ -75,7 +73,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     // TODO: Implement Delete
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
-        printChildren(ctx.children);
         String tableName = relationNames.removeFirst();
 
         Condition condition = ShuntingYard.evaluate(ctx.children.get(3));
@@ -117,18 +114,17 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
         String queryTableName = relationNames.removeLast(); // The table we're going to assign
 
-        // TODO: Assign the tempTable variable's name/key to queryTableName
+        dbms.renameTable(tempTable, queryTableName);
     }
 
     @Override public void exitSelection(SQLGrammarParser.SelectionContext ctx) {
-        printChildren(ctx);
         // Do something with the resulting expression
         String tableFrom = relationNames.removeLast(); // Get the table we're getting values from?
 
-        String tempTable = "tempTableName";
-
         ParseTree tree = ctx.children.get(2);
         Condition condition = ShuntingYard.evaluate(tree);
+
+        String tempTable = dbms.select(tableFrom, condition);
 
         relationNames.addLast(tempTable);
     }
@@ -166,7 +162,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     // All return a table
     @Override public void exitUnion(SQLGrammarParser.UnionContext ctx) {
-        printChildren(ctx.children);
+        // printChildren(ctx.children);
 
         String table2 = relationNames.removeLast();
         String table1 = relationNames.removeLast();
@@ -263,7 +259,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     private List<String> parseSetColumnNames(ParseTree tree) {
         List<String> ret = new ArrayList<>();
-        printChildren(tree);
+        // printChildren(tree);
 
         for(int i = 0; i < tree.getChildCount(); i+=4)
             ret.add(tree.getChild(i).getText());

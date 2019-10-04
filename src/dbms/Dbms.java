@@ -170,7 +170,6 @@ public class Dbms implements IDbms {
             // Not sure if RowNode is passed by reference or value, so this may not be necessary
             tableRows.set(rowIndex, row);
         }
-
     }
 
     @Override
@@ -310,7 +309,50 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void show(String table) {
+    public void show(String tableName) {
+        String s;
+        ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        String line = "";
+        s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
+        for(int i = 0; i< attributes.size(); i++) {
+
+            line += " " + attributes.get(i).getName() ;
+
+            while(line.length()<=20) {
+                line += " ";
+            }
+
+            if(i != attributes.size()-1) {
+                line += "|";
+            }
+
+            s += line;
+            line = "";
+        }
+
+        s += "|\n";
+
+        TableRootNode table = (TableRootNode) tables.get(tableName);
+        List<RowNode> rowList = table.getRowNodes();
+        for(int i = 0; i< rowList.size(); i++) {
+            RowNode currRow = rowList.get(i);
+            for(int j = 0; j<currRow.getDataFields().length; j++) {
+                line += " " + currRow.getDataField(i) ;
+                while(line.length()<=20) {
+                    line += " ";
+                }
+
+                line += "|";
+                s += line;
+                line = "";
+            }
+
+            s += "\n";
+        }
+
+        System.out.println(s);
+
+
 
     }
 
@@ -343,6 +385,13 @@ public class Dbms implements IDbms {
     public void exit() {
         //end the entire program, and save data
         //just call write and then kill the listener
+    }
+
+    // Removes the (key, value) pair with oldName and replaces it with newName
+    public void renameTable(String oldName, String newName) {
+        TableRootNode table = tables.remove(oldName);
+        table.relationName = newName;
+        tables.put(newName, table);
     }
 
     @Override

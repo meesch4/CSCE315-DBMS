@@ -212,7 +212,7 @@ public class ShuntingYard {
         if(first_char == '\"') // String literal
             // Shave off first and last characters(The quotes)
             return str.substring(1, str.length() - 1);
-        else if((first_char + "").matches("[0..9]"))
+        else if(Character.isDigit(first_char))
             return Integer.parseInt(str);
         else
             return new Attribute(str);

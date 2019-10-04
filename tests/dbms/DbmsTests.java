@@ -69,6 +69,22 @@ public class DbmsTests {
     }
 
     @Test
+    public void show_tets(){
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 1);
+
+        Object[] data0 = new Object[] { "stuff", 2 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+        db.show(tableName0);
+        db.show(tableName1);
+    }
+
+    @Test
     public void insertFromRelation_alignedAttributes_doesInsert() {
         String tableName0 = "table0", tableName1 = "table1";
         createTable(tableName0, 0);
@@ -90,7 +106,7 @@ public class DbmsTests {
         RowNode actual = table0.getRowNodes().get(1);
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
 
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
 
@@ -219,7 +235,23 @@ public class DbmsTests {
         //System.out.println("unionTest end");
     }
 
+    @Test
+    public void update_doesUpdateTable() {
+        String tableName = "table";
+        createTable(tableName, 0);
 
+        List<Object> data = new ArrayList<>(Arrays.asList("one", 1));
+
+        db.insertFromValues(tableName, data);
+
+        List<String> columnsToSet = new ArrayList<>(Arrays.asList("varcharCol", "intCol"));
+        List<Object> valuesToSet = new ArrayList<>(Arrays.asList("two", 2));
+        Condition condition = createCondition(0);
+
+        db.update(tableName, columnsToSet, valuesToSet, condition);
+
+        // RowNode updated =
+    }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
     public void rowNode_hashCode_setRemovesDuplicates() {
@@ -234,6 +266,26 @@ public class DbmsTests {
 
         System.out.println(set.size());
         assertEquals(set.size(), 1);
+    }
+
+    private Condition createCondition(int which) {
+        Condition root = new Condition();
+        if(which == 0) { // varcharCol == "one" || intCol == 1
+            root.op = Operator.OR;
+            Condition left = new Condition();
+                left.op = Operator.EQUALS;
+                left.left = new Attribute("intCol");
+                left.right = "5";
+            Condition right = new Condition();
+                right.op = Operator.EQUALS;
+                right.left = new Attribute("");
+                right.right = "5";
+
+            root.left = left;
+            root.right = right;
+        }
+
+        return root;
     }
 
     private Condition expected(int which) {
