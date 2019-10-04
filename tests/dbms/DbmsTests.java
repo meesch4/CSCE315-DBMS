@@ -10,7 +10,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class DbmsTests {
-    Dbms db;
+    Dbms db = new Dbms();
 
     @Test // Basically just tries to create table, then attempts to retrieve it from Dbms.getTable
     public void createTable_twoCols_createsCorrectAttributes() {
@@ -66,6 +66,22 @@ public class DbmsTests {
         createTable(tableName1, 1);
 
         Object[] data0 = new Object[] { "string", 2 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+
+        db.insertFromRelation(tableName0, tableName1);
+
+        TableRootNode table0 = db.getTable(tableName0);
+
+        assertEquals(table0.getRowNodes().size(), 2); // Should have two entries
+
+        RowNode actual = table0.getRowNodes().get(1);
+        RowNode expected = new RowNode(new Object[] { "stuff", 0 });
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -91,8 +107,6 @@ public class DbmsTests {
     // Creates a basic table
     // Which is just a selector
     private void createTable(String tableName, int which) {
-        db = new Dbms();
-
         if(which == 0) {
             List<String> columnNames = new ArrayList<>(
                     Arrays.asList("varcharCol", "intCol")
