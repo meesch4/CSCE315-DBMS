@@ -27,3 +27,7 @@ WRITE animals;
 CLOSE animals;
 
 EXIT;
+
+DELETE FROM animals WHERE kind == "cat";
+DELETE FROM animals WHERE kind == "cat" && age < 4;
+DELETE FROM animals WHERE (kind == "cat" && age < 4) || (kind == "dog" && age > 5);
