@@ -75,11 +75,12 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     // TODO: Implement Delete
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
+        printChildren(ctx.children);
         String tableName = relationNames.removeFirst();
 
-        String condition = ctx.children.get(3).getText(); // Parse this
+        Condition condition = ShuntingYard.evaluate(ctx.children.get(3));
 
-        dbms.delete(tableName);
+        dbms.delete(tableName, condition);
     }
 
     @Override public void exitShow_cmd(SQLGrammarParser.Show_cmdContext ctx) {
@@ -127,7 +128,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         String tempTable = "tempTableName";
 
         ParseTree tree = ctx.children.get(2);
-        Stack<String> stack = ShuntingYard.evaluate(tree);
+        Condition condition = ShuntingYard.evaluate(tree);
 
         relationNames.addLast(tempTable);
     }

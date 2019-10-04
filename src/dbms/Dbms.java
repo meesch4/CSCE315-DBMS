@@ -274,10 +274,8 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void delete(String table) {
-        // As long these objects aren't referenced/pointed to anywhere else(they aren't, least shouldn't be),
-        // Java will garbage collect all of them, so no need to set them to null
-        tables.remove(table); // May need to check if it contains it?
+    public void delete(String table, Condition condition) {
+
     }
 
     // Opens a table(table + .db) from storage

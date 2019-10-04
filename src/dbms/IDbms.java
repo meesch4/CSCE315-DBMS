@@ -28,8 +28,7 @@ public interface IDbms {
     void write(String table);
     void exit();
 
-    // Need to update delete with expressions
-    void delete(String table); // I think?
+    void delete(String table, Condition condition);
 
     // Attempt to get the Table with name tableName from the tables map(or whatever)
     TableRootNode getTable(String tableName);

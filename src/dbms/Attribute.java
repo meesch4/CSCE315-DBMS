@@ -8,7 +8,7 @@ import types.Varchar;
  *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
  */
 public class Attribute {
-    Attribute(String name) {
+    public Attribute(String name) {
         index = -1;
         type = null;
         primaryKey = null;
