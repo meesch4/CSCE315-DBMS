@@ -55,7 +55,7 @@ public class Condition {
             case GREATER:
                 return (int) value > (int) literal;
             default:
-                // Throw an error, unrecognized Operator(probably null)
+                // Probably throw an error here
                 break;
         }
 
