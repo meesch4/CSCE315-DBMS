@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
-        String filePath = "tests/createinput.txt";
+        String filePath = "tests/sqlInput.txt";
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 

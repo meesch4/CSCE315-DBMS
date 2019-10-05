@@ -1,13 +1,12 @@
 CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), age, INTEGER) PRIMARY KEY (name, kind);
+CREATE TABLE thing (name VARCHAR(20)) PRIMARY KEY (name);
 
 INSERT INTO animals VALUES FROM ("Joe", "cat", 4);
 INSERT INTO animals VALUES FROM ("Spot", "dog", 10);
-INSERT INTO animals VALUES FROM ("Snoopy", "dog", 3);
-INSERT INTO animals VALUES FROM ("Tweety", "bird", 1);
-INSERT INTO animals VALUES FROM ("Joe", "bird", 2);
 
-dogs <- select (kind == "dog") animals;
-old_dogs <- select (age > 10) dogs;
+INSERT INTO thing VALUES FROM ("name1");
+INSERT INTO thing VALUES FROM ("name2");
 
-cats_or_dogs <- dogs + (select (kind == "cat") animals);
+INSERT INTO animals VALUES FROM RELATION thing;
 
+SHOW animals;
