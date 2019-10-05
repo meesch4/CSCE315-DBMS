@@ -61,51 +61,24 @@ public class Dbms implements IDbms {
             return;
         } */
 
-
-
-        // when an attribute in the attributes from list matches the name and type of an attribute in the attributes into list,
-        //this loop will create a tuple of the form [indexFrom, indexInto] to inform the next code block which columns in the
-        //FROM table to map to the which columns in the INTO table.
-        ArrayList<int[]> tuples = new ArrayList<>();
+        // Find what attributes attListFrom is missing and add them to this list
+        List<Attribute> missingAttributes = new ArrayList<>();
         for(Attribute attributeInto : attListInto) {
             boolean found = false;
             for(Attribute attributeFrom : attListFrom) {
-                if((attributeFrom.getType() == attributeInto.getType()) && (attributeFrom.getName() == attributeInto.getName())){
-                    int[] newTup = new int[]{attributeFrom.index, attributeInto.index};
-                    attListFrom.remove(attributeFrom);
-                    tuples.add(newTup);
-                    found = true;
-                    break;
-                }
+
             }
-            if(!found){
-                int[] newTup = new int[]{-1, attributeInto.index};
-                tuples.add(newTup);
+
+            if(!found) {
+                missingAttributes.add(attributeInto);
             }
         }
-        /*while(!(attListFrom.isEmpty())){
-            for(Attribute attributeFrom : attListFrom){
-                Object[] newTup = new Object[]{attributeFrom.index, null};
-                tuples.add(newTup);
-            }
-        }*/
-
-
 
         List<RowNode> rowListFrom = tableFrom.getRowNodes();
         for(RowNode rowFrom : rowListFrom){ //pulls each row node from table from
-            Object[] newDataFields = new Object[attListInto.size()];
-            for(int[] tuple : tuples){
-                int fromIndex = tuple[0];
-                int toIndex = tuple[1];
-                if(fromIndex == -1){ //if the value is not present in the from table
-                    newDataFields[toIndex] = null; //set value to null
-                }else{
-                    newDataFields[toIndex] = rowFrom.getDataField(fromIndex);
-                }
-            }
-            RowNode newRow = new RowNode(newDataFields);
-            tableInto.addRow(newRow);  //inserts them into table into
+            Object[] dataFieldsFrom = new Object[attListInto.size()];
+
+            tableInto.addRow(rowFrom);  //inserts them into table into
         }
     }
 
@@ -181,7 +154,7 @@ public class Dbms implements IDbms {
         ArrayList<Attribute> newAttributes = new ArrayList<>();
 
         int j = 0;
-        for(Attribute att : origAttributes){ // find the indices of the columns we need to maintain
+        for(Attribute att : origAttributes){
             if(columnNames.contains(att.getName())){
                 indices.add(att.index);
                 Attribute newAttribute;
@@ -189,7 +162,8 @@ public class Dbms implements IDbms {
                 newAttributes.add(newAttribute);
                 j++;
             }
-        }
+        } //find the indices of the columns we need to maintain
+
 
         TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
 
@@ -304,7 +278,7 @@ public class Dbms implements IDbms {
 
             }
         }
-        tables.put(tempName, tempTable);
+
         return tempName;
     }
 
@@ -312,31 +286,40 @@ public class Dbms implements IDbms {
     public void show(String tableName) {
         String s;
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
-        final int colWidth = 30;
+        final int colWidth = 34;
         String line = "";
-        s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
+        s = " " + tableName + "\n" ;
+        for(int k = 0; k< attributes.size(); k++) {
+            s += "-----------------------------------";
+        }
+        s += "|\n";
         for(int i = 0; i< attributes.size(); i++) {
             Attribute attr = attributes.get(i);
 
-            line += " " + attr.getName();
+            line += attributes.get(i).getName() ;
+
             if(attr.type instanceof Varchar) {
                 line += ": Varchar(" + ((Varchar) attr.type).length + ")";
             } else {
                 line += ": Int";
             }
 
-            while(line.length()<=colWidth) {
+            while(line.length()<(colWidth)) {
                 line += " ";
             }
 
-            if(i != attributes.size()-1) {
+            if (i == (attributes.size()-1)){
+                line += " |";
+            } else {
                 line += "|";
             }
-
             s += line;
             line = "";
         }
-
+        s += "\n";
+        for(int l = 0; l< attributes.size(); l++) {
+            s += "-----------------------------------";
+        }
         s += "|\n";
 
         TableRootNode table = (TableRootNode) tables.get(tableName);
@@ -344,17 +327,23 @@ public class Dbms implements IDbms {
         for(int i = 0; i< rowList.size(); i++) {
             RowNode currRow = rowList.get(i);
             for(int j = 0; j<currRow.getDataFields().length; j++) {
-                line += " " + currRow.getDataField(j) ;
-                while(line.length()<=colWidth) {
+                line += currRow.getDataField(j) ;
+                while(line.length()<colWidth) {
                     line += " ";
                 }
-
-                line += "|";
+                if (j == (currRow.getDataFields().length-1)){
+                    line += " |";
+                } else {
+                    line += "|";
+                }
                 s += line;
                 line = "";
             }
-
             s += "\n";
+            for(int m = 0; m< attributes.size(); m++) {
+                s += "-----------------------------------";
+            }
+            s += "|\n";
         }
 
         System.out.println(s);
@@ -364,23 +353,8 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void delete(String tableName, Condition condition) {
-        TableRootNode table = tables.get(tableName);
+    public void delete(String table, Condition condition) {
 
-        List<Integer> rowsToRemove = new ArrayList<>();
-
-        List<RowNode> tableRows = table.getRowNodes();
-
-        for(int i = 0; i < tableRows.size(); i++) {
-            if(Condition.evaluate(condition, tableRows.get(i), table)) {
-                rowsToRemove.add(i);
-            }
-        }
-
-        // Remove from the back so that the order doesn't get messed up
-        for(int i = rowsToRemove.size() - 1; i >= 0; i--) {
-            RowNode removed = tableRows.remove((int) rowsToRemove.get(i));
-        }
     }
 
     // Opens a table(table + .db) from storage

@@ -6,6 +6,7 @@ import types.Type;
 import types.Varchar;
 
 import java.util.*;
+import java.lang.*;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +25,7 @@ public class DbmsTests {
                 Arrays.asList("varcharCol", "intCol")
         );
         List<Type> columnTypes = new ArrayList<>(
-                Arrays.asList(new Varchar(20), new IntType())
+            Arrays.asList(new Varchar(20), new IntType())
         );
         List<String> primaryKeys = new ArrayList<>(
                 Arrays.asList("varcharCol")
@@ -68,6 +69,22 @@ public class DbmsTests {
     }
 
     @Test
+    public void show_tets(){
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 1);
+
+        Object[] data0 = new Object[] { "stuff", 3 };
+        Object[] data1 = new Object[] { "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+        db.show(tableName0);
+        db.show(tableName1);
+    }
+
+    @Test
     public void insertFromRelation_alignedAttributes_doesInsert() {
         String tableName0 = "table0", tableName1 = "table1";
         createTable(tableName0, 0);
@@ -92,45 +109,76 @@ public class DbmsTests {
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void insertFromRelation_mismatchedAttributes_doesInsert() {
-        String tableName0 = "table0", tableName1 = "table1";
-        createTable(tableName0, 0);
-        createTable(tableName1, 2);
-
-        Object[] data0 = new Object[] { "string", 2 };
-        Object[] data1 = new Object[] { 3, "stuff" };
-
-        // Assumes insertFromValues works as well
-        db.insertFromValues(tableName0, Arrays.asList(data0));
-        db.insertFromValues(tableName1, Arrays.asList(data1));
-
-        db.insertFromRelation(tableName0, tableName1);
-
-        TableRootNode table0 = db.getTable(tableName0);
-
-        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
-
-        RowNode actual = table0.getRowNodes().get(1);
-        RowNode expected = new RowNode(new Object[] { "stuff", 3 });
-
-        assertEquals(expected, actual);
-    }
 
     @Test
-    public void show_test(){
-        String tableName0 = "table0", tableName1 = "table1";
-        createTable(tableName0, 0);
-        createTable(tableName1, 1);
+    public void select_CreatesTable(){
 
-        Object[] data0 = new Object[] { "stuff", 2 };
-        Object[] data1 = new Object[] { "stuff" };
 
+        String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        Attribute col1 = new Attribute("kind", 0, new Varchar(20), "");
+        Attribute col2 = new Attribute("age", 1, new IntType(), "");
+        attributes.add(col1);
+        attributes.add(col2);
+
+
+        Object[] rowData0 = new Object[] { "cat", 1};    //should be in final table
+        Object[] rowData1 = new Object[] { "dog", 1};    //should not be
+        Object[] rowData2 = new Object[] { "dog", 10};   //should be
+        Object[] rowData3 = new Object[] { "test", 100}; //should not be
+
+        RowNode row0 = new RowNode(rowData0);
+        RowNode row1 = new RowNode(rowData1);
+        RowNode row2 = new RowNode(rowData2);
+        RowNode row3 = new RowNode(rowData3);
+
+
+        TableRootNode tableFrom = new TableRootNode(tableName0, attributes);
+        TableRootNode table1 = new TableRootNode(tableName1, attributes);
+        TableRootNode table2 = new TableRootNode(tableName2, attributes);
+
+
+        tableFrom.addRow(row0);
+        tableFrom.addRow(row1);
+        tableFrom.addRow(row2);
+        tableFrom.addRow(row3);
+
+
+        table1.addRow(row0);
+        table1.addRow(row1);
+        table1.addRow(row2);
+
+        table2.addRow(row0);
+        table2.addRow(row2);
+
+        db.tables.put(tableName0, tableFrom);
+        db.tables.put(tableName1, table1);
+        db.tables.put(tableName2, table2);
+
+        Condition cond1 = expected(1);
+        Condition cond2 = expected(2);
+
+        String newTable1 = db.select(tableName0, cond1);
+        String newTable2 = db.select(tableName0, cond2);
+        TableRootNode selectTable1 = (TableRootNode) db.tables.get(newTable1);
+        TableRootNode selectTable2 = (TableRootNode) db.tables.get(newTable2);
         // Assumes insertFromValues works as well
-        db.insertFromValues(tableName0, Arrays.asList(data0));
-        db.insertFromValues(tableName1, Arrays.asList(data1));
-        db.show(tableName0);
-        db.show(tableName1);
+
+
+        List<RowNode> selectRows1 = selectTable1.getRowNodes();
+        List<RowNode> selectRows2 = selectTable2.getRowNodes();
+
+        List<RowNode> origRows = tableFrom.getRowNodes();
+
+        List<RowNode> testRows1 = table1.getRowNodes();
+        List<RowNode> testRows2 = table2.getRowNodes();
+
+
+
+        assertEquals(testRows1, selectRows1);
+        assertEquals(testRows2, selectRows2);
+        //assertEquals(testRows1, selectRows2);
+
     }
 
     @Test
@@ -155,12 +203,11 @@ public class DbmsTests {
         TableRootNode table1 = new TableRootNode(tableName1, attributes);
         TableRootNode table2 = new TableRootNode(tableName2, attributes);
 
+
         table0.addRow(row0);
         table0.addRow(row1);
-
         table1.addRow(row0);
         table1.addRow(row2);
-
         table2.addRow(row0);
         table2.addRow(row1);
         table2.addRow(row2);
@@ -188,7 +235,6 @@ public class DbmsTests {
         //System.out.println("unionTest end");
     }
 
-    // Creates a table with a row of {"one" 1} and updates it to {"two", 2}
     @Test
     public void update_doesUpdateTable() {
         String tableName = "table";
@@ -204,10 +250,7 @@ public class DbmsTests {
 
         db.update(tableName, columnsToSet, valuesToSet, condition);
 
-        RowNode actual = db.tables.get(tableName).getRowNodes().get(0);
-        RowNode expected = new RowNode(valuesToSet.toArray());
-
-        assertEquals(actual, expected);
+        // RowNode updated =
     }
 
     @Test // Inputs two identical rowNodes and checks if the Set only contains 1 RowNode total
@@ -230,13 +273,13 @@ public class DbmsTests {
         if(which == 0) { // varcharCol == "one" || intCol == 1
             root.op = Operator.OR;
             Condition left = new Condition();
-            left.op = Operator.EQUALS;
-            left.left = new Attribute("intCol");
-            left.right = "5";
+                left.op = Operator.EQUALS;
+                left.left = new Attribute("intCol");
+                left.right = "5";
             Condition right = new Condition();
-            right.op = Operator.EQUALS;
-            right.left = new Attribute("varcharCol");
-            right.right = "one";
+                right.op = Operator.EQUALS;
+                right.left = new Attribute("");
+                right.right = "5";
 
             root.left = left;
             root.right = right;
@@ -313,58 +356,6 @@ public class DbmsTests {
             );
 
             db.createTable(tableName, columnNames, columnTypes, primaryKeys);
-        } else if(which == 2) {
-            List<String> columnNames = new ArrayList<>(
-                    Arrays.asList("intCol", "varcharCol")
-            );
-            List<Type> columnTypes = new ArrayList<>(
-                    Arrays.asList(new IntType(), new Varchar(20))
-            );
-            List<String> primaryKeys = new ArrayList<>(
-                    Arrays.asList("varcharCol")
-            );
-
-            db.createTable(tableName, columnNames, columnTypes, primaryKeys);
         }
-    }
-
-    @Test
-    public void product_test() {
-        String tableName0 = "table0";
-        String tableName1 = "table1";
-        createTable(tableName0,  0);
-        createTable(tableName1, 1);
-        Object[] table0_data0 = new Object[] {"stuff", 1};
-        Object[] table0_data1 = new Object[] {"stuff2", 2};
-        Object[] table1_data0 = new Object[] {"stuff3", 3};
-        Object[] table1_data1 = new Object[] {"stuff4", 4};
-        RowNode table0_row0 = new RowNode(table0_data0);
-        RowNode table0_row1 = new RowNode(table0_data1);
-        RowNode table1_row0 = new RowNode(table1_data0);
-        RowNode table1_row1 = new RowNode(table1_data1);
-        db.tables.get(tableName0).addRow(table0_row0);
-        db.tables.get(tableName0).addRow(table0_row1);
-        db.tables.get(tableName1).addRow(table1_row0);
-        db.tables.get(tableName1).addRow(table1_row1);
-
-        String newTableName = db.product(tableName0, tableName1);
-        TableRootNode newTable = db.getTable(newTableName);
-        db.show(newTableName);
-    }
-    @Test
-    public void difference_test() {
-        String tableName0 = "table0";
-        String tableName1 = "table1";
-        createTable(tableName0,  0);
-        createTable(tableName1, 0);
-        Object[] data0 = new Object[] {"stuff", 1};
-        Object[] data1 = new Object[] {"stuff3", 3};
-        RowNode table0_row0 = new RowNode(data0);
-        RowNode table1_row0 = new RowNode(data1);
-        db.tables.get(tableName0).addRow(table0_row0);
-        db.tables.get(tableName1).addRow(table1_row0);
-        String newTableName = db.difference(tableName0, tableName1);
-        TableRootNode newTable =  db.getTable(newTableName);
-        db.show(newTableName);
     }
 }
