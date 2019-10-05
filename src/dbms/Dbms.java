@@ -279,9 +279,9 @@ public class Dbms implements IDbms {
         ArrayList<Attribute> tempAttributes;
         tempAttributes = tables.get(table1).getAttributes();
         ArrayList<Attribute> secondAttributes = tables.get(table2).getAttributes();
-        int i = tempAttributes.size();
+        int k = tempAttributes.size();
         for(Attribute att : secondAttributes){
-            att.index = att.index + i;
+            att.index = att.index + k;
         }
         tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
         TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
