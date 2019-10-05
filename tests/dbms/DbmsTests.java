@@ -89,7 +89,32 @@ public class DbmsTests {
         RowNode actual = table0.getRowNodes().get(1);
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
 
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void insertFromRelation_mismatchedAttributes_doesInsert() {
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 2);
+
+        Object[] data0 = new Object[] { "string", 2 };
+        Object[] data1 = new Object[] { 3, "stuff" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+
+        db.insertFromRelation(tableName0, tableName1);
+
+        TableRootNode table0 = db.getTable(tableName0);
+
+        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
+
+        RowNode actual = table0.getRowNodes().get(1);
+        RowNode expected = new RowNode(new Object[] { "stuff", 3 });
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -282,6 +307,18 @@ public class DbmsTests {
             );
             List<Type> columnTypes = new ArrayList<>(
                     Arrays.asList(new Varchar(20))
+            );
+            List<String> primaryKeys = new ArrayList<>(
+                    Arrays.asList("varcharCol")
+            );
+
+            db.createTable(tableName, columnNames, columnTypes, primaryKeys);
+        } else if(which == 2) {
+            List<String> columnNames = new ArrayList<>(
+                    Arrays.asList("intCol", "varcharCol")
+            );
+            List<Type> columnTypes = new ArrayList<>(
+                    Arrays.asList(new IntType(), new Varchar(20))
             );
             List<String> primaryKeys = new ArrayList<>(
                     Arrays.asList("varcharCol")
