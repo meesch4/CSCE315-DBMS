@@ -74,7 +74,7 @@ public class DbmsTests {
         createTable(tableName0, 0);
         createTable(tableName1, 1);
 
-        Object[] data0 = new Object[] { "stuff", 2 };
+        Object[] data0 = new Object[] { "stuff", 3 };
         Object[] data1 = new Object[] { "stuff" };
 
         // Assumes insertFromValues works as well

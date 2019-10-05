@@ -1,6 +1,7 @@
 package dbms;
 
 import types.Type;
+import types.Varchar;
 
 import java.util.*;
 
@@ -285,24 +286,40 @@ public class Dbms implements IDbms {
     public void show(String tableName) {
         String s;
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        final int colWidth = 34;
         String line = "";
-        s = " " + tableName + "\n" + "------------------------------------------------------------------" + "\n";
+        s = " " + tableName + "\n" ;
+        for(int k = 0; k< attributes.size(); k++) {
+            s += "-----------------------------------";
+        }
+        s += "|\n";
         for(int i = 0; i< attributes.size(); i++) {
+            Attribute attr = attributes.get(i);
 
-            line += " " + attributes.get(i).getName() ;
+            line += attributes.get(i).getName() ;
 
-            while(line.length()<=20) {
+            if(attr.type instanceof Varchar) {
+                line += ": Varchar(" + ((Varchar) attr.type).length + ")";
+            } else {
+                line += ": Int";
+            }
+
+            while(line.length()<(colWidth)) {
                 line += " ";
             }
 
-            if(i != attributes.size()-1) {
+            if (i == (attributes.size()-1)){
+                line += " |";
+            } else {
                 line += "|";
             }
-
             s += line;
             line = "";
         }
-
+        s += "\n";
+        for(int l = 0; l< attributes.size(); l++) {
+            s += "-----------------------------------";
+        }
         s += "|\n";
 
         TableRootNode table = (TableRootNode) tables.get(tableName);
@@ -310,17 +327,23 @@ public class Dbms implements IDbms {
         for(int i = 0; i< rowList.size(); i++) {
             RowNode currRow = rowList.get(i);
             for(int j = 0; j<currRow.getDataFields().length; j++) {
-                line += " " + currRow.getDataField(i) ;
-                while(line.length()<=20) {
+                line += currRow.getDataField(j) ;
+                while(line.length()<colWidth) {
                     line += " ";
                 }
-
-                line += "|";
+                if (j == (currRow.getDataFields().length-1)){
+                    line += " |";
+                } else {
+                    line += "|";
+                }
                 s += line;
                 line = "";
             }
-
             s += "\n";
+            for(int m = 0; m< attributes.size(); m++) {
+                s += "-----------------------------------";
+            }
+            s += "|\n";
         }
 
         System.out.println(s);
