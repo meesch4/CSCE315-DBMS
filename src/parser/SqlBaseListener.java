@@ -172,7 +172,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         String table2 = relationNames.removeLast();
         String table1 = relationNames.removeLast();
 
-        String tempTable = dbms.union(table1, table2);
+        String tempTable = dbms.difference(table1, table2);
 
         relationNames.addLast(tempTable);
     }
@@ -181,7 +181,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         String table2 = relationNames.removeLast();
         String table1 = relationNames.removeLast();
 
-        String tempTable = dbms.union(table1, table2);
+        String tempTable = dbms.product(table1, table2);
 
         relationNames.addLast(tempTable);
     }
