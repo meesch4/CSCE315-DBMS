@@ -71,7 +71,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         dbms.update(tableName, columnsToSet, literalsToSet, condition);
     }
 
-    // TODO: Implement Delete
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
         String tableName = relationNames.removeFirst();
 
