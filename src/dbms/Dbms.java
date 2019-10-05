@@ -249,7 +249,7 @@ public class Dbms implements IDbms {
         for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through row nodes
             boolean include = Condition.evaluate(condition, row, table);
 
-            if(include == true){
+            if(include){
                 newTable.addRow(row);
             }
         }

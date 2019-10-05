@@ -32,8 +32,10 @@ public class Condition {
                 return evaluate((Condition) cond.left, row, table) || evaluate((Condition) cond.right, row, table);
         }
 
-        // Set value or literal
-        if(cond.left instanceof Attribute) {
+        if(cond.left instanceof Attribute && cond.right instanceof Attribute) {
+            value = getAttributeValue(table, ((Attribute) cond.left).attrName, row);
+            literal = getAttributeValue(table, ((Attribute) cond.right).attrName, row);
+        } else if(cond.left instanceof Attribute) {
             value = getAttributeValue(table, ((Attribute) cond.left).attrName, row);
             literal = cond.right;
         } else {
