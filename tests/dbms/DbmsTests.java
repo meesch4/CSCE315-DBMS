@@ -292,6 +292,55 @@ public class DbmsTests {
     }
 
     @Test
+    public void projection_test() {
+        String tableName = "testTable";
+        ArrayList<Attribute> attList = new ArrayList<>();
+        Attribute att0 = new Attribute("name", 0, new Varchar(20), "");
+        Attribute att1 = new Attribute("age", 1, new Varchar(20), "");
+        Attribute att2 = new Attribute("derp", 2, new Varchar(20), "");
+        attList.add(att0);
+        attList.add(att1);
+        attList.add(att2);
+
+        Object[] row0Data = new Object[]{"bob", 0, 5};
+        Object[] row1Data = new Object[]{"bobert", 1, 4};
+        Object[] row2Data = new Object[]{"bobito", 2, 3};
+        Object[] row3Data = new Object[]{"bobby", 3, 2};
+        Object[] row4Data = new Object[]{"robert", 4, 1};
+        Object[] row5Data = new Object[]{"bobbino", 5, 0};
+
+        TableRootNode tableRoot = new TableRootNode(tableName, attList);
+        db.tables.put(tableName, tableRoot);
+        RowNode row0 = new RowNode(row0Data);
+        RowNode row1 = new RowNode(row1Data);
+        RowNode row2 = new RowNode(row2Data);
+        RowNode row3 = new RowNode(row3Data);
+        RowNode row4 = new RowNode(row4Data);
+        RowNode row5 = new RowNode(row5Data);
+        tableRoot.addRow(row0);
+        tableRoot.addRow(row1);
+        tableRoot.addRow(row2);
+        tableRoot.addRow(row3);
+        tableRoot.addRow(row4);
+        tableRoot.addRow(row5);
+        List<String> colNames0 = new ArrayList<>();
+        colNames0.add("name");
+        colNames0.add("age");
+        List<String> colNames1 = new ArrayList<>();
+        colNames1.add("name");
+        colNames1.add("age");
+        colNames1.add("derp");
+        List<String> colNames2 = new ArrayList<>();
+        String outTable0 = db.projection(tableName, colNames0);
+        String outTable1 = db.projection(tableName, colNames1);
+        String outTable2 = db.projection(tableName, colNames2);
+        db.show(outTable0);
+        db.show(outTable1);
+        db.show(outTable2);
+
+    }
+
+    @Test
     public void product_test() {
         String tableName0 = "table0";
         String tableName1 = "table1";
