@@ -160,8 +160,6 @@ public class ShuntingYard {
         return root;
     }
 
-    // Delete this after we complete create_condition
-
     /** Helper functions **/
     // Parses the according operator string into the Operator enum
     private static Operator parse_operator(String opStr) {
@@ -174,9 +172,6 @@ public class ShuntingYard {
             case ">":  return Operator.GREATER;
             case "&&": return Operator.AND;
             case "||": return Operator.OR;
-            default:
-                // Throw an error
-                break;
         }
 
         return Operator.EQUALS;
