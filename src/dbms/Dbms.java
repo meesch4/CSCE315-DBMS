@@ -70,7 +70,7 @@ public class Dbms implements IDbms {
         for(Attribute attributeInto : attListInto) {
             boolean found = false;
             for(Attribute attributeFrom : attListFrom) {
-                if((attributeFrom.getName().equals(attributeInto.getName()))){
+                if((attributeFrom.getName().equals(attributeInto.getName()))){     //ONLY CHECKS THAT ATTRIBUTE NAMES MATCH, DOES NOT CHECK IF THE TYPES MATCH
                     int[] newTup = new int[]{attributeFrom.index, attributeInto.index};
                     //attListFrom.remove(attributeFrom);
                     tuples.add(newTup);
