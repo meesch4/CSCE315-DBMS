@@ -70,9 +70,9 @@ public class Dbms implements IDbms {
         for(Attribute attributeInto : attListInto) {
             boolean found = false;
             for(Attribute attributeFrom : attListFrom) {
-                if((attributeFrom.getType() == attributeInto.getType()) && (attributeFrom.getName() == attributeInto.getName())){
+                if((attributeFrom.getName().equals(attributeInto.getName()))){
                     int[] newTup = new int[]{attributeFrom.index, attributeInto.index};
-                    attListFrom.remove(attributeFrom);
+                    //attListFrom.remove(attributeFrom);
                     tuples.add(newTup);
                     found = true;
                     break;
@@ -185,7 +185,7 @@ public class Dbms implements IDbms {
             if(columnNames.contains(att.getName())){
                 indices.add(att.index);
                 Attribute newAttribute;
-                newAttribute = new Attribute(att.getName(), j, att.getType(), "blah");
+                newAttribute = new Attribute(att.getName(), j, att.getType(), "");
                 newAttributes.add(newAttribute);
                 j++;
             }
@@ -278,6 +278,11 @@ public class Dbms implements IDbms {
         String tempName = getTempTableName();
         ArrayList<Attribute> tempAttributes;
         tempAttributes = tables.get(table1).getAttributes();
+        ArrayList<Attribute> secondAttributes = tables.get(table2).getAttributes();
+        int i = tempAttributes.size();
+        for(Attribute att : secondAttributes){
+            att.index = att.index + i;
+        }
         tempAttributes.addAll(tables.get(table2).getAttributes()); //creates attribute list with both sets of attributes
         TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
         List<RowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
