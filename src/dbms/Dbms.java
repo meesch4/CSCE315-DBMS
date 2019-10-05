@@ -249,7 +249,7 @@ public class Dbms implements IDbms {
         for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through row nodes
             boolean include = Condition.evaluate(condition, row, table);
 
-            if(include == true){
+            if(include){
                 newTable.addRow(row);
             }
         }
@@ -389,7 +389,12 @@ public class Dbms implements IDbms {
             }
         }
 
-        System.out.println(s);
+        if (attributes.size() == 0){
+            s = tableName + "\n";
+            System.out.println(s + "Empty Table");
+        } else {
+            System.out.println(s);
+        }
 
 
 
