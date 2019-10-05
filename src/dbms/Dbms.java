@@ -154,7 +154,7 @@ public class Dbms implements IDbms {
         ArrayList<Attribute> newAttributes = new ArrayList<>();
 
         int j = 0;
-        for(Attribute att : origAttributes){
+        for(Attribute att : origAttributes){ // find the indices of the columns we need to maintain
             if(columnNames.contains(att.getName())){
                 indices.add(att.index);
                 Attribute newAttribute;
@@ -162,8 +162,7 @@ public class Dbms implements IDbms {
                 newAttributes.add(newAttribute);
                 j++;
             }
-        } //find the indices of the columns we need to maintain
-
+        }
 
         TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
 
@@ -338,8 +337,23 @@ public class Dbms implements IDbms {
     }
 
     @Override
-    public void delete(String table, Condition condition) {
+    public void delete(String tableName, Condition condition) {
+        TableRootNode table = tables.get(tableName);
 
+        List<Integer> rowsToRemove = new ArrayList<>();
+
+        List<RowNode> tableRows = table.getRowNodes();
+
+        for(int i = 0; i < tableRows.size(); i++) {
+            if(Condition.evaluate(condition, tableRows.get(i), table)) {
+                rowsToRemove.add(i);
+            }
+        }
+
+        // Remove from the back so that the order doesn't get messed up
+        for(int i = rowsToRemove.size() - 1; i >= 0; i--) {
+            RowNode removed = tableRows.remove((int) rowsToRemove.get(i));
+        }
     }
 
     // Opens a table(table + .db) from storage
