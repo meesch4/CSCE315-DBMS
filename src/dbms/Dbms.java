@@ -99,7 +99,7 @@ public class Dbms implements IDbms {
                 int fromIndex = tuple[0];
                 int toIndex = tuple[1];
                 if(fromIndex == -1){ //if the value is not present in the from table
-                    newDataFields[toIndex] = null; //set value to null
+                    newDataFields[toIndex] = 0; //set value to null
                 }else{
                     newDataFields[toIndex] = rowFrom.getDataField(fromIndex);
                 }
