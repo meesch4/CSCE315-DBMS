@@ -17,6 +17,8 @@ CREATE TABLE species (kind VARCHAR(10)) PRIMARY KEY (kind);
 
 INSERT INTO species VALUES FROM RELATION project (kind) animals;
 
+SHOW species;
+
 a <- rename (aname, akind) (project (name, kind) animals);
 common_names <- project (name) (select (aname == name && akind != kind) (a * animals));
 answer <- common_names;

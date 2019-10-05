@@ -69,9 +69,11 @@ public class Dbms implements IDbms {
         ArrayList<int[]> tuples = new ArrayList<>();
         for(Attribute attributeInto : attListInto) {
             boolean found = false;
+            // Used for determining default values
+            int type = attributeInto.type instanceof Varchar ? 0 : 1; // 0 is a varchar, 1 is an integer.
             for(Attribute attributeFrom : attListFrom) {
                 if((attributeFrom.getName().equals(attributeInto.getName()))){     //ONLY CHECKS THAT ATTRIBUTE NAMES MATCH, DOES NOT CHECK IF THE TYPES MATCH
-                    int[] newTup = new int[]{attributeFrom.index, attributeInto.index};
+                    int[] newTup = new int[]{attributeFrom.index, attributeInto.index, type};
                     //attListFrom.remove(attributeFrom);
                     tuples.add(newTup);
                     found = true;
@@ -79,7 +81,7 @@ public class Dbms implements IDbms {
                 }
             }
             if(!found){
-                int[] newTup = new int[]{-1, attributeInto.index};
+                int[] newTup = new int[]{-1, attributeInto.index, type};
                 tuples.add(newTup);
             }
         }
@@ -99,7 +101,7 @@ public class Dbms implements IDbms {
                 int fromIndex = tuple[0];
                 int toIndex = tuple[1];
                 if(fromIndex == -1){ //if the value is not present in the from table
-                    newDataFields[toIndex] = 0; //set value to null
+                    newDataFields[toIndex] = (tuple[2] == 0 ? "" : 0); //set value to null
                 }else{
                     newDataFields[toIndex] = rowFrom.getDataField(fromIndex);
                 }
