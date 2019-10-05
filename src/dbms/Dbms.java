@@ -389,7 +389,12 @@ public class Dbms implements IDbms {
             }
         }
 
-        System.out.println(s);
+        if (attributes.size() == 0){
+            s = tableName + "\n";
+            System.out.println(s + "Empty Table");
+        } else {
+            System.out.println(s);
+        }
 
 
 
