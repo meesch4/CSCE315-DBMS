@@ -312,13 +312,17 @@ public class Dbms implements IDbms {
     public void show(String tableName) {
         String s;
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
-        final int colWidth = 34;
+        final int colWidth = 25;
         String line = "";
         s = " " + tableName + "\n" ;
         for(int k = 0; k< attributes.size(); k++) {
-            s += "-----------------------------------";
+            s += "--------------------------";
         }
-        s += "|\n";
+        if (attributes.size() == 0){
+            s += "";
+        } else {
+            s += "|\n";
+        }
         for(int i = 0; i< attributes.size(); i++) {
             Attribute attr = attributes.get(i);
 
@@ -344,9 +348,13 @@ public class Dbms implements IDbms {
         }
         s += "\n";
         for(int l = 0; l< attributes.size(); l++) {
-            s += "-----------------------------------";
+            s += "--------------------------";
         }
-        s += "|\n";
+        if (attributes.size() == 0){
+            s += "";
+        } else {
+            s += "|\n";
+        }
 
         TableRootNode table = (TableRootNode) tables.get(tableName);
         List<RowNode> rowList = table.getRowNodes();
@@ -367,9 +375,13 @@ public class Dbms implements IDbms {
             }
             s += "\n";
             for(int m = 0; m< attributes.size(); m++) {
-                s += "-----------------------------------";
+                s += "--------------------------";
             }
-            s += "|\n";
+            if (attributes.size() == 0){
+                s += "";
+            } else {
+                s += "|\n";
+            }
         }
 
         System.out.println(s);
