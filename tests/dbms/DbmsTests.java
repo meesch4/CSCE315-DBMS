@@ -383,7 +383,7 @@ public class DbmsTests {
         String tableName0 = "table0";
         String tableName1 = "table1";
         createTable(tableName0,  0);
-        createTable(tableName1, 1);
+        createTable(tableName1, 0);
         Object[] table0_data0 = new Object[] {"stuff", 1};
         Object[] table0_data1 = new Object[] {"stuff2", 2};
         Object[] table1_data0 = new Object[] {"stuff3", 3};
