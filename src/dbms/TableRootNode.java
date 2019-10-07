@@ -36,7 +36,7 @@ public class TableRootNode { //node containing relation name and attributes of t
         row.primaryKeyIndices = indices;
 
         String primaryKey = row.getPrimaryKeyValue();
-        System.out.println(primaryKey);
+        // System.out.println(primaryKey);
 
         children.put(primaryKey, row);
         // Generate the primary key for it

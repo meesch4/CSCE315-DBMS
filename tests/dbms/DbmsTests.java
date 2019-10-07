@@ -61,7 +61,7 @@ public class DbmsTests {
         db.insertFromValues(tableName, dataList);
 
         TableRootNode table = db.getTable(tableName);
-        RowNode ret = table.getRowNodes().get("string2");
+        RowNode ret = table.getRowNodes().get("string");
 
         RowNode expected = new RowNode(data);
         assertEquals(ret, expected);
@@ -86,7 +86,7 @@ public class DbmsTests {
 
         assertEquals(2, table0.getRowNodes().size()); // Should have two entries
 
-        RowNode actual = table0.getRowNodes().get(1);
+        RowNode actual = table0.getRowNodes().get("stuff");
         RowNode expected = new RowNode(new Object[] { "stuff", 0 });
 
         assertEquals(expected, actual);
@@ -111,7 +111,7 @@ public class DbmsTests {
 
         assertEquals(2, table0.getRowNodes().size()); // Should have two entries
 
-        RowNode actual = table0.getRowNodes().get(1);
+        RowNode actual = table0.getRowNodes().get("stuff"); // Where stuff is primaryKey
         RowNode expected = new RowNode(new Object[] { "stuff", 3 });
 
         assertEquals(expected, actual);
@@ -196,17 +196,18 @@ public class DbmsTests {
         String tableName = "table";
         createTable(tableName, 0);
 
-        List<Object> data = new ArrayList<>(Arrays.asList("one", 1));
+        List<Object> initialData = new ArrayList<>(Arrays.asList("one", 1));
 
-        db.insertFromValues(tableName, data);
+        db.insertFromValues(tableName, initialData);
 
+        // SET varcharCol = "one" && intCol = 2 WHERE varcharCol == "one" || intCol == 1
         List<String> columnsToSet = new ArrayList<>(Arrays.asList("varcharCol", "intCol"));
         List<Object> valuesToSet = new ArrayList<>(Arrays.asList("two", 2));
         Condition condition = createCondition(0);
 
         db.update(tableName, columnsToSet, valuesToSet, condition);
 
-        RowNode actual = db.tables.get(tableName).getRowNodes().get(0);
+        RowNode actual = db.tables.get(tableName).getRowNodes().get("two");
         RowNode expected = new RowNode(valuesToSet.toArray());
 
         assertEquals(actual, expected);
