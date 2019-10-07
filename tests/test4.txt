@@ -1,0 +1,14 @@
+﻿CREATE TABLE animals1 (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+INSERT INTO animals1 VALUES FROM ("Joe", "dog", 10);
+INSERT INTO animals1 VALUES FROM ("Ann", "bird", 4);
+CREATE TABLE animals2 (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+INSERT INTO animals2 VALUES FROM ("Jen", "dog", 2);
+CREATE TABLE animals3 (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+INSERT INTO animals3 VALUES FROM ("Dee", "cat", 6);
+CREATE TABLE animals4 (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+INSERT INTO animals4 VALUES FROM ("Po", "panda", 15);
+CREATE TABLE animals5 (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
+INSERT INTO animals5 VALUES FROM ("Tigress", "tiger", 13);
+zoo <- (animals4 + animals5) + (select (kind == "cat" || (kind == "dog" && years > 3)) (animals1 + (animals2 + animals3)));
+SHOW zoo;
+EXIT;
