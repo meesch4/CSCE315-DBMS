@@ -61,7 +61,7 @@ public class DbmsTests {
         db.insertFromValues(tableName, dataList);
 
         TableRootNode table = db.getTable(tableName);
-        RowNode ret = table.getRowNodes().get(0);
+        RowNode ret = table.getRowNodes().get("string2");
 
         RowNode expected = new RowNode(data);
         assertEquals(ret, expected);
@@ -182,8 +182,8 @@ public class DbmsTests {
         //System.out.println("union test");
         assertEquals(unionTable.getRowNodes().size(), 3); // Should have three entries (since duplicate should be removed.)
 
-        List<RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
-        List<RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
+        HashMap<String, RowNode> manualRowNodes = db.getTable(newTable).getRowNodes();
+        HashMap<String, RowNode> unionRowNodes = db.getTable(unionNewTable.relationName).getRowNodes();
 
         assertEquals(manualRowNodes, unionRowNodes);
         //System.out.println("unionTest end");

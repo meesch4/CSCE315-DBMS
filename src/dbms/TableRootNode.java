@@ -10,29 +10,37 @@ public class TableRootNode { //node containing relation name and attributes of t
     public TableRootNode(String name, ArrayList<Attribute> attributes){
         relationName = name;
         this.attributes = attributes;
-        children = new ArrayList<>();
+        children = new HashMap<>();
     }
 
-    public TableRootNode(String name, ArrayList<Attribute> attributes, List<RowNode> kids){
+    public TableRootNode(String name, ArrayList<Attribute> attributes, HashMap<String, RowNode> kids){
         relationName = name;
         this.attributes = attributes;
         children = kids;
     }
     String relationName;  //make private variables which have getters and setters.
     ArrayList<Attribute> attributes;  //rename to attributes
+    HashSet<Attribute> primaryKeys;
 
-    List<RowNode> children;
+    HashMap<String, RowNode> children; // Rename to rows?
 
     public void addRow(RowNode row){
-        this.children.add(row);
+        // this.children.add(row);
+        String primaryKey = "";
+        // Generate the primary key for it
+        // If we don't have a primary key, make a unique ID?
     }
+
     public void setAttributeName(String name, int index){
         Attribute tempAtt = attributes.get(index); //get attribute that is being changed
         tempAtt.setName(name); //change name of attribute
         attributes.set(index, tempAtt); //set in arraylist
     }
     public ArrayList<Attribute> getAttributes() { return this.attributes; }
-    public List<RowNode> getRowNodes() { return this.children; }
+    public HashMap<String, RowNode> getRowNodes() {
+        return this.children;
+    }
+    // public List<RowNode> getRowNodes() { return this.children; }
     public int getAttributeSize(){
         return this.attributes.size();
     }
