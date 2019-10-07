@@ -33,6 +33,7 @@ public class RowNode {
         return ret.toString();
     }
 
+    // Compares each data point with the other
     @Override
     public boolean equals(Object obj) {
         System.out.println("Equals");
