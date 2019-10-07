@@ -94,8 +94,9 @@ public class Dbms implements IDbms {
 
 
 
-        List<RowNode> rowListFrom = tableFrom.getRowNodes();
-        for(RowNode rowFrom : rowListFrom){ //pulls each row node from table from
+        // List<RowNode> rowListFrom = tableFrom.getRowNodes();
+        HashMap<String, RowNode> rowMapFrom = tableFrom.getRowNodes();
+        for(RowNode rowFrom : rowMapFrom.values()){ //pulls each row node from table from
             Object[] newDataFields = new Object[attListInto.size()];
             for(int[] tuple : tuples){
                 int fromIndex = tuple[0];
@@ -106,6 +107,7 @@ public class Dbms implements IDbms {
                     newDataFields[toIndex] = rowFrom.getDataField(fromIndex);
                 }
             }
+
             RowNode newRow = new RowNode(newDataFields);
             tableInto.addRow(newRow);  //inserts them into table into
         }
@@ -131,7 +133,6 @@ public class Dbms implements IDbms {
         }
         RowNode newRowNode = new RowNode(rowVals);//creates new row node
         temp.addRow(newRowNode);//adds row node
-
     }
 
     @Override
@@ -139,14 +140,17 @@ public class Dbms implements IDbms {
         TableRootNode table = tables.get(tableName);
 
         //e.g. update animals set age == 10 if age >= 10.
-        List<Integer> rowsToUpdate = new ArrayList<>(); // Contains the rows to update, by which rowIndex they are in
+        // List<Integer> rowsToUpdate = new ArrayList<>(); // Contains the rows to update, by which rowIndex they are in
+        List<String> rowKeysToUpdate = new ArrayList<>(); // Could also do a set
 
         // Iterate through all of table.rows
-        List<RowNode> tableRows = table.getRowNodes();
-        for(int i = 0; i < tableRows.size(); i++) {
+        // List<RowNode> tableRows = table.getRowNodes();
+        HashMap<String, RowNode> tableRows = table.getRowNodes();
+        for(Map.Entry<String, RowNode> rowEntry : tableRows.entrySet()) {
+            String key = rowEntry.getKey(); // The generated primary key or UUID
             // Evaluate the condition and add it to rowsToUpdate if it's true
-            if(Condition.evaluate(condition, tableRows.get(i), table)){ // Might need to pass in table
-                rowsToUpdate.add(i); // Add its according index
+            if(Condition.evaluate(condition, rowEntry.getValue(), table)){ // Might need to pass in tab
+                rowKeysToUpdate.add(key);
             }
         }
 
@@ -162,8 +166,8 @@ public class Dbms implements IDbms {
         }
 
         // Update the according rows
-        for(int rowIndex : rowsToUpdate) {
-            RowNode row = tableRows.get(rowIndex); // Pass by reference?
+        for(String rowKey : rowKeysToUpdate) {
+            RowNode row = tableRows.get(rowKey); // Pass by reference?
 
             // Iterate through colIndicesToUpdate and set the according value from valuesToSetTo
             for(Map.Entry<Integer, Object> colValuePair : colsToUpdate.entrySet()) {
@@ -171,7 +175,7 @@ public class Dbms implements IDbms {
             }
 
             // Not sure if RowNode is passed by reference or value, so this may not be necessary
-            tableRows.set(rowIndex, row);
+            tableRows.put(rowKey, row);
         }
     }
 
@@ -195,7 +199,7 @@ public class Dbms implements IDbms {
 
         TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
 
-        for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through tableFrom's rows
+        for(RowNode row : tables.get(tableFrom).getRowNodes().values()){ //iterate through tableFrom's rows
             Object[] data = new Object[j]; //create new dataFields object[]
 
             int i = 0;
@@ -214,8 +218,9 @@ public class Dbms implements IDbms {
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
         String newName = getTempTableName();
         ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
-        List<RowNode> kids = tables.get(tableName).getRowNodes();
-        TableRootNode tempTable = new TableRootNode(newName, attributes, kids);
+        // List<RowNode> kids = tables.get(tableName).getRowNodes();
+        HashMap<String, RowNode> rows = tables.get(tableName).getRowNodes();
+        TableRootNode tempTable = new TableRootNode(newName, attributes, rows);
         int i = 0;
         for(String name : newColumnNames){
             tempTable.setAttributeName(name, i);
@@ -229,15 +234,18 @@ public class Dbms implements IDbms {
     public String union(String table1, String table2) {
         String newTable = getTempTableName(); //the output table name will be a combination of the two table names
         ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
-        List<RowNode> newRows = tables.get(table1).getRowNodes();
-        List<RowNode> newRows2 = tables.get(table2).getRowNodes();
-        newRows.addAll(newRows2);
-        Set<RowNode> noDupes = new HashSet<>(newRows); //remove duplicates
-        newRows.clear(); //clear list
-        newRows.addAll(noDupes);  //add new children without duplicates
+        // List<RowNode> newRows = tables.get(table1).getRowNodes();
+        HashMap<String, RowNode> newRows = new HashMap<>(tables.get(table1).getRowNodes()); // Make a copy so we don't modify the main one
+        //List<RowNode> newRows2 = tables.get(table2).getRowNodes();
+        HashMap<String, RowNode> newRows2 = tables.get(table2).getRowNodes();
+        newRows.putAll(newRows2);
+        // Set<RowNode> noDupes = new HashSet<>(newRows); //remove duplicates
+        // newRows.clear(); //clear list
+        // newRows.addAll(noDupes);  //add new children without duplicates
 
         TableRootNode newTableRoot = new TableRootNode(newTable, newAttributes, newRows);
         tables.put(newTable, newTableRoot); //add the union to the tables hashmap
+
         return newTable;
     }
 
@@ -247,14 +255,16 @@ public class Dbms implements IDbms {
 
         TableRootNode table = tables.get(tableFrom);
         ArrayList<Attribute> attributes = table.getAttributes();
-        TableRootNode newTable = new TableRootNode(tempTableName, attributes);
-        for(RowNode row : tables.get(tableFrom).getRowNodes()){ //iterate through row nodes
+        TableRootNode newTable = new TableRootNode(tempTableName, attributes); // Set its primary keys to be tableFrom's
+
+        for(RowNode row : tables.get(tableFrom).getRowNodes().values()) { //iterate through row nodes
             boolean include = Condition.evaluate(condition, row, table);
 
-            if(include){
+            if(include) {
                 newTable.addRow(row);
             }
         }
+
         tables.put(tempTableName, newTable);
         return tempTableName;
     }
@@ -265,12 +275,15 @@ public class Dbms implements IDbms {
         String tempTableName = getTempTableName();
         ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
         TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
-        for(RowNode row : tables.get(table1).children){ //for all row nodes in table 1
-            if(!(tables.get(table2).children.contains(row))){//if the row node is not in table 2
-                tempTable.addRow(row); //place it in the new temp table (create a table with all elements in table 1 but not in table 2)
+
+        for(Map.Entry<String, RowNode> rowEntry : tables.get(table1).getRowNodes().entrySet()){ //for all row nodes in table 1
+            if(!(tables.get(table2).getRowNodes().containsKey(rowEntry.getKey()))) { //if the row node is not in table 2
+                tempTable.addRow(rowEntry.getValue()); //place it in the new temp table (create a table with all elements in table 1 but not in table 2)
             }
         }
         tables.put(tempTableName, tempTable);//add new table to hash map
+
+        // Transfer primary keys to new tables
 
         return tempTableName;
     }
@@ -286,14 +299,12 @@ public class Dbms implements IDbms {
             att.index = att.index + k;
         }
         tempAttributes.addAll(secondAttributes); //creates attribute list with both sets of attributes
+
         TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
-        List<RowNode> tableOneLeaves = tables.get(table1).getRowNodes();//leaves from table 1
-        List<RowNode> tableTwoLeaves = tables.get(table2).getRowNodes(); //leaves from table 2
+        // TODO: Temp table's primary keys should be every single attribute
 
-        for(RowNode rowOne : tableOneLeaves){
-            for(RowNode rowTwo : tableTwoLeaves){
-
-
+        for(RowNode rowOne : tables.get(table1).getRowNodes().values()){
+            for(RowNode rowTwo : tables.get(table2).getRowNodes().values()){
                 int lengOne = rowOne.getDataFields().length;
                 int lengTwo = rowTwo.getDataFields().length;
                 int leng = lengOne + lengTwo;
@@ -364,9 +375,9 @@ public class Dbms implements IDbms {
         }
 
         TableRootNode table = (TableRootNode) tables.get(tableName);
-        List<RowNode> rowList = table.getRowNodes();
-        for(int i = 0; i< rowList.size(); i++) {
-            RowNode currRow = rowList.get(i);
+        // List<RowNode> rowList = table.getRowNodes();
+        HashMap<String, RowNode> rowMap = table.getRowNodes();
+        for(RowNode currRow : rowMap.values()) {
             for(int j = 0; j<currRow.getDataFields().length; j++) {
                 line += currRow.getDataField(j) ;
                 while(line.length()<colWidth) {
@@ -406,19 +417,20 @@ public class Dbms implements IDbms {
     public void delete(String tableName, Condition condition) {
         TableRootNode table = tables.get(tableName);
 
-        List<Integer> rowsToRemove = new ArrayList<>();
+        Set<String> rowKeysToRemove = new HashSet<>();
 
-        List<RowNode> tableRows = table.getRowNodes();
+        // List<RowNode> tableRows = table.getRowNodes();
+        Map<String, RowNode> tableRows = table.getRowNodes();
 
-        for(int i = 0; i < tableRows.size(); i++) {
-            if(Condition.evaluate(condition, tableRows.get(i), table)) {
-                rowsToRemove.add(i);
+        for(Map.Entry<String, RowNode> rowEntry : tableRows.entrySet()) {
+            if(Condition.evaluate(condition, rowEntry.getValue(), table)) {
+                rowKeysToRemove.add(rowEntry.getKey());
             }
         }
 
         // Remove from the back so that the order doesn't get messed up
-        for(int i = rowsToRemove.size() - 1; i >= 0; i--) {
-            RowNode removed = tableRows.remove((int) rowsToRemove.get(i));
+        for(String rowKey : rowKeysToRemove) {
+            RowNode removed = tableRows.remove(rowKey);
         }
     }
 
