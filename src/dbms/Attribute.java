@@ -11,7 +11,6 @@ public class Attribute {
     public Attribute(String name) {
         index = -1;
         type = null;
-        primaryKey = null;
         this.attrName = name;
     }
 
@@ -19,12 +18,11 @@ public class Attribute {
         attrName = name;
         index = ind;
         this.type = type;
-        primaryKey = null;
     }
+
     int index;  //used to denote the index of the attribute within the row
     String attrName; //name of attribute, e.g. "age" for an age column
     Type type;
-    String primaryKey; // Is this even used? What is this supposed to mean?
 
     public int getSize(){
         if(getVC())
