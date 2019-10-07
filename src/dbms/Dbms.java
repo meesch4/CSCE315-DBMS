@@ -29,19 +29,22 @@ public class Dbms implements IDbms {
             return;
         }
         ArrayList<Attribute> attributesList = new ArrayList<Attribute>();
+        ArrayList<Attribute> newPrimaryKeys = new ArrayList<>();
         Iterator<String> iter = primaryKeys.iterator();
         Iterator<Type> iterType = columnTypes.iterator();
         int i = 0; // Rename to columnIndex? Why not just do a for i = 0 loop?
         for(String element : columnNames){ //iterate through, make the attribute list
-            String pkeyel = ""; // How is this even used?
-            // String pkeyel = iter.next();
             Type typeel = iterType.next();
             Attribute temp;
-            temp = new Attribute(element, i, typeel, pkeyel);
+            temp = new Attribute(element, i, typeel);
             i++;
             attributesList.add(temp); ///this creates the attributes list
+
+            if(primaryKeys.contains(element))
+                newPrimaryKeys.add(temp);
         }
-        TableRootNode table = new TableRootNode(tableName, attributesList); //creates table
+
+        TableRootNode table = new TableRootNode(tableName, attributesList, newPrimaryKeys); //creates table
         tables.put(tableName, table); //puts new table root node into hashmap with name as key
     }
 
@@ -185,19 +188,23 @@ public class Dbms implements IDbms {
         ArrayList<Attribute> origAttributes = tables.get(tableFrom).getAttributes();
         ArrayList<Integer> indices = new ArrayList<>();
         ArrayList<Attribute> newAttributes = new ArrayList<>();
+        ArrayList<Attribute> newPrimaryKeys = new ArrayList<>();
 
         int j = 0;
         for(Attribute att : origAttributes){ // find the indices of the columns we need to maintain
             if(columnNames.contains(att.getName())){
                 indices.add(att.index);
                 Attribute newAttribute;
-                newAttribute = new Attribute(att.getName(), j, att.getType(), "");
+                newAttribute = new Attribute(att.getName(), j++, att.getType());
                 newAttributes.add(newAttribute);
-                j++;
+
+                if(tables.get(tableFrom).primaryKeys.contains(att)) {
+                    newPrimaryKeys.add(newAttribute);
+                }
             }
         }
 
-        TableRootNode newTable = new TableRootNode(tempTable, newAttributes);
+        TableRootNode newTable = new TableRootNode(tempTable, newAttributes, newPrimaryKeys);
 
         for(RowNode row : tables.get(tableFrom).getRowNodes().values()){ //iterate through tableFrom's rows
             Object[] data = new Object[j]; //create new dataFields object[]
@@ -217,14 +224,11 @@ public class Dbms implements IDbms {
     @Override
     public String rename(String tableName, List<String> newColumnNames) { //should this really return a string?
         String newName = getTempTableName();
-        ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
-        // List<RowNode> kids = tables.get(tableName).getRowNodes();
-        HashMap<String, RowNode> rows = tables.get(tableName).getRowNodes();
-        TableRootNode tempTable = new TableRootNode(newName, attributes, rows);
+        TableRootNode oldTable = tables.get(tableName);
+        TableRootNode tempTable = new TableRootNode(newName, oldTable.getAttributes(), oldTable.primaryKeys, oldTable.getRowNodes());
         int i = 0;
         for(String name : newColumnNames){
-            tempTable.setAttributeName(name, i);
-            i++;
+            tempTable.setAttributeName(name, i++);
         }
         tables.put(newName, tempTable);
         return newName;
@@ -243,7 +247,7 @@ public class Dbms implements IDbms {
         // newRows.clear(); //clear list
         // newRows.addAll(noDupes);  //add new children without duplicates
 
-        TableRootNode newTableRoot = new TableRootNode(newTable, newAttributes, newRows);
+        TableRootNode newTableRoot = new TableRootNode(newTable, newAttributes, tables.get(table1).primaryKeys, newRows);
         tables.put(newTable, newTableRoot); //add the union to the tables hashmap
 
         return newTable;
@@ -255,7 +259,7 @@ public class Dbms implements IDbms {
 
         TableRootNode table = tables.get(tableFrom);
         ArrayList<Attribute> attributes = table.getAttributes();
-        TableRootNode newTable = new TableRootNode(tempTableName, attributes); // Set its primary keys to be tableFrom's
+        TableRootNode newTable = new TableRootNode(tempTableName, attributes, table.primaryKeys); // Set its primary keys to be tableFrom's
 
         for(RowNode row : tables.get(tableFrom).getRowNodes().values()) { //iterate through row nodes
             boolean include = Condition.evaluate(condition, row, table);
@@ -274,7 +278,7 @@ public class Dbms implements IDbms {
         //String tempTable = getTempTableName();
         String tempTableName = getTempTableName();
         ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
-        TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes);
+        TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes, tables.get(table1).primaryKeys);
 
         for(Map.Entry<String, RowNode> rowEntry : tables.get(table1).getRowNodes().entrySet()){ //for all row nodes in table 1
             if(!(tables.get(table2).getRowNodes().containsKey(rowEntry.getKey()))) { //if the row node is not in table 2
@@ -288,6 +292,7 @@ public class Dbms implements IDbms {
         return tempTableName;
     }
 
+    // Primary key is every single column
     @Override
     public String product(String table1, String table2) {
         String tempName = getTempTableName();
@@ -300,7 +305,8 @@ public class Dbms implements IDbms {
         }
         tempAttributes.addAll(secondAttributes); //creates attribute list with both sets of attributes
 
-        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes); //new table
+        // Primary keys are equivalent to every single column for product
+        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes, tempAttributes); //new table
         // TODO: Temp table's primary keys should be every single attribute
 
         for(RowNode rowOne : tables.get(table1).getRowNodes().values()){
