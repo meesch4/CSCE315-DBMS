@@ -14,7 +14,7 @@ public class Attribute {
         this.attrName = name;
     }
 
-    Attribute(String name, int ind, Type type, String pkey){
+    Attribute(String name, int ind, Type type){
         attrName = name;
         index = ind;
         this.type = type;

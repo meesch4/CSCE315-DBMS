@@ -39,8 +39,8 @@ public class DbmsTests {
         TableRootNode result= sut.getTable(tableName);
         // assertNotNull(result); // First make sure this key actually exists
 
-        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
-        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20));
+        Attribute col2 = new Attribute("intCol", 1, new IntType());
 
         // Make sure the attributes are what we expect
         assertEquals(result.getAttribute(0), col1);
@@ -125,11 +125,11 @@ public class DbmsTests {
         createTable(tableName1, 1);
 
         Object[] data0 = new Object[] { "stuff", 2 };
-        Object[] data1 = new Object[] { "stuff" };
+        Object[] data1 = new Object[] { "newstuff" };
 
         // Assumes insertFromValues works as well
         db.insertFromValues(tableName0, Arrays.asList(data0));
-        db.insertFromValues(tableName1, Arrays.asList(data1));
+        db.insertFromValues(tableName0, Arrays.asList(data1));
         db.show(tableName0);
         db.show(tableName1);
     }
@@ -138,10 +138,11 @@ public class DbmsTests {
     public void union_doesCombineTables() {
         String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
         ArrayList<Attribute> attributes = new ArrayList<>();
-        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20), "");
-        Attribute col2 = new Attribute("intCol", 1, new IntType(), "");
+        Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20));
+        Attribute col2 = new Attribute("intCol", 1, new IntType());
         attributes.add(col1);
         attributes.add(col2);
+        ArrayList<Attribute> primaryKeys = new ArrayList<>(attributes);
 
 
         Object[] rowData0 = new Object[] { "string", 1};
@@ -152,9 +153,9 @@ public class DbmsTests {
         RowNode row1 = new RowNode(rowData1);
         RowNode row2 = new RowNode(rowData2);
 
-        TableRootNode table0 = new TableRootNode(tableName0, attributes);
-        TableRootNode table1 = new TableRootNode(tableName1, attributes);
-        TableRootNode table2 = new TableRootNode(tableName2, attributes);
+        TableRootNode table0 = new TableRootNode(tableName0, attributes, primaryKeys);
+        TableRootNode table1 = new TableRootNode(tableName1, attributes, primaryKeys);
+        TableRootNode table2 = new TableRootNode(tableName2, attributes, primaryKeys);
 
         table0.addRow(row0);
         table0.addRow(row1);
@@ -333,9 +334,9 @@ public class DbmsTests {
     public void projection_test() {
         String tableName = "testTable";
         ArrayList<Attribute> attList = new ArrayList<>();
-        Attribute att0 = new Attribute("name", 0, new Varchar(20), "");
-        Attribute att1 = new Attribute("age", 1, new Varchar(20), "");
-        Attribute att2 = new Attribute("derp", 2, new Varchar(20), "");
+        Attribute att0 = new Attribute("name", 0, new Varchar(20));
+        Attribute att1 = new Attribute("age", 1, new Varchar(20));
+        Attribute att2 = new Attribute("derp", 2, new Varchar(20));
         attList.add(att0);
         attList.add(att1);
         attList.add(att2);
@@ -347,7 +348,7 @@ public class DbmsTests {
         Object[] row4Data = new Object[]{"robert", 4, 1};
         Object[] row5Data = new Object[]{"bobbino", 5, 0};
 
-        TableRootNode tableRoot = new TableRootNode(tableName, attList);
+        TableRootNode tableRoot = new TableRootNode(tableName, attList, attList);
         db.tables.put(tableName, tableRoot);
         RowNode row0 = new RowNode(row0Data);
         RowNode row1 = new RowNode(row1Data);

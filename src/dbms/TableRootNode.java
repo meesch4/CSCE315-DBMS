@@ -7,26 +7,38 @@ import java.util.*;
  *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
  */
 public class TableRootNode { //node containing relation name and attributes of table (column types)
-    public TableRootNode(String name, ArrayList<Attribute> attributes){
+    public TableRootNode(String name, ArrayList<Attribute> attributes, ArrayList<Attribute> primaryKeys){
         relationName = name;
         this.attributes = attributes;
         children = new HashMap<>();
+        this.primaryKeys = primaryKeys;
     }
 
-    public TableRootNode(String name, ArrayList<Attribute> attributes, HashMap<String, RowNode> kids){
+    public TableRootNode(String name, ArrayList<Attribute> attributes, ArrayList<Attribute> primaryKeys, HashMap<String, RowNode> kids){
         relationName = name;
         this.attributes = attributes;
         children = kids;
+        this.primaryKeys = primaryKeys;
     }
+
     String relationName;  //make private variables which have getters and setters.
     ArrayList<Attribute> attributes;  //rename to attributes
-    HashSet<Attribute> primaryKeys;
-
+    ArrayList<Attribute> primaryKeys; // Have this as a row so the primaryKeys are in order
     HashMap<String, RowNode> children; // Rename to rows?
 
     public void addRow(RowNode row){
-        // this.children.add(row);
-        String primaryKey = "";
+        int[] indices = new int[primaryKeys.size()];
+        int i = 0;
+        for(Attribute attribute : primaryKeys) {
+            indices[i++] = attribute.index;
+        }
+
+        row.primaryKeyIndices = indices;
+
+        String primaryKey = row.getPrimaryKeyValue();
+        System.out.println(primaryKey);
+
+        children.put(primaryKey, row);
         // Generate the primary key for it
         // If we don't have a primary key, make a unique ID?
     }

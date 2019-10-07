@@ -24,13 +24,13 @@ public class RowNode {
     }
 
     public String getPrimaryKeyValue() {
-        String ret = ""; // Can probably use
+        StringBuilder ret = new StringBuilder(); // Can probably use
 
         for(int i = 0; i < primaryKeyIndices.length; i++) {
-            ret += dataFields[i].toString();
+            ret.append(dataFields[i].toString());
         }
 
-        return ret;
+        return ret.toString();
     }
 
     @Override
