@@ -177,8 +177,12 @@ public class Dbms implements IDbms {
                 row.setDataField(colValuePair.getKey(), colValuePair.getValue());
             }
 
-            // Not sure if RowNode is passed by reference or value, so this may not be necessary
-            tableRows.put(rowKey, row);
+            // Remove it from being referenced w/ its old row key
+            // Might not always the value that's used by the primaryKey, but it shouldn't affect it
+            tableRows.remove(rowKey);
+
+            String newRowKey = row.getPrimaryKeyValue();
+            tableRows.put(newRowKey, row);
         }
     }
 
