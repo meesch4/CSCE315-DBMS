@@ -141,6 +141,30 @@ public class DbmsTests {
     }
 
     @Test
+    public void delete_doesDelete() {
+        String tableName = "table0";
+        createTable(tableName, 0);
+
+        Object[] data0 = new Object[] { "one", 2};
+        Object[] data1 = new Object[] { "two", 1};
+
+        db.insertFromValues(tableName, Arrays.asList(data0));
+        db.insertFromValues(tableName, Arrays.asList(data1));
+
+        // Condition is varcharCol == "one" || intCol == 1
+        db.delete(tableName, createCondition(0));
+
+        TableRootNode table = db.getTable(tableName);
+
+        RowNode deletedRow = table.getRowNodes().get("one");
+        RowNode remainingRow = table.getRowNodes().get("two");
+
+        assertEquals(1, table.getRowNodes().size());
+        assertNull(deletedRow); // Shouldn't exist
+        assertNotNull(remainingRow); // Shouldn't have been deleted
+    }
+
+    @Test
     public void show_test(){
         String tableName0 = "table0", tableName1 = "table1";
         createTable(tableName0, 0);
