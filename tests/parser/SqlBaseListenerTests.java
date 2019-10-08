@@ -88,7 +88,7 @@ public class SqlBaseListenerTests {
 
     @Test
     public void update_normalInput_passesCorrectArguments() {
-        String input = "UPDATE tableName SET column = \"value\", column2 = 25 WHERE column = \"somethingelse\"";
+        String input = "UPDATE tableName SET column = \"value\", column2 = 25 WHERE column == \"somethingelse\"";
         String expectedTableName = "tableName";
         List<String> expectedColumnNames = new ArrayList<>(
                 Arrays.asList("column", "column2")

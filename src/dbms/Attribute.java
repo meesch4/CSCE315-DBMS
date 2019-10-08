@@ -8,17 +8,25 @@ import types.Varchar;
  *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
  */
 public class Attribute {
+    Attribute(String name, int ind, Type type){
+        attrName = name;
+        index = ind;
+        this.type = type;
+    }
+
     public Attribute(String name) {
         index = -1;
         type = null;
         this.attrName = name;
     }
 
-    Attribute(String name, int ind, Type type){
-        attrName = name;
-        index = ind;
-        this.type = type;
+    // Copy constructor
+    public Attribute(Attribute toClone) {
+        this.attrName = toClone.getName();
+        this.type = toClone.getType();
+        this.index = toClone.index;
     }
+
 
     int index;  //used to denote the index of the attribute within the row
     String attrName; //name of attribute, e.g. "age" for an age column
