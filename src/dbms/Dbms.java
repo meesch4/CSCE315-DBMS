@@ -50,21 +50,11 @@ public class Dbms implements IDbms {
 
     @Override
     public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
-        //we will need to work on handling the creation of temporary tables for insert command
-
-
-        //Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
-        //essentially just take the arraylist of row nodes in tablefrom and append it to the array list of rownodes in insert into
+        // Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
         TableRootNode tableFrom = tables.get(tableInsertFrom);
         ArrayList<Attribute> attListFrom = tableFrom.getAttributes();
         TableRootNode tableInto = tables.get(tableInsertInto);
         ArrayList<Attribute> attListInto = tableInto.getAttributes();
-        /* if(attListFrom != attListInto){ //may not work properly as a comparison, if so just remove since data should be clean
-            System.out.println("Mismatched attirbutes");
-            return;
-        } */
-
-
 
         // when an attribute in the attributes from list matches the name and type of an attribute in the attributes into list,
         //this loop will create a tuple of the form [indexFrom, indexInto] to inform the next code block which columns in the

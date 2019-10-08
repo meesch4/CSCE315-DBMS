@@ -109,12 +109,34 @@ public class DbmsTests {
 
         TableRootNode table0 = db.getTable(tableName0);
 
-        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
-
         RowNode actual = table0.getRowNodes().get("stuff"); // Where stuff is primaryKey
         RowNode expected = new RowNode(new Object[] { "stuff", 3 });
 
+        assertEquals(2, table0.getRowNodes().size()); // Should have two entries
         assertEquals(expected, actual);
+    }
+
+    @Test // Tests if insertFromRelation updates the primaryKeys so there's only 1 row with the column of "string"
+    public void insertFromRelation_mismatchedAttributes_doesRemovePrimaryKeyDuplicates() {
+        String tableName0 = "table0", tableName1 = "table1";
+        createTable(tableName0, 0);
+        createTable(tableName1, 2);
+
+        Object[] data0 = new Object[] { "string", 2 };
+        Object[] data1 = new Object[] { 3, "string" };
+
+        // Assumes insertFromValues works as well
+        db.insertFromValues(tableName0, Arrays.asList(data0));
+        db.insertFromValues(tableName1, Arrays.asList(data1));
+
+        db.insertFromRelation(tableName0, tableName1);
+
+        TableRootNode table0 = db.getTable(tableName0);
+
+        RowNode actual = table0.getRowNodes().get("string"); // Where string is primaryKey
+        RowNode expected = new RowNode(new Object[] { "string", 3 }); // Should update the row w/ value 2
+
+        assertEquals(table0.getRowNodes().size(), 1); // Should only be 1 of the rows
         assertEquals(expected, actual);
     }
 
