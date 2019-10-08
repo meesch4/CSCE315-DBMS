@@ -368,7 +368,14 @@ public class Dbms implements IDbms {
         for(int i = 0; i< rowList.size(); i++) {
             RowNode currRow = rowList.get(i);
             for(int j = 0; j<currRow.getDataFields().length; j++) {
-                line += currRow.getDataField(j) ;
+                Object data = currRow.getDataField(j);
+
+                // Display "(empty)" for empty string
+                if(data instanceof String && ((String) data).length() == 0)
+                    line += "(empty)";
+                else
+                    line += data;
+
                 while(line.length()<colWidth) {
                     line += " ";
                 }
