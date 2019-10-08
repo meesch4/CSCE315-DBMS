@@ -112,11 +112,7 @@ public class ShuntingYard {
     // Given a post fixed stack, create the according condition
     public static Condition create_condition(Stack<String> post_fixed) {
         Condition root = new Condition();
-        Object left = null;
-        Object right = null;
 
-        // Honestly really just brainstorming right now, not positive what to do here
-        // Should push the conditions we make into a stack?
         Stack<Condition> conditions = new Stack<>();
 
         Condition curr = root;
@@ -124,9 +120,9 @@ public class ShuntingYard {
             String val = post_fixed.pop();
 
             if(is_op(val) || is_condition(val)) { // any operator should be handled the same
-                // What do we do now?
                 Operator op = parse_operator(val);
-                // If curr already has an op, create another one(which will curr's child)
+
+                // If curr already has an op, create another one(which will be curr's child)
                 if(curr.op != null) {
                     curr = new Condition();
                 }
@@ -141,23 +137,32 @@ public class ShuntingYard {
                 } else if(curr.left == null) {
                     curr.left = literal_or_relation; // WE've completed curr
 
-                    conditions.pop();
-                    if(!conditions.empty()) {
-                        Condition topOfStack = conditions.peek();
-
-                        if(topOfStack.right == null) {
-                            topOfStack.right = curr;
-                        } else if(topOfStack.left == null) {
-                            topOfStack.left = curr; // We've completed topOfStack
-
-                            conditions.pop();
-                        }
-                    }
+                    // Attempt to merge it with the Condition at the top of the stack, if there is one
+                    merge(conditions);
                 }
             }
         }
 
         return root;
+    }
+
+    // Merge the current condition with the condition at the top of the stack
+    // Keep doing so until the stack is empty
+    private static Condition merge(Stack<Condition> conditions) {
+        Condition curr = conditions.pop();
+        if(!conditions.empty()) {
+            Condition topOfStack = conditions.peek();
+
+            if(topOfStack.right == null) {
+                topOfStack.right = curr;
+            } else if(topOfStack.left == null) {
+                topOfStack.left = curr;
+
+                merge(conditions);
+            }
+        }
+
+        return curr;
     }
 
     /** Helper functions **/
