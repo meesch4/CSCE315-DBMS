@@ -374,6 +374,8 @@ public class DbmsTests {
         String outTable0 = db.projection(tableName, colNames0);
         String outTable1 = db.projection(tableName, colNames1);
         String outTable2 = db.projection(tableName, colNames2);
+
+        // TODO: We need to add descriptions(in the console) of what these should do
         db.show(outTable0);
         db.show(outTable1);
         db.show(outTable2);
@@ -386,37 +388,50 @@ public class DbmsTests {
         String tableName1 = "table1";
         createTable(tableName0,  0);
         createTable(tableName1, 0);
+
         Object[] table0_data0 = new Object[] {"stuff", 1};
         Object[] table0_data1 = new Object[] {"stuff2", 2};
-        Object[] table1_data0 = new Object[] {"stuff3", 3};
-        Object[] table1_data1 = new Object[] {"stuff4", 4};
         RowNode table0_row0 = new RowNode(table0_data0);
         RowNode table0_row1 = new RowNode(table0_data1);
-        RowNode table1_row0 = new RowNode(table1_data0);
-        RowNode table1_row1 = new RowNode(table1_data1);
         db.tables.get(tableName0).addRow(table0_row0);
         db.tables.get(tableName0).addRow(table0_row1);
+
+        Object[] table1_data0 = new Object[] {"stuff3", 3};
+        Object[] table1_data1 = new Object[] {"stuff4", 4};
+        RowNode table1_row0 = new RowNode(table1_data0);
+        RowNode table1_row1 = new RowNode(table1_data1);
         db.tables.get(tableName1).addRow(table1_row0);
         db.tables.get(tableName1).addRow(table1_row1);
 
         String newTableName = db.product(tableName0, tableName1);
         TableRootNode newTable = db.getTable(newTableName);
+
+        System.out.println("Should have 4 rows total");
         db.show(newTableName);
     }
     @Test
     public void difference_test() {
         String tableName0 = "table0";
         String tableName1 = "table1";
+
         createTable(tableName0,  0);
         createTable(tableName1, 0);
+
         Object[] data0 = new Object[] {"stuff", 1};
         Object[] data1 = new Object[] {"stuff3", 3};
+
         RowNode table0_row0 = new RowNode(data0);
         RowNode table1_row0 = new RowNode(data1);
+
+        // Table0 contains 1 unique row and 1 shared row with table1
         db.tables.get(tableName0).addRow(table0_row0);
+        db.tables.get(tableName0).addRow(table1_row0);
         db.tables.get(tableName1).addRow(table1_row0);
+
         String newTableName = db.difference(tableName0, tableName1);
         TableRootNode newTable =  db.getTable(newTableName);
+
+        System.out.println("Should contain only one row");
         db.show(newTableName);
     }
 }
