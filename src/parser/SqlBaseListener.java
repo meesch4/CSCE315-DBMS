@@ -32,10 +32,10 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         // String tableName = ctx.children.get(1).getText();
         String tableName = relationNames.removeFirst(); // Not sure which we need to do
 
-        List<String> primaryKeys = parseArguments(children.get(7).getText());
+        List<String> primaryKeys = parseArguments(children.get(9).getText());
 
-        List<String> columnNames = parseColumnNames(children.get(3));
-        List<Type> columnTypes = parseColumnTypes(children.get(3));
+        List<String> columnNames = parseColumnNames(children.get(4));
+        List<Type> columnTypes = parseColumnTypes(children.get(4));
 
         // Pass all of these values to Dbms
         dbms.createTable(tableName, columnNames, columnTypes, primaryKeys);
@@ -45,13 +45,13 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         // Remove first or remove last? Sometimes it'll be the same
         String tableInsertInto = relationNames.removeFirst(); // Table name we're inserting values into
 
-        String insertType = ctx.children.get(2).getText();
-        if(insertType.equals("VALUES FROM RELATION")) {
+        String insertType = ctx.children.get(5).getText();
+        if(insertType.equals("RELATION")) {
             String tableInsertFrom = relationNames.removeFirst(); // Table we're inserting values from. Can be a temporary table
 
             dbms.insertFromRelation(tableInsertInto, tableInsertFrom);
         } else { // We're just entering values from a list of literals
-            List<Object> valuesToInsert = parseLiterals(ctx.children.get(4), 0, 2);
+            List<Object> valuesToInsert = parseLiterals(ctx.children.get(6), 0, 2);
 
             dbms.insertFromValues(tableInsertInto, valuesToInsert);
         }
@@ -73,7 +73,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
     @Override public void exitDelete_cmd(SQLGrammarParser.Delete_cmdContext ctx) {
         String tableName = relationNames.removeFirst();
 
-        Condition condition = ShuntingYard.evaluate(ctx.children.get(3));
+        Condition condition = ShuntingYard.evaluate(ctx.children.get(4));
 
         dbms.delete(tableName, condition);
     }
