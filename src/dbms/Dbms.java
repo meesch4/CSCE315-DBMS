@@ -290,9 +290,9 @@ public class Dbms implements IDbms {
     @Override
     public String product(String table1, String table2) {
         String tempName = getTempTableName();
-        ArrayList<Attribute> tempAttributes;
-        tempAttributes = tables.get(table1).getAttributes();
-        ArrayList<Attribute> secondAttributes = tables.get(table2).getAttributes();
+        ArrayList<Attribute> tempAttributes = new ArrayList<>(tables.get(table1).getAttributes());
+        ArrayList<Attribute> secondAttributes = cloneAttributes(tables.get(table2).getAttributes());
+
         int k = tempAttributes.size();
         for(Attribute att : secondAttributes){
             att.index = att.index + k;
@@ -435,7 +435,6 @@ public class Dbms implements IDbms {
             }
         }
 
-        // Remove from the back so that the order doesn't get messed up
         for(String rowKey : rowKeysToRemove) {
             RowNode removed = tableRows.remove(rowKey);
         }
@@ -481,4 +480,14 @@ public class Dbms implements IDbms {
 
     private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
+
+    private ArrayList<Attribute> cloneAttributes(ArrayList<Attribute> attributesToClone) {
+        ArrayList<Attribute> ret = new ArrayList<>();
+
+        for(Attribute attr : attributesToClone) {
+            ret.add(new Attribute(attr));
+        }
+
+        return ret;
+    }
 }
