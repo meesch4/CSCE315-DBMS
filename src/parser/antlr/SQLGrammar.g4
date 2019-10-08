@@ -49,13 +49,13 @@ natural_join : atomic_expr '&' atomic_expr ;
 // Batch 4
 update_set_list: attribute_name '=' literal ( ',' attribute_name '=' literal)* ;
 show_cmd : 'SHOW' atomic_expr ;
-create_cmd : 'CREATE TABLE' relation_name parenopen typed_attribute_list parenclose 'PRIMARY KEY' parenopen attribute_list parenclose ;
+create_cmd : 'CREATE' 'TABLE' relation_name parenopen typed_attribute_list parenclose 'PRIMARY' 'KEY' parenopen attribute_list parenclose ;
 update_cmd : 'UPDATE' relation_name
              'SET' update_set_list
              'WHERE' condition ;
-insert_cmd : 'INSERT INTO' relation_name 'VALUES FROM' parenopen literal_list parenclose
-           | 'INSERT INTO' relation_name 'VALUES FROM RELATION' expr ;
-delete_cmd : 'DELETE FROM' relation_name 'WHERE' condition ;
+insert_cmd : 'INSERT' 'INTO' relation_name 'VALUES' 'FROM' parenopen literal_list parenclose
+           | 'INSERT' 'INTO' relation_name 'VALUES' 'FROM' 'RELATION' expr ;
+delete_cmd : 'DELETE' 'FROM' relation_name 'WHERE' condition ;
 // Batch 5
 // Semicolon issues fixed && query issues fixed
 command : ( open_cmd | close_cmd | write_cmd | exit_cmd | show_cmd
