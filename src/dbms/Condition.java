@@ -11,15 +11,10 @@ package dbms;
 //If you hit the &&/|| then you will recurse further, and the next object will be another operator.
 
 public class Condition {
-    // Filled with table names, operators, and operands
-    // Might also contain Attributes
-    // Will probably be the result of the shunting-yard algorithm
     public Object left;
     public Object right;
     public Operator op;
 
-    //Syntax is garbage, and this needs to be properly implemented, but this explains the basic recursive structure of the evaluate funciton
-    // I'll work through the specifics soon.
     public static boolean evaluate(Condition cond, RowNode row, TableRootNode table) {
         Operator op = cond.op;
         Object value = null;
