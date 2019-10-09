@@ -1,16 +1,7 @@
-# CSCE 315 DBMS Phase 2 Sub-phases Inventory 
-## Parser
-Grammar: Completed (Final check if time permits) 
+# CSCE 315 DBMS Phase 3 Sub-phases Inventory 
+1) Load and save(serialize and deserialize) tables to files
+2) Figure out what we're supposed to do for the GUI
+3) Design & create the GUI
+4) Figure out how to write stored procedures(SQL ) and retrieve their results for querying the database with the GUI
 
-
-Commands: [converting parse tree into corresponding SQL]: All commands are implemented. Needs to be double checked
-
-
-Query: Completed. Needs to be double checked
-## Internal DB 
-DB structure: Table structure completed. Currently working on algorithms for insertion, creation, etc.. (Trevor)
-
-
-Shunting Yard algortihm: Writing ShuntingYard class (Neil)
-
-## Due date Oct 3
+## Due date Oct 14
