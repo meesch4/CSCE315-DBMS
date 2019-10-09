@@ -59,7 +59,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     @Override public void exitUpdate_cmd(SQLGrammarParser.Update_cmdContext ctx) {
         String tableName = relationNames.removeLast();
-        printChildren(ctx);
 
         // Parallel arrays
         List<String> columnsToSet = parseSetColumnNames(ctx.children.get(3));

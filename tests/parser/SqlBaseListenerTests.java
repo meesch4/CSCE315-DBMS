@@ -1,6 +1,7 @@
 package parser;
 
 import dbms.*;
+import parser.antlr.*;
 import types.IntType;
 import types.Type;
 import types.Varchar;
@@ -9,8 +10,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.Test;
-import parser.antlr.SQLGrammarLexer;
-import parser.antlr.SQLGrammarParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
