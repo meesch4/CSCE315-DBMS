@@ -4,5 +4,6 @@
 3) Design & create the GUI
 4) Figure out how to write stored procedures(SQL) and retrieve their results for querying the database with the GUI
 5) Implement open, close, write, exit
+6) Figure out how to implement Bacon's Law from Lecture 20
 
 ## Due date Oct 14
