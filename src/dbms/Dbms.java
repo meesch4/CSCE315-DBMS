@@ -444,7 +444,7 @@ public class Dbms implements IDbms {
     @Override public void open(String table) {
         String fileName = table = ".db";
 
-        // Call XMLStorageManager and load it in
+        // Call JsonSerializer and load it in
     }
 
     // Save all changes to the relation(table) and close it(remove it from the table map?)
@@ -456,7 +456,7 @@ public class Dbms implements IDbms {
     @Override public void write(String table) {
         String fileName = table + ".db"; // Assuming table is in the tables map
 
-        // Call XMLStorageManager and save it
+        // Call JsonSerializer and save it
     }
 
     // Exit from the interpreter, dunno what should happen here
