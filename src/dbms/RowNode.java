@@ -2,9 +2,10 @@ package dbms;
 
 import dbms.TableRootNode;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class RowNode {
+public class RowNode implements Serializable {
     public RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
         dataFields = objects;
         // key = rowNodeKey;

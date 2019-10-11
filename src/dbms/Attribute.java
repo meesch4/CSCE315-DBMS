@@ -3,11 +3,13 @@ package dbms;
 import types.Type;
 import types.Varchar;
 
+import java.io.Serializable;
+
 /**
  *  This class is only used to describe the attribute types; it will be used to check if a row has the
  *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
  */
-public class Attribute {
+public class Attribute implements Serializable {
     Attribute(String name, int ind, Type type){
         attrName = name;
         index = ind;
