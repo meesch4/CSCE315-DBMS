@@ -16,7 +16,7 @@
     ],
 
     "primaryKeys": [
-        {"colName": "col1 - or should this be index"},
+        {"colName": "col1"},
         {"colName": "col2"}
     ],
 
