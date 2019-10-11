@@ -1,0 +1,27 @@
+{
+    "name": "tableName",
+    "attributes": [
+        {
+            "name": "col1",
+            "index": 0,
+            "type": "varchar - should this be 0/1?",
+            "length": 20
+        },
+        {
+            "name": "col2",
+            "index": 1,
+            "type": "int",
+            "length": -1
+        }
+    ],
+
+    "primaryKeys": [
+        {"colName": "col1"},
+        {"colName": "col2"}
+    ],
+
+    "rows": [
+        {"data": ["col1Data", 1]},
+        {"data": ["col1DataAgain", 2]}
+    ]
+}
