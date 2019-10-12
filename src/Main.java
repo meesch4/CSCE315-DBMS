@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
-        String filePath = "tests/sqlInput.txt";
+        String filePath = "tests/inputs/sqlInput.txt";
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
