@@ -1,12 +1,13 @@
 package dbms;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  *  Use new to instantiate a table root node, with the name and attribute list.
  *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
  */
-public class TableRootNode { //node containing relation name and attributes of table (column types)
+public class TableRootNode implements Serializable { //node containing relation name and attributes of table (column types)
     public TableRootNode(String name, ArrayList<Attribute> attributes, ArrayList<Attribute> primaryKeys){
         relationName = name;
         this.attributes = attributes;
@@ -71,6 +72,7 @@ public class TableRootNode { //node containing relation name and attributes of t
     public Attribute getAttribute(int index){
         return this.attributes.get(index);
     }
+    public String getRelationName() { return this.relationName; }
     public void printAttributes(){
         System.out.println(this.attributes);
     }

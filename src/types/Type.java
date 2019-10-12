@@ -1,3 +1,5 @@
 package types;
 
-public abstract class Type { }
+import java.io.Serializable;
+
+public abstract class Type implements Serializable { }
