@@ -2,13 +2,12 @@ package dbms;
 
 import dbms.TableRootNode;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class RowNode {
+public class RowNode implements Serializable {
     public RowNode(Object[] objects){ //can be used to pass a premade Object array to the class
         dataFields = objects;
-        // key = rowNodeKey;
-        // rowNodeKey++;
     }
 
     Object[] dataFields;
@@ -57,7 +56,7 @@ public class RowNode {
         // the state of 'this' Object.
 
         for(int i = 0; i < this.dataFields.length; i++){
-            if(this.dataFields[i] != row.dataFields[i]){
+            if(!this.dataFields[i].equals(row.dataFields[i])){
                 return false; //DOES NOT ACCOUNT FOR ATTRIBUTES BEING IN THE SAME ORDER
             }
         }

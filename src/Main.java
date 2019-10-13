@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Scanner;
 
 // Main function, where we do everything
+// TODO: Needs to be changed to display the GUI
+// TODO: Also this needs to be refactored into its own class
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
-        String filePath = "tests/sqlInput.txt";
+        String filePath = "tests/inputs/sqlInput.txt";
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
