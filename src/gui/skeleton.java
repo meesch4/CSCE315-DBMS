@@ -7,7 +7,11 @@ public class skeleton {
      * Layout structure:
      * 5 tabs for each corresponding query
      * Each button has a listener that performs the getText() function and calls corresponding function
-     *
+     */
+
+    /**
+     * Completed progress: Basic GUI structure
+     * Needs work: listeners for button, functions to pass GUI data to actual query functions, GUI formatting
      * */
     public static void main(String[] args) {
         // System.out.println("Does this work?????"); It does indeed
