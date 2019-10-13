@@ -17,6 +17,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+// Tests pure serialization, not JsonSerializer
+// However since JsonSerializer is this code to a T, not testing JsonSerializer
 public class SerializerTests {
     @Test
     public void test_serializeable() {
