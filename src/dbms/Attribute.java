@@ -10,7 +10,7 @@ import java.io.Serializable;
  *  proper attributes before adding it to a table.  If it is missing some attributes, they can be made null
  */
 public class Attribute implements Serializable {
-    Attribute(String name, int ind, Type type){
+    public Attribute(String name, int ind, Type type){
         attrName = name;
         index = ind;
         this.type = type;
