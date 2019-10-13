@@ -1,5 +1,7 @@
 package dbms;
 
+import types.Varchar;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -42,9 +44,21 @@ public class TableRootNode implements Serializable { //node containing relation 
     }
 
     public void setAttributeName(String name, int index){
-        Attribute tempAtt = attributes.get(index); //get attribute that is being changed
+        String oldName = null;
+        for(Map.Entry<String, Attribute> attEntry : attributes.entrySet()){
+            if(attEntry.getValue().index == index){
+                oldName = attEntry.getValue().attrName;
+                break;
+            }
+        }
+        if(oldName == null){
+            System.out.println("Attribute not found");
+            return;
+        }
+        Attribute tempAtt = attributes.get(oldName);
         tempAtt.setName(name); //change name of attribute
-        attributes.set(index, tempAtt); //set in arraylist
+        attributes.put(name, tempAtt); //set in arraylist
+        attributes.remove(oldName);
     }
     public HashMap<String, Attribute> getAttributes() { return this.attributes; }
     public HashMap<String, RowNode> getRowNodes() {
@@ -64,7 +78,20 @@ public class TableRootNode implements Serializable { //node containing relation 
 
     // Below used for testing
     public Attribute getAttribute(int index){
-        return this.attributes.get(index);
+        String oldName = null;
+        for(Map.Entry<String, Attribute> attEntry : attributes.entrySet()){
+            if(attEntry.getValue().index == index){
+                oldName = attEntry.getValue().attrName;
+                break;
+            }
+        }
+        if(oldName == null){
+            System.out.println("Attribute not found");
+            Attribute voidAttribute = new Attribute("",-1, new Varchar(0));
+            return voidAttribute;
+        }
+
+        return this.attributes.get(oldName);
     }
     public String getRelationName() { return this.relationName; }
     public void printAttributes(){

@@ -183,12 +183,12 @@ public class DbmsTests {
     @Test
     public void union_doesCombineTables() {
         String tableName0 = "table0", tableName1 = "table1", tableName2 = "table2";
-        ArrayList<Attribute> attributes = new ArrayList<>();
+        HashMap<String, Attribute> attributes = new HashMap<>();
         Attribute col1 = new Attribute("varcharCol", 0, new Varchar(20));
         Attribute col2 = new Attribute("intCol", 1, new IntType());
-        attributes.add(col1);
-        attributes.add(col2);
-        ArrayList<Attribute> primaryKeys = new ArrayList<>(attributes);
+        attributes.put(col1.getName(), col1);
+        attributes.put(col2.getName(), col2);
+        ArrayList<Attribute> primaryKeys = new ArrayList<>(attributes.values());
 
 
         Object[] rowData0 = new Object[] { "string", 1};
@@ -380,13 +380,15 @@ public class DbmsTests {
     @Test
     public void projection_test() {
         String tableName = "testTable";
-        ArrayList<Attribute> attList = new ArrayList<>();
+        HashMap<String, Attribute> attMap = new HashMap<>();
         Attribute att0 = new Attribute("name", 0, new Varchar(20));
         Attribute att1 = new Attribute("age", 1, new Varchar(20));
         Attribute att2 = new Attribute("derp", 2, new Varchar(20));
-        attList.add(att0);
-        attList.add(att1);
-        attList.add(att2);
+        attMap.put(att0.getName(), att0);
+        attMap.put(att1.getName(), att1);
+        attMap.put(att2.getName(), att2);
+        ArrayList<Attribute> attList = new ArrayList<>();
+        attList.addAll(attMap.values());
 
         Object[] row0Data = new Object[]{"bob", 0, 5};
         Object[] row1Data = new Object[]{"bobert", 1, 4};
@@ -395,7 +397,7 @@ public class DbmsTests {
         Object[] row4Data = new Object[]{"robert", 4, 1};
         Object[] row5Data = new Object[]{"bobbino", 5, 0};
 
-        TableRootNode tableRoot = new TableRootNode(tableName, attList, attList);
+        TableRootNode tableRoot = new TableRootNode(tableName, attMap, attList);
         db.tables.put(tableName, tableRoot);
         RowNode row0 = new RowNode(row0Data);
         RowNode row1 = new RowNode(row1Data);

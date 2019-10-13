@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  * Most likely rename this at some point
@@ -46,10 +47,14 @@ public class DataLoader {
         ArrayList<Attribute> attributes = new ArrayList<>(
                 Arrays.asList(idAttr, titleAttr, genreAttr, ratingAttr)
         );
+        HashMap<String, Attribute> attMap = new HashMap<>();
+        for(Attribute att : attributes){
+            attMap.put(att.getName(), att);
+        }
 
         ArrayList<Attribute> primaryKeys = new ArrayList<>(Arrays.asList(idAttr));
 
-        return new TableRootNode(tableName, attributes, primaryKeys);
+        return new TableRootNode(tableName, attMap, primaryKeys);
     }
 
     // Create the attributes & primary keys for the moviesTable
@@ -68,10 +73,14 @@ public class DataLoader {
         ArrayList<Attribute> attributes = new ArrayList<>(
                 Arrays.asList(creditIdAttr, movieIdAttr, nameAttr, characterNameAttr, castOrCrewAttr)
         );
+        HashMap<String, Attribute> attMap = new HashMap<>();
+        for(Attribute att : attributes){
+            attMap.put(att.getName(), att);
+        }
 
         ArrayList<Attribute> primaryKeys = new ArrayList<>(Arrays.asList(creditIdAttr));
 
-        return new TableRootNode(tableName, attributes, primaryKeys);
+        return new TableRootNode(tableName, attMap, primaryKeys);
     }
 
     // Deserializes the movies from parser and loads them as rows into table
