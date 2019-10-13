@@ -3,19 +3,18 @@ package dbms.storage;
 import dbms.TableRootNode;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  *  Saves and loads Tables to and from JSON files
  */
-public class JsonSerializer {
+public class TableSerializer {
     private static String filePath = "src/dbms/storage/";
 
     /**
      *  Saves the given table to a file, which is named according to its table name
      */
     public static void saveToFile(TableRootNode table) {
-        String filePath = JsonSerializer.filePath + table.getRelationName() + ".ser";
+        String filePath = TableSerializer.filePath + table.getRelationName() + ".ser";
 
         try {
             FileOutputStream fileOut = new FileOutputStream(filePath);
@@ -34,7 +33,7 @@ public class JsonSerializer {
      *  Given a fileName(tableName), returns the according Table, or null if it couldn't be loaded
      */
     public static TableRootNode loadFromFile(String tableName) {
-        String filePath = JsonSerializer.filePath + tableName + ".ser";
+        String filePath = TableSerializer.filePath + tableName + ".ser";
 
         try {
             FileInputStream fileIn = new FileInputStream(filePath);
