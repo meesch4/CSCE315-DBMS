@@ -102,8 +102,7 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
 
     @Override public void exitReturn_cmd(SQLGrammarParser.Return_cmdContext ctx) {
         String tableName = relationNames.removeFirst();
-
-
+        dbms.returnTable(tableName);
     }
 
     /********** QUERY METHODS ***********/
