@@ -8,14 +8,14 @@ import java.util.*;
  *  similarly, create the attribute list using a for loop to pop the attributes off the attribute stack
  */
 public class TableRootNode implements Serializable { //node containing relation name and attributes of table (column types)
-    public TableRootNode(String name, ArrayList<Attribute> attributes, ArrayList<Attribute> primaryKeys){
+    public TableRootNode(String name, HashMap<String, Attribute> attributes, ArrayList<Attribute> primaryKeys){
         relationName = name;
         this.attributes = attributes;
         children = new HashMap<>();
         this.primaryKeys = primaryKeys;
     }
 
-    public TableRootNode(String name, ArrayList<Attribute> attributes, ArrayList<Attribute> primaryKeys, HashMap<String, RowNode> kids){
+    public TableRootNode(String name, HashMap<String, Attribute> attributes, ArrayList<Attribute> primaryKeys, HashMap<String, RowNode> kids){
         relationName = name;
         this.attributes = attributes;
         children = kids;
@@ -23,7 +23,7 @@ public class TableRootNode implements Serializable { //node containing relation 
     }
 
     String relationName;  //make private variables which have getters and setters.
-    ArrayList<Attribute> attributes;  //rename to attributes
+    HashMap<String, Attribute> attributes;  //rename to attributes
     ArrayList<Attribute> primaryKeys; // Have this as a row so the primaryKeys are in order
     HashMap<String, RowNode> children; // Rename to rows?
 
@@ -46,23 +46,17 @@ public class TableRootNode implements Serializable { //node containing relation 
         tempAtt.setName(name); //change name of attribute
         attributes.set(index, tempAtt); //set in arraylist
     }
-    public ArrayList<Attribute> getAttributes() { return this.attributes; }
+    public HashMap<String, Attribute> getAttributes() { return this.attributes; }
     public HashMap<String, RowNode> getRowNodes() {
         return this.children;
     }
     // public List<RowNode> getRowNodes() { return this.children; }
-    public int getAttributeSize(){
+    public int getAttributeSize() {
         return this.attributes.size();
     }
-    public ArrayList<Attribute> getAttributeList(){
-        return this.attributes;
-    }
-
     public Attribute getAttributeWithName(String name) { // This is why attributes should be a Map
-        for(Attribute attribute : this.attributes) {
-            if(attribute.attrName.equals(name)) {
-                return attribute;
-            }
+        if(attributes.containsKey(name)){
+            return attributes.get(name);
         }
 
         return null;

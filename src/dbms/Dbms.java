@@ -28,7 +28,7 @@ public class Dbms implements IDbms {
             System.out.println("Improper input");
             return;
         }
-        ArrayList<Attribute> attributesList = new ArrayList<Attribute>();
+        HashMap<String, Attribute> attributesList = new HashMap<>();
         ArrayList<Attribute> newPrimaryKeys = new ArrayList<>();
         Iterator<String> iter = primaryKeys.iterator();
         Iterator<Type> iterType = columnTypes.iterator();
@@ -38,7 +38,7 @@ public class Dbms implements IDbms {
             Attribute temp;
             temp = new Attribute(element, i, typeel);
             i++;
-            attributesList.add(temp); ///this creates the attributes list
+            attributesList.put(temp.getName(), temp); ///this creates the attributes list
 
             if(primaryKeys.contains(element))
                 newPrimaryKeys.add(temp);
@@ -52,19 +52,21 @@ public class Dbms implements IDbms {
     public void insertFromRelation(String tableInsertInto, String tableInsertFrom) {
         // Works by taking all the leaves of the tableInsertFrom and adding them to tableInsertInto
         TableRootNode tableFrom = tables.get(tableInsertFrom);
-        ArrayList<Attribute> attListFrom = tableFrom.getAttributes();
+        HashMap<String, Attribute> attListFrom = tableFrom.getAttributes();
         TableRootNode tableInto = tables.get(tableInsertInto);
-        ArrayList<Attribute> attListInto = tableInto.getAttributes();
+        HashMap<String, Attribute> attListInto = tableInto.getAttributes();
 
         // when an attribute in the attributes from list matches the name and type of an attribute in the attributes into list,
         //this loop will create a tuple of the form [indexFrom, indexInto] to inform the next code block which columns in the
         //FROM table to map to the which columns in the INTO table.
         ArrayList<int[]> tuples = new ArrayList<>();
-        for(Attribute attributeInto : attListInto) {
+        for(Map.Entry<String, Attribute> attributeIntoPair : attListInto.entrySet()) {
             boolean found = false;
+            Attribute attributeInto = attributeIntoPair.getValue();
             // Used for determining default values
             int type = attributeInto.type instanceof Varchar ? 0 : 1; // 0 is a varchar, 1 is an integer.
-            for(Attribute attributeFrom : attListFrom) {
+            for(Map.Entry<String, Attribute> attributeFromPair : attListFrom.entrySet()) {
+                Attribute attributeFrom = attributeFromPair.getValue();
                 if((attributeFrom.getName().equals(attributeInto.getName()))){     //ONLY CHECKS THAT ATTRIBUTE NAMES MATCH, DOES NOT CHECK IF THE TYPES MATCH
                     int[] newTup = new int[]{attributeFrom.index, attributeInto.index, type};
                     //attListFrom.remove(attributeFrom);
@@ -179,18 +181,19 @@ public class Dbms implements IDbms {
     @Override
     public String projection(String tableFrom, List<String> columnNames) {
         String tempTable = getTempTableName();
-        ArrayList<Attribute> origAttributes = tables.get(tableFrom).getAttributes();
+        HashMap<String, Attribute> origAttributes = tables.get(tableFrom).getAttributes();
         ArrayList<Integer> indices = new ArrayList<>();
-        ArrayList<Attribute> newAttributes = new ArrayList<>();
+        HashMap<String, Attribute> newAttributes = new HashMap<>();
         ArrayList<Attribute> newPrimaryKeys = new ArrayList<>();
 
         int j = 0;
-        for(Attribute att : origAttributes){ // find the indices of the columns we need to maintain
+        for(Map.Entry<String, Attribute> attPair : origAttributes.entrySet()){ // find the indices of the columns we need to maintain
+            Attribute att = attPair.getValue();
             if(columnNames.contains(att.getName())){
                 indices.add(att.index);
                 Attribute newAttribute;
                 newAttribute = new Attribute(att.getName(), j++, att.getType());
-                newAttributes.add(newAttribute);
+                newAttributes.put(newAttribute.getName(), newAttribute);
 
                 if(tables.get(tableFrom).primaryKeys.contains(att)) {
                     newPrimaryKeys.add(newAttribute);
@@ -231,7 +234,7 @@ public class Dbms implements IDbms {
     @Override
     public String union(String table1, String table2) {
         String newTable = getTempTableName(); //the output table name will be a combination of the two table names
-        ArrayList<Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
+        HashMap<String, Attribute> newAttributes = tables.get(table1).getAttributes(); //*****requires matching Attributes*****
         // List<RowNode> newRows = tables.get(table1).getRowNodes();
         HashMap<String, RowNode> newRows = new HashMap<>(tables.get(table1).getRowNodes()); // Make a copy so we don't modify the main one
         //List<RowNode> newRows2 = tables.get(table2).getRowNodes();
@@ -252,7 +255,7 @@ public class Dbms implements IDbms {
         String tempTableName = getTempTableName();
 
         TableRootNode table = tables.get(tableFrom);
-        ArrayList<Attribute> attributes = table.getAttributes();
+        HashMap<String, Attribute> attributes = table.getAttributes();
         TableRootNode newTable = new TableRootNode(tempTableName, attributes, table.primaryKeys); // Set its primary keys to be tableFrom's
 
         for(RowNode row : tables.get(tableFrom).getRowNodes().values()) { //iterate through row nodes
@@ -271,7 +274,7 @@ public class Dbms implements IDbms {
     public String difference(String table1, String table2) {
         //String tempTable = getTempTableName();
         String tempTableName = getTempTableName();
-        ArrayList<Attribute> tempAttributes = tables.get(table1).getAttributes();
+        HashMap<String, Attribute> tempAttributes = tables.get(table1).getAttributes();
         TableRootNode tempTable = new TableRootNode(tempTableName, tempAttributes, tables.get(table1).primaryKeys);
 
         for(Map.Entry<String, RowNode> rowEntry : tables.get(table1).getRowNodes().entrySet()){ //for all row nodes in table 1
@@ -290,17 +293,20 @@ public class Dbms implements IDbms {
     @Override
     public String product(String table1, String table2) {
         String tempName = getTempTableName();
-        ArrayList<Attribute> tempAttributes = new ArrayList<>(tables.get(table1).getAttributes());
-        ArrayList<Attribute> secondAttributes = cloneAttributes(tables.get(table2).getAttributes());
+        HashMap<String, Attribute> tempAttributes = new HashMap<>(tables.get(table1).getAttributes());
+        HashMap<String, Attribute> secondAttributes = cloneAttributes(tables.get(table2).getAttributes());
 
         int k = tempAttributes.size();
-        for(Attribute att : secondAttributes){
+        for(Map.Entry<String, Attribute> attPair : secondAttributes.entrySet()) {
+            Attribute att = attPair.getValue();
             att.index = att.index + k;
         }
-        tempAttributes.addAll(secondAttributes); //creates attribute list with both sets of attributes
+        tempAttributes.putAll(secondAttributes);//creates attribute list with both sets of attributes
+        ArrayList<Attribute> tempAttributeList = new ArrayList<>();
+        tempAttributeList.addAll(tempAttributes.values());
 
         // Primary keys are equivalent to every single column for product
-        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes, tempAttributes); //new table
+        TableRootNode tempTable = new TableRootNode(tempName, tempAttributes, tempAttributeList); //new table
         // TODO: Temp table's primary keys should be every single attribute
 
         for(RowNode rowOne : tables.get(table1).getRowNodes().values()){
@@ -329,7 +335,9 @@ public class Dbms implements IDbms {
     @Override
     public void show(String tableName) {
         String s;
-        ArrayList<Attribute> attributes = tables.get(tableName).getAttributes();
+        HashMap<String, Attribute> attributesMap = tables.get(tableName).getAttributes();
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.addAll(attributesMap.values());
         final int colWidth = 25;
         String line = "";
         s = " " + tableName + "\n" ;
@@ -481,11 +489,12 @@ public class Dbms implements IDbms {
     private int tempCount = 0; // current temp table we're on
     private String getTempTableName() { return ("temp" + tempCount++); }
 
-    private ArrayList<Attribute> cloneAttributes(ArrayList<Attribute> attributesToClone) {
-        ArrayList<Attribute> ret = new ArrayList<>();
+    private HashMap<String, Attribute> cloneAttributes(HashMap<String, Attribute> attributesToClone) {
+        HashMap<String, Attribute> ret = new HashMap<>();
 
-        for(Attribute attr : attributesToClone) {
-            ret.add(new Attribute(attr));
+        for(Map.Entry<String, Attribute> attrPair : attributesToClone.entrySet()) {
+            Attribute attr = attrPair.getValue();
+            ret.put(attr.getName(), new Attribute(attr));
         }
 
         return ret;
