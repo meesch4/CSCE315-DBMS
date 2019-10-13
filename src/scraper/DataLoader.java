@@ -7,10 +7,15 @@ package scraper;
 import csce315.project1.Credits;
 import csce315.project1.Movie;
 import csce315.project1.MovieDatabaseParser;
+import dbms.Attribute;
+import dbms.RowNode;
 import dbms.TableRootNode;
+import types.IntType;
+import types.Varchar;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,22 +28,99 @@ public class DataLoader {
     TableRootNode creditsTable;
 
     // Create the attributes/columns for the moviesTable
-    private void createMovieTable() {
+    public TableRootNode createMovieTable() {
+        String tableName = "movies";
+
         // Columns: id, title, genres(list), rating(Int)
+        Attribute idAttr = new Attribute("id", 0, new IntType()); // Primary key for the table
+        Attribute titleAttr = new Attribute("title", 1, new Varchar(50)); // What should the length be?
+
+        // List of genre names separated by commas
+        Attribute genreAttr = new Attribute("genres", 2, new Varchar(100)); // Arbitrary length, might want to increase
+
+        // 10 point scale(i.e. 7.7), so need to multiple by 100 to make it an int
+        Attribute ratingAttr = new Attribute("rating", 3, new IntType());
+
+        ArrayList<Attribute> attributes = new ArrayList<>(
+                Arrays.asList(idAttr, titleAttr, genreAttr, ratingAttr)
+        );
+
+        ArrayList<Attribute> primaryKeys = new ArrayList<>(Arrays.asList(idAttr));
+
+        return new TableRootNode(tableName, attributes, primaryKeys);
     }
 
-    // Create
-    private void createCreditsTable() {
+    // Create the attributes & primary keys for the moviesTable
+    public TableRootNode createCreditsTable() {
         // Columns: creditID, cast/crew?, name, role/character, movieID, actorID
+        // Columns: creditID, movieID, name, character/job, actorID, cast/crew
+        String tableName = "credits";
+
+        Attribute creditIdAttr = new Attribute("creditID", 0, new Varchar(30)); // Length?
+        Attribute movieIdAttr = new Attribute("movieID", 1, new IntType());
+        Attribute nameAttr = new Attribute("name", 2, new Varchar(30));
+        // If they are crew, then character will be their "job"
+         Attribute characterNameAttr = new Attribute("character", 3, new Varchar(30));
+         Attribute castOrCrewAttr = new Attribute("isCast", 4, new IntType()); // Boolean, 0 for crew, 1 for cast
+
+        ArrayList<Attribute> attributes = new ArrayList<>(
+                Arrays.asList(creditIdAttr, movieIdAttr, nameAttr, characterNameAttr, castOrCrewAttr)
+        );
+
+        ArrayList<Attribute> primaryKeys = new ArrayList<>(Arrays.asList(creditIdAttr));
+
+        return new TableRootNode(tableName, attributes, primaryKeys);
+    }
+
+    // Deserializes the movies from parser and loads them as rows into table
+    public void loadAllMovies(MovieDatabaseParser parser, TableRootNode table, String fileName) throws IOException {
+        List<Movie> moviesList = parser.deserializeMovies("src/scraper/inputs/" + fileName + ".json");
+
+        for(Movie movie : moviesList) {
+            // Create the row values
+            Object[] values = new Object[4];
+
+            values[0] = movie.getId(); // movieId
+            values[1] = movie.getTitle();
+            values[3] = (int) (movie.getVote_average() * 10);
+
+            StringBuilder genresBuilder = new StringBuilder();
+            List<Movie.Genre> genres = movie.getGenres();
+            for(int i = 0; i < genres.size(); i++) {
+                Movie.Genre genre = genres.get(i);
+
+                genresBuilder.append(genre.getName());
+                if(i + 1 < genres.size()) { // If it's not the last one
+                    genresBuilder.append(",");
+                }
+            }
+
+            String genresList = genresBuilder.toString();
+            System.out.println(genresList);
+            values[2] = genresList;
+
+            // Calling addRow will assign the appropriate primaryKeyIndices to RowNode
+            table.addRow(new RowNode(values));
+        }
+    }
+
+    public void loadAllCredits(MovieDatabaseParser parser) throws IOException {
+        List<Credits> creditsList = parser.deserializeCredits("src/scraper/inputs/credits_single.json");
+
+        for(Credits credits : creditsList) {
+
+        }
     }
 
     /**
      *  Runs the MovieDatabaseParser and loads the appropriate ro
      */
     public static void main(String args[]) throws IOException {
-        MovieDatabaseParser parser = new MovieDatabaseParser();
+        DataLoader loader = new DataLoader();
 
-        List<Movie> moviesList = parser.deserializeMovies("src/scraper/inputs/movies_single.json");
-        List<Credits> creditsList = parser.deserializeCredits("src/scraper/inputs/credits_single.json");
+        MovieDatabaseParser parser = new MovieDatabaseParser();
+        TableRootNode movieTable = loader.createMovieTable();
+
+        loader.loadAllMovies(parser, movieTable, "movies");
     }
 }
