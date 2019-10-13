@@ -25,7 +25,6 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         this.operands = new Stack<>();
     }
 
-
     @Override public void exitCreate_cmd(SQLGrammarParser.Create_cmdContext ctx) {
         List<ParseTree> children = ctx.children;
 
@@ -101,6 +100,11 @@ public class SqlBaseListener extends SQLGrammarBaseListener {
         dbms.exit();
     }
 
+    @Override public void exitReturn_cmd(SQLGrammarParser.Return_cmdContext ctx) {
+        String tableName = relationNames.removeFirst();
+
+
+    }
 
     /********** QUERY METHODS ***********/
 
