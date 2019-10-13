@@ -36,12 +36,17 @@ public class DataLoaderTests {
         TableRootNode table = loader.createMovieTable();
 
         // Act
-        loader.loadAllMovies(parser, table, "credits_single");
+        loader.loadAllCredits(parser, table, "credits_single");
 
         // Assert
-        Object[] expectedData = new Object[] { 862, "Toy Story", "Animation,Comedy,Family", 77};
-        RowNode expected = new RowNode(expectedData);
+        Object[] expectedDataCast = new Object[] { "52fe4284c3a36847f8024f95", 862, "Tom Hanks", "Woody (voice)", 1 };
+        RowNode expectedCast = new RowNode(expectedDataCast);
 
-        assertEquals(expected, table.getRowNodes().get("862"));
+        Object[] expectedDataCrew = new Object[] { "52fe4284c3a36847f8024f4f", 862, "Joss Whedon", "Screenplay", 0 };
+        RowNode expectedCrew = new RowNode(expectedDataCrew);
+
+        assertEquals(expectedCast, table.getRowNodes().get("52fe4284c3a36847f8024f95"));
+        assertEquals(expectedCrew, table.getRowNodes().get("52fe4284c3a36847f8024f4f"));
+
     }
 }

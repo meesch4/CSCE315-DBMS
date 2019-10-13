@@ -8,8 +8,10 @@ import csce315.project1.Credits;
 import csce315.project1.Movie;
 import csce315.project1.MovieDatabaseParser;
 import dbms.Attribute;
+import dbms.Dbms;
 import dbms.RowNode;
 import dbms.TableRootNode;
+import dbms.storage.TableSerializer;
 import types.IntType;
 import types.Varchar;
 
@@ -96,7 +98,6 @@ public class DataLoader {
             }
 
             String genresList = genresBuilder.toString();
-            System.out.println(genresList);
             values[2] = genresList;
 
             // Calling addRow will assign the appropriate primaryKeyIndices to RowNode
@@ -104,11 +105,40 @@ public class DataLoader {
         }
     }
 
-    public void loadAllCredits(MovieDatabaseParser parser) throws IOException {
-        List<Credits> creditsList = parser.deserializeCredits("src/scraper/inputs/credits_single.json");
+    int i = 0;
+    public void loadAllCredits(MovieDatabaseParser parser, TableRootNode table, String fileName) throws IOException {
+        List<Credits> creditsList = parser.deserializeCredits("src/scraper/inputs/" + fileName + ".json");
 
         for(Credits credits : creditsList) {
+            int movieId = Integer.parseInt(credits.getId());
 
+            for(Credits.CastMember castMember : credits.getCastMember()) {
+                Object[] values = new Object[5];
+
+                values[0] = castMember.getCredit_id();
+                values[1] = movieId;
+                values[2] = castMember.getName();
+                values[3] = castMember.getCharacter();
+                values[4] = 1; // isCast, which is true(1)
+
+                table.addRow(new RowNode(values));
+            }
+
+            for(Credits.CrewMember crewMember : credits.getCrewMember()) {
+                Object[] values = new Object[5];
+
+                values[0] = crewMember.getCredit_id();
+                values[1] = movieId;
+                values[2] = crewMember.getName();
+                values[3] = crewMember.getJob();
+                values[4] = 0; // isCast, which is false(0)
+
+                table.addRow(new RowNode(values));
+
+                if(crewMember.getJob().length() == 0) {
+                    System.out.println("Job is empty");
+                }
+            }
         }
     }
 
@@ -117,10 +147,20 @@ public class DataLoader {
      */
     public static void main(String args[]) throws IOException {
         DataLoader loader = new DataLoader();
-
         MovieDatabaseParser parser = new MovieDatabaseParser();
-        TableRootNode movieTable = loader.createMovieTable();
 
+        TableRootNode movieTable = loader.createMovieTable();
         loader.loadAllMovies(parser, movieTable, "movies");
+        System.out.println("Done with movies");
+
+        RowNode row = movieTable.getRowNodes().get("117164");
+
+        // 117164
+        TableRootNode creditsTable = loader.createCreditsTable();
+        loader.loadAllCredits(parser, creditsTable, "credits");
+        System.out.println("Done with credits");
+
+        TableSerializer.saveToFile(movieTable);
+        TableSerializer.saveToFile(creditsTable);
     }
 }

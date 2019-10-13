@@ -24,6 +24,8 @@ public class TableSerializer {
             objectOut.close();
             fileOut.close();
 
+            System.out.println("Saved " + table.getRelationName() + " to a file");
+
         } catch(IOException e) {
             e.printStackTrace();
         }
