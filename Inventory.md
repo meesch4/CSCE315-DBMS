@@ -2,6 +2,7 @@
 1) Create the GUI and different panels
 2) Implement the 5 given queries
 3) Connect the queries to the GUI accordingly
+4) Add ability for adding arguments to SQL queries
 
 Completed
 1) Load and save(serialize and deserialize) tables to files
