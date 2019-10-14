@@ -1,8 +1,11 @@
 package query;
 
+import dbms.Dbms;
 import dbms.TableRootNode;
 import query.interfaces.*;
 import dbms.RowNode;
+import dbms.SqlExecutor;
+
 
 
 import java.util.*;
@@ -13,6 +16,12 @@ import java.util.*;
      */
 public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery, IWorstOfBestQuery {
 
+
+    private SqlExecutor sqlExecutor;
+
+    public Query(SqlExecutor sql) {
+            this.sqlExecutor = sql;
+        }
 
     ArrayList<String> CostarHelper (TableRootNode tempTable){
          Set<String> nameSet = new HashSet<>();
@@ -43,7 +52,11 @@ public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypec
         //project (actorName) (select (characterName == inputName) credits) //also, actorName is the attribute for the actor name in the credits table, just to be clear.
         //call Costar Helper on the table made by SQL above.
         //return the arraylist made by costarhelper
+
         List<String> blah = new ArrayList<>();
+        TableRootNode tempTable = sqlExecutor.execute("testTypeCast");
+        blah = CostarHelper(tempTable);
+        System.out.println(blah);
         return blah;
     }
 

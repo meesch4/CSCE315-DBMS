@@ -1,0 +1,9 @@
+OPEN credits;
+
+ret <- project (Tom Hanks) (select (characterName == Tom Hanks) credits);
+
+// SHOW ret;
+
+RETURN ret;
+
+CLOSE credits;
