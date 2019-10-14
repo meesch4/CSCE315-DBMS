@@ -152,8 +152,6 @@ public class DataLoader {
         loader.loadAllMovies(parser, movieTable, "movies");
         System.out.println("Done with movies");
 
-        RowNode row = movieTable.getRowNodes().get("117164");
-
         // 117164
         TableRootNode creditsTable = loader.createCreditsTable();
         loader.loadAllCredits(parser, creditsTable, "credits");
