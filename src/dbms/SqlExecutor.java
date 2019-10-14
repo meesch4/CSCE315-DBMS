@@ -24,7 +24,7 @@ public class SqlExecutor {
     }
 
     // Given a sql file, executes it and returns the table it returned, if any
-    public TableRootNode execute(String fileName) throws FileNotFoundException { // Where should we handle the exception?
+    public TableRootNode execute(String fileName) { // Where should we handle the exception?
         SqlBaseListener listener = new SqlBaseListener(this.db);
         List<String> lines = this.loadLines(fileName);
 
@@ -44,23 +44,27 @@ public class SqlExecutor {
         return db.getTable("RETURNED");
     }
 
-    private List<String> loadLines(String fileName) throws FileNotFoundException {
+    private List<String> loadLines(String fileName) {
         List<String> lines = new ArrayList<>();
 
         // String filePath = sqlPath + fileName + fileExtension;
         String filePath = fileName;
 
-        File file = new File(filePath);
-        Scanner scanner = new Scanner(file);
+        try {
+            File file = new File(filePath);
+            Scanner scanner = new Scanner(file);
 
-        while(scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if(line.length() != 0) {
-                if(line.length() >= 2 && line.substring(0, 2).equals("//")) // Ignore commented lines
-                    continue;
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if(line.length() != 0) {
+                    if(line.length() >= 2 && line.substring(0, 2).equals("//")) // Ignore commented lines
+                        continue;
 
-                lines.add(line);
+                    lines.add(line);
+                }
             }
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
         }
 
         return lines;

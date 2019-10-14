@@ -19,6 +19,10 @@ import java.util.Scanner;
 // TODO: Needs to be changed to display the GUI
 // TODO: Also this needs to be refactored into its own class
 public class Main {
+    // GUI Here
+    // Create queries here, and pass them to the GUI?
+    // Dbms here as well
+
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
