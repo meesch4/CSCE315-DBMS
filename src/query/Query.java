@@ -1,18 +1,9 @@
 package query;
 
-import csce315.project1.Credits;
-import csce315.project1.Movie;
 import dbms.TableRootNode;
 import query.interfaces.*;
-import csce315.project1.Credits;
-import csce315.project1.Movie;
-import query.interfaces.*;
-import types.Type;
-import types.Varchar;
 import dbms.RowNode;
 
-
-import java.io.File;
 
 import java.util.*;
 
@@ -20,7 +11,7 @@ import java.util.*;
      * The internal representation of our database
      * Contains all of the tables, and maybe their rows as well?
      */
-public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery, IWorstOfBest {
+public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery, IWorstOfBestQuery {
 
 
     ArrayList<String> CostarHelper (TableRootNode tempTable){
