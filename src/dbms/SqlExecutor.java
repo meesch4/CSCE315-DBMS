@@ -40,8 +40,12 @@ public class SqlExecutor {
                 }
 
                 Object value = args[index];
-                if(value instanceof String) // Add quotation marks to mark it as a string literal, if it is on{e
+                if(value instanceof String) {// Add quotation marks to mark it as a string literal, if it is on{e
                     value = '"' + (String) value + '"';
+
+                    value = ((String) value).replaceAll(" ", "_");
+                    System.out.println(value);
+                }
 
                 // Replace argX with the X'th argument in args
                 line = line.replaceFirst("arg" + index, value.toString());
