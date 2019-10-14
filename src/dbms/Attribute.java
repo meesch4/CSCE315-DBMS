@@ -53,6 +53,7 @@ public class Attribute implements Serializable {
             ((Varchar) type).length = sz;
     }
 
+    public int getIndex() {return this.index; } // needed to access from query
     public Type getType(){
         return this.type;
     }
