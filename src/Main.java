@@ -26,7 +26,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
 
-        String file = "src/query/sql/test.txt";
+        String file = "test";
         Dbms db = new Dbms();
         SqlExecutor exec = new SqlExecutor(db);
 

@@ -24,11 +24,31 @@ public class SqlExecutor {
     }
 
     // Given a sql file, executes it and returns the table it returned, if any
-    public TableRootNode execute(String fileName) { // Where should we handle the exception?
+    public TableRootNode execute(String fileName, Object... args) { // Where should we handle the exception?
         SqlBaseListener listener = new SqlBaseListener(this.db);
         List<String> lines = this.loadLines(fileName);
 
         for(String line : lines) {
+            // Replace arg0 - arg9, the arguments, if any
+            while(line.contains("arg")) {
+                int argIndex = line.indexOf("arg"); // First occurence
+                int index = Integer.parseInt(line.charAt(argIndex + 3) + "");
+
+                if(index >= args.length) {
+                    System.err.println("SQL Argument Error: Not enough arguments provided for arg arg" + index);
+                    break;
+                }
+
+                Object value = args[index];
+                if(value instanceof String) // Add quotation marks to mark it as a string literal, if it is on{e
+                    value = '"' + (String) value + '"';
+
+                // Replace argX with the X'th argument in args
+                line = line.replaceFirst("arg" + index, value.toString());
+            }
+
+            System.out.println(line);
+
             SQLGrammarLexer lexer = new SQLGrammarLexer(CharStreams.fromString(line));
             SQLGrammarParser parser = new SQLGrammarParser(new CommonTokenStream(lexer));
 
@@ -47,8 +67,7 @@ public class SqlExecutor {
     private List<String> loadLines(String fileName) {
         List<String> lines = new ArrayList<>();
 
-        // String filePath = sqlPath + fileName + fileExtension;
-        String filePath = fileName;
+        String filePath = sqlPath + fileName + fileExtension;
 
         try {
             File file = new File(filePath);
