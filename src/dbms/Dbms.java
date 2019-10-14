@@ -449,6 +449,9 @@ public class Dbms implements IDbms {
 
     // Opens a table(table + .db) from storage
     @Override public void open(String tableName) {
+        if(tables.containsKey(tableName)) // Don't load the table if it's already loaded
+            return;
+
         TableRootNode table = TableSerializer.loadFromFile(tableName);
         if(table == null) {
             return; // Do something

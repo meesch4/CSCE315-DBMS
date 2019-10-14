@@ -38,6 +38,10 @@ public class Condition {
             value = getAttributeValue(table, ((Attribute) cond.right).attrName, row);
         }
 
+        if(literal instanceof String) {
+            literal = ((String) literal).replaceAll("_", " "); // Replace underscores with spaces
+        }
+
         switch (op){
             case EQUALS:
                 return value.equals(literal);
