@@ -1,5 +1,6 @@
 package dbms;
 
+import dbms.storage.TableSerializer;
 import types.Type;
 import types.Varchar;
 
@@ -440,23 +441,32 @@ public class Dbms implements IDbms {
         }
     }
 
-    // Opens a table(table + .db) from storage
-    @Override public void open(String table) {
-        String fileName = table = ".db";
+    @Override
+    public void returnTable(String tableName) {
+        // Basically just renames the table to "returned"
+        renameTable(tableName, "RETURNED");
+    }
 
-        // Call JsonSerializer and load it in
+    // Opens a table(table + .db) from storage
+    @Override public void open(String tableName) {
+        TableRootNode table = TableSerializer.loadFromFile(tableName);
+        if(table == null) {
+            return; // Do something
+        }
+
+        tables.put(tableName, table); // Assuming table isn't null
     }
 
     // Save all changes to the relation(table) and close it(remove it from the table map?)
     @Override public void close(String table) {
-
+        tables.remove(table); // Remove the table from the Table map
     }
 
     // Write the table to the disk? Might want to change this to accept a default filepath
-    @Override public void write(String table) {
-        String fileName = table + ".db"; // Assuming table is in the tables map
+    @Override public void write(String tableName) {
+        TableRootNode table = this.getTable(tableName);
 
-        // Call JsonSerializer and save it
+        TableSerializer.saveToFile(table);
     }
 
     // Exit from the interpreter, dunno what should happen here
@@ -464,6 +474,7 @@ public class Dbms implements IDbms {
     public void exit() {
         //end the entire program, and save data
         //just call write and then kill the listener
+        // Is this even necessary to implement?
     }
 
     // Removes the (key, value) pair with oldName and replaces it with newName

@@ -221,6 +221,9 @@ class FakeDbms implements IDbms {
     @Override public void exit() { }
 
     @Override
+    public void returnTable(String table) { }
+
+    @Override
     public void delete(String table, Condition condition) {
 
     }
