@@ -52,6 +52,8 @@ public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypec
         //project (actorName) (select (characterName == inputName) credits) //also, actorName is the attribute for the actor name in the credits table, just to be clear.
         //call Costar Helper on the table made by SQL above.
         //return the arraylist made by costarhelper
+        List<String> blah = new ArrayList<>();
+        return blah;
     }
 
     @Override
