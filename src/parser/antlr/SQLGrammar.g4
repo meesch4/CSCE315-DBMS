@@ -21,6 +21,7 @@ typed_attribute_list : attribute_name type (',' attribute_name type)* ;
 open_cmd : 'OPEN' relation_name ;
 close_cmd : 'CLOSE' relation_name ;
 write_cmd : 'WRITE' relation_name ;
+return_cmd: 'RETURN' relation_name ;
 exit_cmd : 'EXIT' ;
 
 // Necessary to create contexts for Shunting Yard 
@@ -59,7 +60,7 @@ delete_cmd : 'DELETE' 'FROM' relation_name 'WHERE' condition ;
 // Batch 5
 // Semicolon issues fixed && query issues fixed
 command : ( open_cmd | close_cmd | write_cmd | exit_cmd | show_cmd
-            | create_cmd | update_cmd | insert_cmd | delete_cmd  ) ';' ;
+            | create_cmd | update_cmd | insert_cmd | delete_cmd | return_cmd) ';' ;
 query : relation_name '<-' expr ';' ;
 program : (query | command) ;
 

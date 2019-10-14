@@ -43,6 +43,8 @@ public class TableSerializer {
 
             TableRootNode table = (TableRootNode) objectIn.readObject();
 
+            System.out.println("Done loading " + tableName);
+
             objectIn.close();
             fileIn.close();
 

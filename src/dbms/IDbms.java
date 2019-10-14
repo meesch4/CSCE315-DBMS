@@ -27,6 +27,7 @@ public interface IDbms {
     void close(String table);
     void write(String table);
     void exit();
+    void returnTable(String table);
 
     void delete(String table, Condition condition);
 

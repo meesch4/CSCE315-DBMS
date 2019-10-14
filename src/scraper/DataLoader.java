@@ -54,7 +54,6 @@ public class DataLoader {
 
     // Create the attributes & primary keys for the moviesTable
     public TableRootNode createCreditsTable() {
-        // Columns: creditID, cast/crew?, name, role/character, movieID, actorID
         // Columns: creditID, movieID, name, character/job, actorID, cast/crew
         String tableName = "credits";
 

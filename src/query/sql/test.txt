@@ -1,3 +1,9 @@
-CREATE TABLE table (col1 VARCHAR(20)) PRIMARY KEY (col1)
+OPEN movies;
 
-EXIT;
+ret <- select (rating > 90) movies;
+
+// SHOW ret;
+
+RETURN ret;
+
+CLOSE movies;
