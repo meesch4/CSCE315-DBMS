@@ -32,46 +32,53 @@ public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypec
          }
          return outputList;  //this is the final list of actor names who have played the joker.  should be final return value of the query function.
     }
-    String typeCast(TableRootNode genre) {
-        HashMap<String, int> genreCount;
-        HashMap<String, int> movieIds;
+    String typeCast(TableRootNode genreTable) {
+        HashMap<String, Integer> genreCount = new HashMap<>();
+        HashMap<Integer, Integer> movieIds = new HashMap<>();
         int maxCount = 0;
         String maxGenre = "";
-        int genreIndex;
-        int movIdIndex;
-        for(Attribute att : genre.getAttributes()){
-            if(att.getName() == "movieID"){
-                movIdIndex = att.index;
+        int genreIndex = -1;
+        int movIdIndex = -1;
+        for(Attribute att : genreTable.getAttributes()){
+            if(att.getName() == "id"){
+                movIdIndex = att.getIndex();
+            }
+            if(att.getName() == "genres"){
+                genreIndex = att.getIndex();
             }
         }
-        //I definitely fucked up the for each, but that can be fixed.  but other than that, this should be correct.
-        for (Map.Entry<String, RowNode> rowEntry : genre.getRowNodes().entrySet()) { //iterate through each credit's genre list
-            RowNode row = rowEntry.getValue();
-            String genreList = (String) row.getDataField(0); //get the genre list as a string
-            String[] genres = genreList.split(","); //split the string by commas, to separate out each individual genre
-            ///////////////////////////////////////////////////////////////////
-            int MovieId = GET MOVIE ID FROM THE ROW ENTRY.  //need to fix this
-            movieIds.put(movieId, 0);
-            ///////////////////////////////////////////////////////////////////
-            if (!(movieIds.containsKey(movieId))) { //if the movie id has not already been checked ... i.e. this handles Tyler Perry
-                {
-                    for (String genre : genres) { //for each of these genres, add them to the running count
-                        if (genreCount.containsKey(genre)) { //check if the genre count exists
-                            int count = genreCount.get(genre); /
-                            count++;
-                            genreCount.replace(genre, (count));  //add one to the counter for that genre.
-                            if (count > maxCount) {
-                                maxCount = count;
-                                maxGenre = genre; //update the max genre
+        if(genreIndex != -1 && movIdIndex != -1) { //prevents searching through tables that were improperly constructed
+            for (Map.Entry<String, RowNode> rowEntry : genreTable.getRowNodes().entrySet()) { //iterate through each movie's genre list
+                RowNode row = rowEntry.getValue();
+                String genreList = (String) row.getDataField(genreIndex); //get the genre list as a string
+                String[] genres = genreList.split(","); //split the string by commas, to separate out each individual genre
+
+                int MovieId = (int) row.getDataField(movIdIndex);
+
+                if (!(movieIds.containsKey(MovieId))) { //if the movie id has not already been checked ... i.e. this handles Tyler Perry
+                    {
+                        for (String genre : genres) { //for each of these genres, add them to the running count
+                            if (genreCount.containsKey(genre)) { //check if the genre count exists
+                                int count = genreCount.get(genre);
+                                count++;
+                                genreCount.replace(genre, (count));  //add one to the counter for that genre.
+                                if (count > maxCount) {
+                                    maxCount = count;
+                                    maxGenre = genre; //update the max genre
+                                }
+                            } else {
+                                genreCount.put(genre, 1); //put one as the count if the genre was not already in the genre count list.
                             }
-                        } else {
-                            genreCount.put(genre, 1); //put one as the count if the genre was not already in the genre count list.
                         }
                     }
                 }
+                movieIds.put(MovieId, 0);
             }
-            return maxGenre;
+        }else{
+            maxGenre = "";
+            System.out.println("Table projection/selection failed.");
         }
+        return maxGenre;
     }
 
 
