@@ -13,5 +13,5 @@ public interface ICoverRolesQuery {
      * In: Joker
      * Out: Heath Ledger, Joaquin Phoenix, Jack Nicholson, Mark Hamil, Jared Leto, etc
      */
-    List<Credits.CastMember> calcActorsWhichPlayedCharacter(String characterName);
+    List<String> calcActorsWhichPlayedCharacter(String characterName);
 }

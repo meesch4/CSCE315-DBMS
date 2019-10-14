@@ -1,5 +1,7 @@
 package query.interfaces;
 
+import java.util.List;
+
 public interface IDegreeOfSeparationQuery {
     /**
      * Given two actor names, outputs:
@@ -7,5 +9,5 @@ public interface IDegreeOfSeparationQuery {
      *  - List of connecting movies - size of this list should be the actual degree of separation
      *  - List of connecting actors
      */
-    Object calcDegreeOfSeparation(String actorName1, String actorName2);
+    List<String> calcDegreeOfSeparation(String actorName1, String actorName2);
 }
