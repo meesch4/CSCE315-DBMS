@@ -22,12 +22,12 @@ public class WorstOfBestQuery implements IWorstOfBestQuery {
         int bestMovieID = getMembersBestWorstMovie(actorName, true);
 
         // Get the director for it
-        String director = "";
+        String director = getDirectorOfMovie(bestMovieID);
 
         // Get directors' worst movie
-        int worstMovie = getMembersBestWorstMovie(director, false);
+        int worstMovieID = getMembersBestWorstMovie(director, false);
 
-        String worstMovieName = null; // Need its name
+        String worstMovieName = getMovieTitle(worstMovieID); // Need its name
 
         return worstMovieName;
     }
@@ -80,5 +80,15 @@ public class WorstOfBestQuery implements IWorstOfBestQuery {
         }
 
         return director;
+    }
+
+    public String getMovieTitle(int movieID) {
+        TableRootNode movieTitleTable = executor.execute("GetMovieTitle", movieID);
+        String movieTitle = null;
+        for(RowNode row : movieTitleTable.getRowNodes().values()) { // Shouldn't be a for loop
+            movieTitle = row.getDataField(0).toString();
+        }
+
+        return movieTitle;
     }
 }

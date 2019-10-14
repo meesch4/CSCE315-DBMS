@@ -3,8 +3,6 @@ OPEN movies;
 
 foundMovie <- select (id == arg0) movies;
 
-SHOW foundMovie;
-
 rating <- project (rating) foundMovie;
 
 RETURN rating;

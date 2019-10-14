@@ -10,6 +10,15 @@ public class WorstOfBestQueryTests {
     SqlExecutor exec = new SqlExecutor(new Dbms());
 
     @Test
+    public void calcWorstOfBests_isCorrect() {
+        WorstOfBestQuery query = new WorstOfBestQuery(exec);
+
+        String movie = query.calcWorstOfBests("Tom Hanks");
+
+        System.out.println(movie);
+    }
+
+    @Test
     public void getMembersBestMovie_tomHanks_doesGetBestMovie() {
         WorstOfBestQuery query = new WorstOfBestQuery(exec);
 
