@@ -141,6 +141,30 @@ public class DataLoader {
         }
     }
 
+    public TableRootNode getTable(String fileName) {
+        MovieDatabaseParser parser = new MovieDatabaseParser();
+        TableRootNode ret = null;
+
+        if(fileName.equals("credits")) {
+            ret = this.createCreditsTable();
+            try {
+                this.loadAllCredits(parser, ret, fileName);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(fileName.equals("movies")) {
+            ret = this.createMovieTable();
+            try {
+                this.loadAllMovies(parser, ret, fileName);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ret;
+    }
+
     /**
      *  Runs the MovieDatabaseParser and loads the appropriate ro
      */
