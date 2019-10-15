@@ -121,6 +121,15 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("CoverRoles called");
+            }
+        });
+        // calling function to generate CoverRoles
+        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -129,6 +138,9 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -149,6 +161,15 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("BestAndWorst called");
+            }
+        });
+        // calling function to generate BestAndWorst
+        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -157,6 +178,9 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -180,9 +204,20 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        // calling function to generate BaconNumber
+        String functionCall = "0";
         JTextField actor2 = new JTextField(30);
         c.gridy = 4;
         retval.add(actor2, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                String user3 = desiredInput2.getText();
+                System.out.println("BaconNumber called");
+            }
+        });
         // Outputs are bacon number, list of connecting movies, list of connecting actors
         JLabel baconNumber = new JLabel("The bacon number is ...");
         c.gridy = 6;
@@ -202,6 +237,11 @@ public class skeleton extends JFrame {
         JTextField actorOut = new JTextField(30);
         c.gridy = 11;
         retval.add(actorOut, c);
+        // use .setText() function to get actor output to text field
+        baconOut.setText(functionCall);
+        movieOut.setText(functionCall);
+        actorOut.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -228,6 +268,16 @@ public class skeleton extends JFrame {
         // use .getText() function to get input from this text field
         c.gridy = 4;
         retval.add(actor2, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                System.out.println("Constellation called");
+            }
+        });
+        // calling function to generate Constellation
+        String functionCall = "0";
         // Outputs are list of co-stars with input appearances
         JLabel outText = new JLabel("These co-stars have the required number of appearances ...");
         c.gridy = 6;
@@ -235,6 +285,9 @@ public class skeleton extends JFrame {
         JTextField costarOut = new JTextField(30);
         c.gridy = 7;
         retval.add(costarOut, c);
+        // use .setText() function to get actor output to text field
+        costarOut.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 }
