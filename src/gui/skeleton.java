@@ -273,7 +273,7 @@ public class skeleton extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 String user1 = actor1.getText();
                 String user2 = actor2.getText();
-                System.out.println("Constellation called");
+                //System.out.println("Constellation called");
             }
         });
         // calling function to generate Constellation
