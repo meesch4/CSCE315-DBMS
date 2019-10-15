@@ -31,7 +31,7 @@ public class SqlExecutor {
         for(String line : lines) {
             // Replace arg0 - arg9, the arguments, if any
             while(line.contains("arg")) {
-                int argIndex = line.indexOf("arg"); // First occurence
+                int argIndex = line.indexOf("arg"); // First occurrence
                 int index = Integer.parseInt(line.charAt(argIndex + 3) + "");
 
                 if(index >= args.length) {
@@ -40,14 +40,15 @@ public class SqlExecutor {
                 }
 
                 Object value = args[index];
-                if(value instanceof String) // Add quotation marks to mark it as a string literal, if it is on{e
+                if(value instanceof String) {// Add quotation marks to mark it as a string literal, if it is on{e
                     value = '"' + (String) value + '"';
+
+                    value = ((String) value).replaceAll(" ", "_");
+                }
 
                 // Replace argX with the X'th argument in args
                 line = line.replaceFirst("arg" + index, value.toString());
             }
-
-            System.out.println(line);
 
             SQLGrammarLexer lexer = new SQLGrammarLexer(CharStreams.fromString(line));
             SQLGrammarParser parser = new SQLGrammarParser(new CommonTokenStream(lexer));

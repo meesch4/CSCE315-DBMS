@@ -1,0 +1,12 @@
+// Get a movies title, given it's ID
+OPEN movies;
+
+movieRow <- select (id == arg0) movies;
+
+title <- project (title) movieRow;
+
+SHOW title;
+
+RETURN title;
+
+CLOSE movieRow;

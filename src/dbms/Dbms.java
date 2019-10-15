@@ -1,6 +1,7 @@
 package dbms;
 
 import dbms.storage.TableSerializer;
+import scraper.DataLoader;
 import types.Type;
 import types.Varchar;
 
@@ -197,6 +198,11 @@ public class Dbms implements IDbms {
                     newPrimaryKeys.add(newAttribute);
                 }
             }
+        }
+
+        // If we don't have any primary keys, make them equal to all of the attributes
+        if(newPrimaryKeys.isEmpty()) {
+            newPrimaryKeys = new ArrayList<>(newAttributes);
         }
 
         TableRootNode newTable = new TableRootNode(tempTable, newAttributes, newPrimaryKeys);
@@ -449,8 +455,14 @@ public class Dbms implements IDbms {
 
     // Opens a table(table + .db) from storage
     @Override public void open(String tableName) {
-        TableRootNode table = TableSerializer.loadFromFile(tableName);
+        if(tables.containsKey(tableName)) // Don't load the table if it's already loaded
+            return;
+
+        DataLoader loader = new DataLoader();
+        // TableRootNode table = TableSerializer.loadFromFile(tableName);
+        TableRootNode table = loader.getTable(tableName);
         if(table == null) {
+            System.err.println("Could not load table " + tableName);
             return; // Do something
         }
 
