@@ -1,8 +1,10 @@
 package gui;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class skeleton {
+public class skeleton extends JFrame {
     /**
      * Layout structure:
      * 5 tabs for each corresponding query
@@ -62,26 +64,41 @@ public class skeleton {
         c.gridx = 0;
         c.gridy = 2;
         retval.add(callQuery, c);
-        // Adding text fields
+        // Adding actor input text label
         JLabel desiredInput = new JLabel("Enter actor name below!");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
         retval.add(desiredInput,c);
+        // Adding actor input text field
         JTextField actor1 = new JTextField(30);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 1;
-        // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        // use .getText() function to get actor input from text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("Typecasting called");
+            }
+        });
+        // calling function to generate typecast
+        String functionCall = "0";
+        // Adding actor output text label
         JLabel outputText = new JLabel("The actor has been typecast as ...");
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
+        // Adding actor output text field
         JTextField output = new JTextField(30);
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
