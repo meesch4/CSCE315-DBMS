@@ -226,10 +226,10 @@ public class skeleton extends JFrame {
         JTextField baconOut = new JTextField(30);
         c.gridy = 7;
         retval.add(baconOut, c);
-        JTextField movieOut = new JTextField(30);
+        JTextArea movieOut = new JTextArea();
         c.gridy = 9;
         retval.add(movieOut, c);
-        JTextField actorOut = new JTextField(30);
+        JTextArea actorOut = new JTextArea();
         c.gridy = 11;
         retval.add(actorOut, c);
         callQuery.addActionListener(new ActionListener() {
@@ -238,12 +238,19 @@ public class skeleton extends JFrame {
                 String user1 = actor1.getText();
                 String user2 = actor2.getText();
                 // calling function to generate BaconNumber
-                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcDegreeOfSeparation(user1, user2)*/;
-                String functionCall = "";
+                List<String> functionCallList1 = Arrays.asList("0", "1", "2"), functionCallList2 = Arrays.asList("4", "5", "6")/*calcDegreeOfSeparation(user1, user2)*/;
+                String functionCall1 = "";
+                String functionCall2 = "";
                 // use .setText() function to get actor output to text field
-                baconOut.setText(functionCallList.get(0));
-                movieOut.setText(functionCallList.get(1));
-                actorOut.setText(functionCallList.get(2));
+                for (int i = 0; i < functionCallList1.size(); i++){
+                    functionCall1 += functionCallList1.get(i) + "\n";
+                }
+                for (int i = 0; i < functionCallList2.size(); i++){
+                    functionCall2 += functionCallList2.get(i) + "\n";
+                }
+                baconOut.setText(Integer.toString(functionCallList1.size()));
+                movieOut.setText(functionCall1);
+                actorOut.setText(functionCall2);
             }
         });
         // return BaconNumber JPanel
