@@ -128,7 +128,7 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
-        JTextField output = new JTextField(30);
+        JTextArea output = new JTextArea();
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
@@ -277,7 +277,7 @@ public class skeleton extends JFrame {
         JLabel outText = new JLabel("These co-stars have the required number of appearances ...");
         c.gridy = 6;
         retval.add(outText, c);
-        JTextField costarOut = new JTextField(30);
+        JTextArea costarOut = new JTextArea();
         c.gridy = 7;
         retval.add(costarOut, c);
         callQuery.addActionListener(new ActionListener() {
