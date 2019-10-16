@@ -100,7 +100,6 @@ public class skeleton extends JFrame {
                 String functionCall = "0"/*calcMostCommonGenre(user)*/;
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
-                System.out.println("Typecasting called");
             }
         });
         // return Typecast JPanel
@@ -146,7 +145,6 @@ public class skeleton extends JFrame {
                 }
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
-                System.out.println("CoverRoles called");
             }
         });
         // return CoverRoles JPanel
@@ -170,7 +168,7 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        JLabel outputText = new JLabel("These actors have played your character ...");
+        JLabel outputText = new JLabel("Worst film of the director of the actor's best film ...");
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
@@ -186,7 +184,6 @@ public class skeleton extends JFrame {
                 String functionCall = "0"/*calcWorstOfBests(user)*/;
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
-                System.out.println("BestAndWorst called");
             }
         });
         // return BestAndWorst JPanel
@@ -247,10 +244,9 @@ public class skeleton extends JFrame {
                 baconOut.setText(functionCallList.get(0));
                 movieOut.setText(functionCallList.get(1));
                 actorOut.setText(functionCallList.get(2));
-                System.out.println("BaconNumber called");
             }
         });
-        // return Typecast JPanel
+        // return BaconNumber JPanel
         return retval;
     }
 
@@ -273,20 +269,10 @@ public class skeleton extends JFrame {
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         retval.add(actor1,c);
-        JTextField actor2 = new JTextField(30);
+        JTextField appearances = new JTextField(30);
         // use .getText() function to get input from this text field
         c.gridy = 4;
-        retval.add(actor2, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user1 = actor1.getText();
-                String user2 = actor2.getText();
-                //System.out.println("Constellation called");
-            }
-        });
-        // calling function to generate Constellation
-        String functionCall = "0";
+        retval.add(appearances, c);
         // Outputs are list of co-stars with input appearances
         JLabel outText = new JLabel("These co-stars have the required number of appearances ...");
         c.gridy = 6;
@@ -294,9 +280,23 @@ public class skeleton extends JFrame {
         JTextField costarOut = new JTextField(30);
         c.gridy = 7;
         retval.add(costarOut, c);
-        // use .setText() function to get actor output to text field
-        costarOut.setText(functionCall);
-        // return Typecast JPanel
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = appearances.getText();
+                int user3 = Integer.parseInt(user2);
+                // calling function to generate Constellation
+                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcCostarAppearances(user1, user3)*/;
+                String functionCall = "";
+                for (int i = 0; i < functionCallList.size(); i++){
+                    functionCall += functionCallList.get(i) + "\n";
+                }
+                // use .setText() function to get actor output to text field
+                costarOut.setText(functionCall);
+            }
+        });
+        // return Constellation JPanel
         return retval;
     }
 }
