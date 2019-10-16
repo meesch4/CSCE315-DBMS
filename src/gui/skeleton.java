@@ -206,27 +206,13 @@ public class skeleton extends JFrame {
         JLabel desiredInput = new JLabel("Enter actor name below!");
         c.gridy = 0;
         retval.add(desiredInput, c);
-        JLabel desiredInput2 = new JLabel("Enter second actor name below!");
+        JLabel actor2 = new JLabel("Enter second actor name below!");
         c.gridy = 2;
-        retval.add(desiredInput2, c);
+        retval.add(actor2, c);
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        // calling function to generate BaconNumber
-        String functionCall = "0";
-        JTextField actor2 = new JTextField(30);
-        c.gridy = 4;
-        retval.add(actor2, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user1 = actor1.getText();
-                String user2 = actor2.getText();
-                String user3 = desiredInput2.getText();
-                System.out.println("BaconNumber called");
-            }
-        });
         // Outputs are bacon number, list of connecting movies, list of connecting actors
         JLabel baconNumber = new JLabel("The bacon number is ...");
         c.gridy = 6;
@@ -246,10 +232,21 @@ public class skeleton extends JFrame {
         JTextField actorOut = new JTextField(30);
         c.gridy = 11;
         retval.add(actorOut, c);
-        // use .setText() function to get actor output to text field
-        baconOut.setText(functionCall);
-        movieOut.setText(functionCall);
-        actorOut.setText(functionCall);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                // calling function to generate BaconNumber
+                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcDegreeOfSeparation(user1, user2)*/;
+                String functionCall = "";
+                // use .setText() function to get actor output to text field
+                baconOut.setText(functionCallList.get(0));
+                movieOut.setText(functionCallList.get(1));
+                actorOut.setText(functionCallList.get(2));
+                System.out.println("BaconNumber called");
+            }
+        });
         // return Typecast JPanel
         return retval;
     }
