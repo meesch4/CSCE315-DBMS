@@ -3,6 +3,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+
+import query.interfaces.*;
+
 
 public class skeleton extends JFrame {
     /**
@@ -76,16 +81,6 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 1;
         retval.add(actor1, c);
-        // use .getText() function to get actor input from text field
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("Typecasting called");
-            }
-        });
-        // calling function to generate typecast
-        String functionCall = "0";
         // Adding actor output text label
         JLabel outputText = new JLabel("The actor has been typecast as ...");
         c.gridx = 0;
@@ -96,8 +91,17 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
+        // use .getText() function to get actor input from text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate typecast
+                String functionCall = "0"/*calcMostCommonGenre(user)*/;
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+            }
+        });
         // return Typecast JPanel
         return retval;
     }
@@ -119,28 +123,31 @@ public class skeleton extends JFrame {
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         c.gridx = 0;
-        // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("CoverRoles called");
-            }
-        });
-        // calling function to generate CoverRoles
-        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
-        JTextField output = new JTextField(30);
+        JTextArea output = new JTextArea();
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
-        // return Typecast JPanel
+        // use .getText() function to get input from this text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate CoverRoles
+                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcActorsWhichPlayedCharacter(user)*/;
+                String functionCall = "";
+                for (int i = 0; i < functionCallList.size(); i++){
+                    functionCall += functionCallList.get(i) + "\n";
+                }
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+            }
+        });
+        // return CoverRoles JPanel
         return retval;
     }
 
@@ -161,16 +168,7 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("BestAndWorst called");
-            }
-        });
-        // calling function to generate BestAndWorst
-        String functionCall = "0";
-        JLabel outputText = new JLabel("These actors have played your character ...");
+        JLabel outputText = new JLabel("Worst film of the director of the actor's best film ...");
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
@@ -178,9 +176,17 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
-        // return Typecast JPanel
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate BestAndWorst
+                String functionCall = "0"/*calcWorstOfBests(user)*/;
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+            }
+        });
+        // return BestAndWorst JPanel
         return retval;
     }
 
@@ -204,20 +210,9 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        // calling function to generate BaconNumber
-        String functionCall = "0";
         JTextField actor2 = new JTextField(30);
         c.gridy = 4;
         retval.add(actor2, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user1 = actor1.getText();
-                String user2 = actor2.getText();
-                String user3 = desiredInput2.getText();
-                System.out.println("BaconNumber called");
-            }
-        });
         // Outputs are bacon number, list of connecting movies, list of connecting actors
         JLabel baconNumber = new JLabel("The bacon number is ...");
         c.gridy = 6;
@@ -231,17 +226,34 @@ public class skeleton extends JFrame {
         JTextField baconOut = new JTextField(30);
         c.gridy = 7;
         retval.add(baconOut, c);
-        JTextField movieOut = new JTextField(30);
+        JTextArea movieOut = new JTextArea();
         c.gridy = 9;
         retval.add(movieOut, c);
-        JTextField actorOut = new JTextField(30);
+        JTextArea actorOut = new JTextArea();
         c.gridy = 11;
         retval.add(actorOut, c);
-        // use .setText() function to get actor output to text field
-        baconOut.setText(functionCall);
-        movieOut.setText(functionCall);
-        actorOut.setText(functionCall);
-        // return Typecast JPanel
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                // calling function to generate BaconNumber
+                List<String> functionCallList1 = Arrays.asList("0", "1", "2"), functionCallList2 = Arrays.asList("4", "5", "6")/*calcDegreeOfSeparation(user1, user2)*/;
+                String functionCall1 = "";
+                String functionCall2 = "";
+                // use .setText() function to get actor output to text field
+                for (int i = 0; i < functionCallList1.size(); i++){
+                    functionCall1 += functionCallList1.get(i) + "\n";
+                }
+                for (int i = 0; i < functionCallList2.size(); i++){
+                    functionCall2 += functionCallList2.get(i) + "\n";
+                }
+                baconOut.setText(Integer.toString(functionCallList1.size()));
+                movieOut.setText(functionCall1);
+                actorOut.setText(functionCall2);
+            }
+        });
+        // return BaconNumber JPanel
         return retval;
     }
 
@@ -264,31 +276,40 @@ public class skeleton extends JFrame {
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         retval.add(actor1,c);
-        JTextField actor2 = new JTextField(30);
+        JTextField appearances = new JTextField(30);
         // use .getText() function to get input from this text field
         c.gridy = 4;
-        retval.add(actor2, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user1 = actor1.getText();
-                String user2 = actor2.getText();
-                System.out.println("Constellation called");
-            }
-        });
-        // calling function to generate Constellation
-        String functionCall = "0";
+        retval.add(appearances, c);
         // Outputs are list of co-stars with input appearances
         JLabel outText = new JLabel("These co-stars have the required number of appearances ...");
         c.gridy = 6;
         retval.add(outText, c);
-        JTextField costarOut = new JTextField(30);
+        JTextArea costarOut = new JTextArea();
         c.gridy = 7;
         retval.add(costarOut, c);
-        // use .setText() function to get actor output to text field
-        costarOut.setText(functionCall);
-        // return Typecast JPanel
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = appearances.getText();
+                int user3 = 0;
+                try {
+                    user3 = Integer.parseInt(user2);
+                } catch (NumberFormatException e) {
+                    System.out.println("Numerical exception");
+                }
+                System.out.println("The contents of user3 are: " + user3);
+                // calling function to generate Constellation
+                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcCostarAppearances(user1, user3)*/;
+                String functionCall = "";
+                for (int i = 0; i < functionCallList.size(); i++){
+                    functionCall += functionCallList.get(i) + "\n";
+                }
+                // use .setText() function to get actor output to text field
+                costarOut.setText(functionCall);
+            }
+        });
+        // return Constellation JPanel
         return retval;
     }
 }
-
