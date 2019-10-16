@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import query.interfaces.*;
+
 
 public class skeleton extends JFrame {
     /**
@@ -76,16 +78,6 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 1;
         retval.add(actor1, c);
-        // use .getText() function to get actor input from text field
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("Typecasting called");
-            }
-        });
-        // calling function to generate typecast
-        String functionCall = "0";
         // Adding actor output text label
         JLabel outputText = new JLabel("The actor has been typecast as ...");
         c.gridx = 0;
@@ -96,9 +88,19 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
-        // return Typecast JPanel
+        // use .getText() function to get actor input from text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate typecast
+                String functionCall = "0"/*calcMostCommonGenre(user)*/;
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+                // return Typecast JPanel
+                System.out.println("Typecasting called");
+            }
+        });
         return retval;
     }
 
