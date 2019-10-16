@@ -206,13 +206,16 @@ public class skeleton extends JFrame {
         JLabel desiredInput = new JLabel("Enter actor name below!");
         c.gridy = 0;
         retval.add(desiredInput, c);
-        JLabel actor2 = new JLabel("Enter second actor name below!");
+        JLabel desiredInput2 = new JLabel("Enter second actor name below!");
         c.gridy = 2;
-        retval.add(actor2, c);
+        retval.add(desiredInput2, c);
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        JTextField actor2 = new JTextField(30);
+        c.gridy = 4;
+        retval.add(actor2, c);
         // Outputs are bacon number, list of connecting movies, list of connecting actors
         JLabel baconNumber = new JLabel("The bacon number is ...");
         c.gridy = 6;
