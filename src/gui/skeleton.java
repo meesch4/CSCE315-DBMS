@@ -5,15 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Flow;
 
+import dbms.Dbms;
 import dbms.SqlExecutor;
 import query.CoverRolesQuery;
 import query.WorstOfBestQuery;
 import query.interfaces.*;
 
 
-public class skeleton extends JFrame {
-    private static SqlExecutor executor;
+public class skeleton {
+    private static SqlExecutor executor = new SqlExecutor(new Dbms());
     /**
      * Layout structure:
      * 5 tabs for each corresponding query
@@ -30,14 +32,10 @@ public class skeleton extends JFrame {
          JFrame mainframe = new JFrame();
          mainframe.setSize(1000, 1000);
          mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         // Remove after initial test
-         JButton test = new JButton("omegaLUL");
-         mainframe.add(test);
-         mainframe.add(generateGraphicPanel());
-         //mainframe.pack();
-         mainframe.setVisible(true); */
+        */
+    }
 
-        /** Layout formatting test */
+    public static void generateGUI() {
         JFrame mainframe = new JFrame("DBMS Queries");
         mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainframe.setSize(1920, 1080);
@@ -53,12 +51,12 @@ public class skeleton extends JFrame {
         JPanel typecastingPanel = generateTypecasting();
         JPanel coverRolesPanel = generateCoverRoles();
         JPanel bestAndWorstPanel = generateBestAndWorst();
-        JPanel baconPanel = generateBaconNumber();
+        //JPanel baconPanel = generateBaconNumber();
         JPanel constellationPanel = generateConstellation();
         mainTab.add("Typecasting", typecastingPanel); // typecasting panel here
         mainTab.add("Cover Roles", coverRolesPanel); // cover roles panel here
         mainTab.add("Best of Days, Worst of Days", bestAndWorstPanel);
-        mainTab.add("Bacon Number", baconPanel);
+        //mainTab.add("Bacon Number", baconPanel);
         mainTab.add("Constellation of Co-Stars", constellationPanel);
         mainPanel.add(mainTab);
         return mainPanel;
@@ -194,13 +192,14 @@ public class skeleton extends JFrame {
                 String worstMovie = q.calcWorstOfBests(user);
                 String functionCall = "0"/*calcWorstOfBests(user)*/;
                 // use .setText() function to get actor output to text field
-                output.setText(functionCall);
+                output.setText(worstMovie);
             }
         });
         // return BestAndWorst JPanel
         return retval;
     }
 
+    /** NOT IMPLEMENTING THE FUNCTION
     public static JPanel generateBaconNumber() {
         JPanel retval = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -250,11 +249,11 @@ public class skeleton extends JFrame {
                 String user1 = actor1.getText();
                 String user2 = actor2.getText();
                 // calling function to generate BaconNumber
-                List<String> functionCallList1 = Arrays.asList("0", "1", "2"), functionCallList2 = Arrays.asList("4", "5", "6")/*calcDegreeOfSeparation(user1, user2)*/;
+                List<String> functionCallList1 = Arrays.asList("0", "1", "2"), functionCallList2 = Arrays.asList("4", "5", "6")/*calcDegreeOfSeparation(user1, user2);
                 String functionCall1 = "";
                 String functionCall2 = "";
                 // use .setText() function to get actor output to text field
-                for (int i = 0; i < functionCallList1.size(); i++){
+                for (int i = 0; i < functionCallList1.size(); i++) {
                     functionCall1 += functionCallList1.get(i) + "\n";
                 }
                 for (int i = 0; i < functionCallList2.size(); i++){
@@ -267,7 +266,8 @@ public class skeleton extends JFrame {
         });
         // return BaconNumber JPanel
         return retval;
-    }
+    } */
+
 
     public static JPanel generateConstellation() {
         JPanel retval = new JPanel(new GridBagLayout());
@@ -312,6 +312,7 @@ public class skeleton extends JFrame {
                 }
                 System.out.println("The contents of user3 are: " + user3);
                 // calling function to generate Constellation
+                ICostarConstellationQuery q; /** insert function code herer */
                 List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcCostarAppearances(user1, user3)*/;
                 String functionCall = "";
                 for (int i = 0; i < functionCallList.size(); i++){
