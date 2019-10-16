@@ -100,10 +100,10 @@ public class skeleton extends JFrame {
                 String functionCall = "0"/*calcMostCommonGenre(user)*/;
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
-                // return Typecast JPanel
                 System.out.println("Typecasting called");
             }
         });
+        // return Typecast JPanel
         return retval;
     }
 
@@ -139,7 +139,7 @@ public class skeleton extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 String user = actor1.getText();
                 // calling function to generate CoverRoles
-                List<String> functionCallList = Arrays.asList("0", "1", "2");/*calcActorsWhichPlayedCharacter(user)*/;
+                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcActorsWhichPlayedCharacter(user)*/;
                 String functionCall = "";
                 for (int i = 0; i < functionCallList.size(); i++){
                     functionCall += functionCallList.get(i) + "\n";
@@ -149,7 +149,7 @@ public class skeleton extends JFrame {
                 System.out.println("CoverRoles called");
             }
         });
-        // return Typecast JPanel
+        // return CoverRoles JPanel
         return retval;
     }
 
@@ -170,15 +170,6 @@ public class skeleton extends JFrame {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("BestAndWorst called");
-            }
-        });
-        // calling function to generate BestAndWorst
-        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -187,9 +178,18 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
-        // return Typecast JPanel
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate BestAndWorst
+                String functionCall = "0"/*calcWorstOfBests(user)*/;
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+                System.out.println("BestAndWorst called");
+            }
+        });
+        // return BestAndWorst JPanel
         return retval;
     }
 
