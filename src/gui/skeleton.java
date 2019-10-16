@@ -3,6 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+
 import query.interfaces.*;
 
 
@@ -121,17 +124,7 @@ public class skeleton extends JFrame {
         JTextField actor1 = new JTextField(30);
         c.gridy = 1;
         c.gridx = 0;
-        // use .getText() function to get input from this text field
         retval.add(actor1, c);
-        callQuery.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = actor1.getText();
-                System.out.println("CoverRoles called");
-            }
-        });
-        // calling function to generate CoverRoles
-        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -140,8 +133,22 @@ public class skeleton extends JFrame {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
-        // use .setText() function to get actor output to text field
-        output.setText(functionCall);
+        // use .getText() function to get input from this text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                // calling function to generate CoverRoles
+                List<String> functionCallList = Arrays.asList("0", "1", "2");/*calcActorsWhichPlayedCharacter(user)*/;
+                String functionCall = "";
+                for (int i = 0; i < functionCallList.size(); i++){
+                    functionCall += functionCallList.get(i) + "\n";
+                }
+                // use .setText() function to get actor output to text field
+                output.setText(functionCall);
+                System.out.println("CoverRoles called");
+            }
+        });
         // return Typecast JPanel
         return retval;
     }
