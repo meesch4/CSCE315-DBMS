@@ -220,6 +220,7 @@ public class skeleton extends JFrame {
         JLabel connectingMovies = new JLabel("The connecting movies are ...");
         c.gridy = 8;
         retval.add(connectingMovies, c);
+        // random comment
         JLabel connectingActors = new JLabel("The connecting actors are ...");
         c.gridy = 10;
         retval.add(connectingActors, c);
