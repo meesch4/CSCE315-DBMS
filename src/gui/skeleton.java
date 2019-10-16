@@ -220,6 +220,7 @@ public class skeleton extends JFrame {
         JLabel connectingMovies = new JLabel("The connecting movies are ...");
         c.gridy = 8;
         retval.add(connectingMovies, c);
+        // random comment
         JLabel connectingActors = new JLabel("The connecting actors are ...");
         c.gridy = 10;
         retval.add(connectingActors, c);
@@ -292,7 +293,12 @@ public class skeleton extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 String user1 = actor1.getText();
                 String user2 = appearances.getText();
-                int user3 = Integer.parseInt(user2);
+                int user3 = 0;
+                try {
+                    user3 = Integer.parseInt(user2);
+                } catch (NumberFormatException e) {
+                    appearances.setText("Input must be integer");
+                }
                 // calling function to generate Constellation
                 List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcCostarAppearances(user1, user3)*/;
                 String functionCall = "";
@@ -307,4 +313,3 @@ public class skeleton extends JFrame {
         return retval;
     }
 }
-
