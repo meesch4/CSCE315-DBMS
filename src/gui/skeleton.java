@@ -6,10 +6,14 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
+import dbms.SqlExecutor;
+import query.CoverRolesQuery;
+import query.WorstOfBestQuery;
 import query.interfaces.*;
 
 
 public class skeleton extends JFrame {
+    private static SqlExecutor executor;
     /**
      * Layout structure:
      * 5 tabs for each corresponding query
@@ -36,9 +40,10 @@ public class skeleton extends JFrame {
         /** Layout formatting test */
         JFrame mainframe = new JFrame("DBMS Queries");
         mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainframe.setSize(1000, 1000);
+        mainframe.setSize(1920, 1080);
         mainframe.setLayout(new BorderLayout());
         mainframe.add(generateGraphicPanel());
+        mainframe.pack();
         mainframe.setVisible(true);
     }
 
@@ -96,6 +101,8 @@ public class skeleton extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String user = actor1.getText();
+                // create typecasting executor here
+                String typecastOutput; /** insert typecasting function here */
                 // calling function to generate typecast
                 String functionCall = "0"/*calcMostCommonGenre(user)*/;
                 // use .setText() function to get actor output to text field
@@ -137,11 +144,13 @@ public class skeleton extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String user = actor1.getText();
+                CoverRolesQuery q = new CoverRolesQuery(executor);
+                List<String> actorList = q.calcActorsWhichPlayedCharacter(user);
                 // calling function to generate CoverRoles
-                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcActorsWhichPlayedCharacter(user)*/;
+                //List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcActorsWhichPlayedCharacter(user)*/;
                 String functionCall = "";
-                for (int i = 0; i < functionCallList.size(); i++){
-                    functionCall += functionCallList.get(i) + "\n";
+                for (int i = 0; i < actorList.size(); i++){
+                    functionCall += actorList.get(i) + "\n";
                 }
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
@@ -181,6 +190,8 @@ public class skeleton extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 String user = actor1.getText();
                 // calling function to generate BestAndWorst
+                WorstOfBestQuery q = new WorstOfBestQuery(executor);
+                String worstMovie = q.calcWorstOfBests(user);
                 String functionCall = "0"/*calcWorstOfBests(user)*/;
                 // use .setText() function to get actor output to text field
                 output.setText(functionCall);
