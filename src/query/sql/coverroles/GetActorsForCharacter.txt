@@ -1,0 +1,14 @@
+// Given a character, returns all of the actors for it
+OPEN credits;
+OPEN movies;
+
+actors_row <- select (character == arg0 && isCast == 1) credits;
+
+SHOW actors_row;
+
+// Ends up removing duplicates, for if an actor played multiple characters in one movie(looking at you Tyler Perry)
+actors <- project (name) actors_row;
+
+RETURN actors;
+
+CLOSE actors_row;
