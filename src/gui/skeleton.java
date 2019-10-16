@@ -1,8 +1,10 @@
 package gui;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class skeleton {
+public class skeleton extends JFrame {
     /**
      * Layout structure:
      * 5 tabs for each corresponding query
@@ -62,26 +64,41 @@ public class skeleton {
         c.gridx = 0;
         c.gridy = 2;
         retval.add(callQuery, c);
-        // Adding text fields
+        // Adding actor input text label
         JLabel desiredInput = new JLabel("Enter actor name below!");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
         retval.add(desiredInput,c);
+        // Adding actor input text field
         JTextField actor1 = new JTextField(30);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 1;
-        // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        // use .getText() function to get actor input from text field
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("Typecasting called");
+            }
+        });
+        // calling function to generate typecast
+        String functionCall = "0";
+        // Adding actor output text label
         JLabel outputText = new JLabel("The actor has been typecast as ...");
         c.gridx = 0;
         c.gridy = 3;
         retval.add(outputText, c);
+        // Adding actor output text field
         JTextField output = new JTextField(30);
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -104,6 +121,15 @@ public class skeleton {
         c.gridx = 0;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("CoverRoles called");
+            }
+        });
+        // calling function to generate CoverRoles
+        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -112,6 +138,9 @@ public class skeleton {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -132,6 +161,15 @@ public class skeleton {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user = actor1.getText();
+                System.out.println("BestAndWorst called");
+            }
+        });
+        // calling function to generate BestAndWorst
+        String functionCall = "0";
         JLabel outputText = new JLabel("These actors have played your character ...");
         c.gridx = 0;
         c.gridy = 3;
@@ -140,6 +178,9 @@ public class skeleton {
         c.gridx = 0;
         c.gridy = 4;
         retval.add(output, c);
+        // use .setText() function to get actor output to text field
+        output.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -163,9 +204,20 @@ public class skeleton {
         c.gridy = 1;
         // use .getText() function to get input from this text field
         retval.add(actor1, c);
+        // calling function to generate BaconNumber
+        String functionCall = "0";
         JTextField actor2 = new JTextField(30);
         c.gridy = 4;
         retval.add(actor2, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                String user3 = desiredInput2.getText();
+                System.out.println("BaconNumber called");
+            }
+        });
         // Outputs are bacon number, list of connecting movies, list of connecting actors
         JLabel baconNumber = new JLabel("The bacon number is ...");
         c.gridy = 6;
@@ -185,6 +237,11 @@ public class skeleton {
         JTextField actorOut = new JTextField(30);
         c.gridy = 11;
         retval.add(actorOut, c);
+        // use .setText() function to get actor output to text field
+        baconOut.setText(functionCall);
+        movieOut.setText(functionCall);
+        actorOut.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 
@@ -211,6 +268,16 @@ public class skeleton {
         // use .getText() function to get input from this text field
         c.gridy = 4;
         retval.add(actor2, c);
+        callQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String user1 = actor1.getText();
+                String user2 = actor2.getText();
+                System.out.println("Constellation called");
+            }
+        });
+        // calling function to generate Constellation
+        String functionCall = "0";
         // Outputs are list of co-stars with input appearances
         JLabel outText = new JLabel("These co-stars have the required number of appearances ...");
         c.gridy = 6;
@@ -218,6 +285,9 @@ public class skeleton {
         JTextField costarOut = new JTextField(30);
         c.gridy = 7;
         retval.add(costarOut, c);
+        // use .setText() function to get actor output to text field
+        costarOut.setText(functionCall);
+        // return Typecast JPanel
         return retval;
     }
 }
