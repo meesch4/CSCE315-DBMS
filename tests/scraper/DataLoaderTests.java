@@ -1,16 +1,24 @@
 package scraper;
 
 import csce315.project1.MovieDatabaseParser;
+import dbms.Dbms;
 import dbms.RowNode;
+import dbms.SqlExecutor;
 import dbms.TableRootNode;
 import org.junit.Test;
 import scraper.DataLoader;
+import query.Query;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class DataLoaderTests {
+
+    Dbms db = new Dbms();
+
     @Test // Load in just the movies_single file and assert that it forms correctly
     public void loadAllMovies_moviesSingle_doesLoadCorrectly() throws IOException {
         // Arrange

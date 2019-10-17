@@ -1,0 +1,14 @@
+// Returns a 1 row, 1 column table with the genres of the movie with the given ID.
+OPEN movies;
+
+// Get the movie
+movie_row <- select (id == arg0) movies;
+
+// Only need the genres data field
+genres <- project (genres) movie_row;
+
+RETURN genres;
+
+CLOSE movie_row;
+
+// Don't close credits, will probably use it again?
