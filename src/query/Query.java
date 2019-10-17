@@ -31,54 +31,54 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
          }
          return outputList;  //this is the final list of actor names who have played the joker.  should be final return value of the query function.
     }
-    String typeCast(TableRootNode genreTable) {
-        HashMap<String, Integer> genreCount = new HashMap<>();
-        HashMap<Integer, Integer> movieIds = new HashMap<>();
-        int maxCount = 0;
-        String maxGenre = "";
-        int genreIndex = -1;
-        int movIdIndex = -1;
-        for(Attribute att : genreTable.getAttributes()){
-            if(att.getName() == "id"){
-                movIdIndex = att.getIndex();
-            }
-            if(att.getName() == "genres"){
-                genreIndex = att.getIndex();
-            }
-        }
-        if(genreIndex != -1 && movIdIndex != -1) { //prevents searching through tables that were improperly constructed
-            for (Map.Entry<String, RowNode> rowEntry : genreTable.getRowNodes().entrySet()) { //iterate through each movie's genre list
-                RowNode row = rowEntry.getValue();
-                String genreList = (String) row.getDataField(genreIndex); //get the genre list as a string
-                String[] genres = genreList.split(","); //split the string by commas, to separate out each individual genre
-
-                int MovieId = (int) row.getDataField(movIdIndex);
-
-                if (!(movieIds.containsKey(MovieId))) { //if the movie id has not already been checked ... i.e. this handles Tyler Perry
-                    {
-                        for (String genre : genres) { //for each of these genres, add them to the running count
-                            if (genreCount.containsKey(genre)) { //check if the genre count exists
-                                int count = genreCount.get(genre);
-                                count++;
-                                genreCount.replace(genre, (count));  //add one to the counter for that genre.
-                                if (count > maxCount) {
-                                    maxCount = count;
-                                    maxGenre = genre; //update the max genre
-                                }
-                            } else {
-                                genreCount.put(genre, 1); //put one as the count if the genre was not already in the genre count list.
-                            }
-                        }
-                    }
-                }
-                movieIds.put(MovieId, 0);
-            }
-        }else{
-            maxGenre = "";
-            System.out.println("Table projection/selection failed.");
-        }
-        return maxGenre;
-    }
+    //String typeCast(TableRootNode genreTable) {
+    //    HashMap<String, Integer> genreCount = new HashMap<>();
+    //    HashMap<Integer, Integer> movieIds = new HashMap<>();
+    //    int maxCount = 0;
+    //    String maxGenre = "";
+    //    int genreIndex = -1;
+    //    int movIdIndex = -1;
+    //    for(Attribute att : genreTable.getAttributes()){
+    //        if(att.getName() == "id"){
+    //            movIdIndex = att.getIndex();
+    //        }
+    //        if(att.getName() == "genres"){
+    //            genreIndex = att.getIndex();
+    //        }
+    //    }
+    //    if(genreIndex != -1 && movIdIndex != -1) { //prevents searching through tables that were improperly constructed
+    //        for (Map.Entry<String, RowNode> rowEntry : genreTable.getRowNodes().entrySet()) { //iterate through each movie's genre list
+    //            RowNode row = rowEntry.getValue();
+    //            String genreList = (String) row.getDataField(genreIndex); //get the genre list as a string
+    //            String[] genres = genreList.split(","); //split the string by commas, to separate out each individual genre
+//
+    //            int MovieId = (int) row.getDataField(movIdIndex);
+//
+    //            if (!(movieIds.containsKey(MovieId))) { //if the movie id has not already been checked ... i.e. this handles Tyler Perry
+    //                {
+    //                    for (String genre : genres) { //for each of these genres, add them to the running count
+    //                        if (genreCount.containsKey(genre)) { //check if the genre count exists
+    //                            int count = genreCount.get(genre);
+    //                            count++;
+    //                            genreCount.replace(genre, (count));  //add one to the counter for that genre.
+    //                            if (count > maxCount) {
+    //                                maxCount = count;
+    //                                maxGenre = genre; //update the max genre
+    //                            }
+    //                        } else {
+    //                            genreCount.put(genre, 1); //put one as the count if the genre was not already in the genre count list.
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //            movieIds.put(MovieId, 0);
+    //        }
+    //    }else{
+    //        maxGenre = "";
+    //        System.out.println("Table projection/selection failed.");
+    //    }
+    //    return maxGenre;
+    //}
 
 
     @Override
@@ -105,20 +105,55 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
 
     @Override
     public String calcMostCommonGenre(String actorName){
-        String blah = "";
+        TableRootNode movieIDs = sqlExecutor.execute("GetAllActorMovies", actorName);
+        Set<Object> IDs = new HashSet<Object>();
+        for(Map.Entry<String, RowNode> rowEntry : movieIDs.getRowNodes().entrySet()){
+            RowNode row = rowEntry.getValue();
+            for(Object a : row.getDataFields()) {
+                IDs.add(a);
+            }
+        }
+        HashMap<String, Integer> genreCount = new HashMap<String,Integer>();
 
-           //Given an actor's name, returns the most common genre the actor has played in
+        //The following may seem like it has a ton of unnecessary nested loops, but I wasn't sure how best to read
+        //the single element in the hashmaps without just using a for each loop.
+        //most of these loops have a single iteration, so it's going to run in O(n*1*1...)
 
+        for(Object a : IDs){
+            TableRootNode genres = sqlExecutor.execute("GetGenreByMovieID", a);
+            RowNode row = null;
+            for(Map.Entry<String, RowNode> rowEntry : genres.getRowNodes().entrySet()){
+                row = rowEntry.getValue();
+            }
+            if(row != null){
+                for(Object genresField : row.getDataFields()){
+                    String genresString = (String) genresField;
+                    String[] genreList = genresString.split(",");
+                    for(String genre : genreList){
+                        if(genreCount.containsKey(genre)){
+                            int count = genreCount.get(genre);
+                            count += 1;
+                            genreCount.replace(genre, count);
+                        }else{
+                            genreCount.put(genre,1);
+                        }
+                    }
+                }
+            }
+        }
+        Integer max = null;
+        String maxString = "";
+        for(Map.Entry<String, Integer> entry : genreCount.entrySet()){
+            if(max == null){
+                max = entry.getValue();
+                maxString = entry.getKey();
+            }else if(max < entry.getValue()){
+                max = entry.getValue();
+                maxString = entry.getKey();
+            }
+        }
 
-           //project a table of genre values and movie ids from a table where we've selected all credits containing the input actor's name.
-
-           //project (genre, movieId) (select (actorName == inputName) credits)
-
-
-           ///Pass this temporary table root node to a java function
-
-
-        return blah;
+        return maxString;
     }
 
     // Don't need to implement

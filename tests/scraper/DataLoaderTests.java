@@ -61,12 +61,10 @@ public class DataLoaderTests {
     @Test
     public void costarQueryTest() throws IOException {
 
-        List<String> Tom = new ArrayList<>();
+        String Tom = "";
 
-        Tom = quer.calcCostarAppearances("Tom Hanks", 1);
-        for(String name : Tom){
-            System.out.println(name);
-        }
+        Tom = quer.calcMostCommonGenre("James Gandolfini");
+        System.out.println(Tom);
 
     }
 }
