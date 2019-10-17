@@ -1,4 +1,4 @@
-package query;
+package scraper;
 
 import csce315.project1.MovieDatabaseParser;
 import dbms.RowNode;

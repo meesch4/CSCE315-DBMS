@@ -7,12 +7,11 @@ import dbms.RowNode;
 
 import java.util.*;
 
-    /**
-     * The internal representation of our database
-     * Contains all of the tables, and maybe their rows as well?
-     */
-public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery, IWorstOfBestQuery {
-
+/**
+ * The internal representation of our database
+ * Contains all of the tables, and maybe their rows as well?
+ */
+public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery {
 
     ArrayList<String> CostarHelper (TableRootNode tempTable){
          Set<String> nameSet = new HashSet<>();
@@ -48,23 +47,15 @@ public class Query implements ICoverRolesQuery, IDegreeOfSeparationQuery, ITypec
     }
 
     @Override
-    public List<String> calcActorsWhichPlayedCharacter(String characterName){
-        List<String> blah = new ArrayList<>();
-        return blah;
-    }
-    @Override
     public String calcMostCommonGenre(String actorName){
         String blah = "";
         return blah;
     }
+
+    // Don't need to implement
     @Override
     public List<String> calcDegreeOfSeparation(String actorName1, String actorName2){
         List<String> blah = new ArrayList<>();
-        return blah;
-    }
-    @Override
-    public String calcWorstOfBests(String actorName){
-        String blah = "";
         return blah;
     }
 }
