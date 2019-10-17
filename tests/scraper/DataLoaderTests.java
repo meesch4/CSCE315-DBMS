@@ -18,8 +18,7 @@ import static org.junit.Assert.*;
 public class DataLoaderTests {
 
     Dbms db = new Dbms();
-    SqlExecutor sql = new SqlExecutor(db);
-    Query quer = new Query(sql);
+
     @Test // Load in just the movies_single file and assert that it forms correctly
     public void loadAllMovies_moviesSingle_doesLoadCorrectly() throws IOException {
         // Arrange
@@ -56,15 +55,6 @@ public class DataLoaderTests {
 
         assertEquals(expectedCast, table.getRowNodes().get("52fe4284c3a36847f8024f95"));
         assertEquals(expectedCrew, table.getRowNodes().get("52fe4284c3a36847f8024f4f"));
-
-    }
-    @Test
-    public void costarQueryTest() throws IOException {
-
-        String Tom = "";
-
-        Tom = quer.calcMostCommonGenre("James Gandolfini");
-        System.out.println(Tom);
 
     }
 }

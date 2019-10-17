@@ -31,76 +31,16 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
          }
          return outputList;  //this is the final list of actor names who have played the joker.  should be final return value of the query function.
     }
-    //String typeCast(TableRootNode genreTable) {
-    //    HashMap<String, Integer> genreCount = new HashMap<>();
-    //    HashMap<Integer, Integer> movieIds = new HashMap<>();
-    //    int maxCount = 0;
-    //    String maxGenre = "";
-    //    int genreIndex = -1;
-    //    int movIdIndex = -1;
-    //    for(Attribute att : genreTable.getAttributes()){
-    //        if(att.getName() == "id"){
-    //            movIdIndex = att.getIndex();
-    //        }
-    //        if(att.getName() == "genres"){
-    //            genreIndex = att.getIndex();
-    //        }
-    //    }
-    //    if(genreIndex != -1 && movIdIndex != -1) { //prevents searching through tables that were improperly constructed
-    //        for (Map.Entry<String, RowNode> rowEntry : genreTable.getRowNodes().entrySet()) { //iterate through each movie's genre list
-    //            RowNode row = rowEntry.getValue();
-    //            String genreList = (String) row.getDataField(genreIndex); //get the genre list as a string
-    //            String[] genres = genreList.split(","); //split the string by commas, to separate out each individual genre
-//
-    //            int MovieId = (int) row.getDataField(movIdIndex);
-//
-    //            if (!(movieIds.containsKey(MovieId))) { //if the movie id has not already been checked ... i.e. this handles Tyler Perry
-    //                {
-    //                    for (String genre : genres) { //for each of these genres, add them to the running count
-    //                        if (genreCount.containsKey(genre)) { //check if the genre count exists
-    //                            int count = genreCount.get(genre);
-    //                            count++;
-    //                            genreCount.replace(genre, (count));  //add one to the counter for that genre.
-    //                            if (count > maxCount) {
-    //                                maxCount = count;
-    //                                maxGenre = genre; //update the max genre
-    //                            }
-    //                        } else {
-    //                            genreCount.put(genre, 1); //put one as the count if the genre was not already in the genre count list.
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //            movieIds.put(MovieId, 0);
-    //        }
-    //    }else{
-    //        maxGenre = "";
-    //        System.out.println("Table projection/selection failed.");
-    //    }
-    //    return maxGenre;
-    //}
 
 
     @Override
     public List<String> calcCostarAppearances(String actorName, int namAppearances) {
-        /**
-         * Given a character's name
-         * Returns a list of actors that have played that character in a movie
-         *
-         * Example
-         * In: Joker
-         * Out: Heath Ledger, Joaquin Phoenix, Jack Nicholson, Mark Hamil, Jared Leto, etc
-         */
-        //create table of actor names where the credit has the proper character name using this sql command
-        //project (actorName) (select (characterName == inputName) credits) //also, actorName is the attribute for the actor name in the credits table, just to be clear.
-        //call Costar Helper on the table made by SQL above.
-        //return the arraylist made by costarhelper
 
-        List<String> blah = new ArrayList<>();
+        List<String> output = new ArrayList<>();
         TableRootNode tempTable = sqlExecutor.execute("testTypeCast");
-        blah = CostarHelper(tempTable);
-        System.out.println(blah);
-        return blah;
+        output = CostarHelper(tempTable);
+        System.out.println(output);
+        return output;
     }
 
     @Override
