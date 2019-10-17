@@ -8,6 +8,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.SqlBaseListener;
 import parser.antlr.SQLGrammarLexer;
 import parser.antlr.SQLGrammarParser;
+import gui.skeleton;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +33,8 @@ public class Main {
         SqlExecutor exec = new SqlExecutor(db);
 
         TableRootNode table = exec.execute(file);
+
+        skeleton.generateGUI();
 
         System.out.println("");
     }
