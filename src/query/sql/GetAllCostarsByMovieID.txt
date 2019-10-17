@@ -1,0 +1,14 @@
+// Returns a 1 row, 1 column table with the genres of the movie with the given ID.
+OPEN credits;
+
+// Get the credit line for each actor in the movie who isn't the input actor
+credit_line <- select (id == arg0 && name != arg1 && isCast == 1) credits;
+
+// only need their names.  Movie id checking is done earlier.
+costars <- project (name) credit_line;
+
+RETURN costars;
+
+CLOSE credit_line;
+
+// Don't close credits, will probably use it again?
