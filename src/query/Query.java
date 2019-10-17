@@ -1,8 +1,7 @@
 package query;
 
-import dbms.TableRootNode;
+import dbms.*;
 import query.interfaces.*;
-import dbms.RowNode;
 
 
 import java.util.*;
@@ -12,6 +11,12 @@ import java.util.*;
  * Contains all of the tables, and maybe their rows as well?
  */
 public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICostarConstellationQuery {
+
+    private SqlExecutor sqlExecutor;
+
+    public Query(SqlExecutor sql) {
+            this.sqlExecutor = sql;
+        }
 
     ArrayList<String> CostarHelper (TableRootNode tempTable){
          Set<String> nameSet = new HashSet<>();
@@ -30,26 +35,65 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
 
     @Override
     public List<String> calcCostarAppearances(String actorName, int namAppearances) {
-        /**
-         * Given a character's name
-         * Returns a list of actors that have played that character in a movie
-         *
-         * Example
-         * In: Joker
-         * Out: Heath Ledger, Joaquin Phoenix, Jack Nicholson, Mark Hamil, Jared Leto, etc
-         */
-        //create table of actor names where the credit has the proper character name using this sql command
-        //project (actorName) (select (characterName == inputName) credits) //also, actorName is the attribute for the actor name in the credits table, just to be clear.
-        //call Costar Helper on the table made by SQL above.
-        //return the arraylist made by costarhelper
-        List<String> blah = new ArrayList<>();
-        return blah;
+
+        List<String> output = new ArrayList<>();
+        TableRootNode tempTable = sqlExecutor.execute("testTypeCast");
+        output = CostarHelper(tempTable);
+        System.out.println(output);
+        return output;
     }
 
     @Override
     public String calcMostCommonGenre(String actorName){
-        String blah = "";
-        return blah;
+        TableRootNode movieIDs = sqlExecutor.execute("GetAllActorMovies", actorName);
+        Set<Object> IDs = new HashSet<Object>();
+        for(Map.Entry<String, RowNode> rowEntry : movieIDs.getRowNodes().entrySet()){
+            RowNode row = rowEntry.getValue();
+            for(Object a : row.getDataFields()) {
+                IDs.add(a);
+            }
+        }
+        HashMap<String, Integer> genreCount = new HashMap<String,Integer>();
+
+        //The following may seem like it has a ton of unnecessary nested loops, but I wasn't sure how best to read
+        //the single element in the hashmaps without just using a for each loop.
+        //most of these loops have a single iteration, so it's going to run in O(n*1*1...)
+
+        for(Object a : IDs){
+            TableRootNode genres = sqlExecutor.execute("GetGenreByMovieID", a);
+            RowNode row = null;
+            for(Map.Entry<String, RowNode> rowEntry : genres.getRowNodes().entrySet()){
+                row = rowEntry.getValue();
+            }
+            if(row != null){
+                for(Object genresField : row.getDataFields()){
+                    String genresString = (String) genresField;
+                    String[] genreList = genresString.split(",");
+                    for(String genre : genreList){
+                        if(genreCount.containsKey(genre)){
+                            int count = genreCount.get(genre);
+                            count += 1;
+                            genreCount.replace(genre, count);
+                        }else{
+                            genreCount.put(genre,1);
+                        }
+                    }
+                }
+            }
+        }
+        Integer max = null;
+        String maxString = "";
+        for(Map.Entry<String, Integer> entry : genreCount.entrySet()){
+            if(max == null){
+                max = entry.getValue();
+                maxString = entry.getKey();
+            }else if(max < entry.getValue()){
+                max = entry.getValue();
+                maxString = entry.getKey();
+            }
+        }
+
+        return maxString;
     }
 
     // Don't need to implement
