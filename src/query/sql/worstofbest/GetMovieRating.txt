@@ -1,0 +1,11 @@
+// Returns the rating given a movie's ID
+OPEN movies;
+
+foundMovie <- select (id == arg0) movies;
+
+rating <- project (rating) foundMovie;
+
+RETURN rating;
+
+CLOSE foundMovie;
+

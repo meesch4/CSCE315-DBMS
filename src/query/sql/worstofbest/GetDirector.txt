@@ -1,0 +1,9 @@
+OPEN credits;
+
+movieRow <- select (character == "Director" && movieID == arg0) credits;
+
+director <- project (name) movieRow;
+
+SHOW director;
+
+RETURN director;
