@@ -18,28 +18,41 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
             this.sqlExecutor = sql;
         }
 
-    ArrayList<String> CostarHelper (TableRootNode tempTable){
-         Set<String> nameSet = new HashSet<>();
+    ArrayList<String> CostarHelper (TableRootNode tempTable, int numAppearances, String inputName){
+         HashMap<String, Integer> nameMap = new HashMap<>();
          ArrayList<String> outputList = new ArrayList<>();
-         for(Map.Entry<String, RowNode> rowNodeEntry : tempTable.getRowNodes().entrySet()){ //totally improper syntax, just putting this in as a place holder, before fixing the hashmap for each
-             //either way, this is supposed to iterate through all the string values for the actor names.
-             RowNode rownode = rowNodeEntry.getValue();
-             nameSet.add((String) rownode.getDataField(0)); //just to prevent duplicates.
+         for(Map.Entry<String, RowNode> rowNodeEntry : tempTable.getRowNodes().entrySet()){
+             RowNode row = rowNodeEntry.getValue(); //this rownode contains a movie ID.
+             Object id = row.getDataField(0);
+             TableRootNode costarsInMovie = sqlExecutor.execute("GetAllCostarsByMovieID", id, inputName);
+             for(Map.Entry<String, RowNode> rowNodeEntry1 : costarsInMovie.getRowNodes().entrySet()){
+                 RowNode row1 = rowNodeEntry1.getValue();
+                 String name = (String) row1.getDataField(0);
+                 if(nameMap.containsKey(name)){
+                     int count = nameMap.get(name);
+                     count++;
+                     nameMap.replace(name,count);
+                 }else{
+                     nameMap.put(name,1);
+                 }
+             }
          }
-         for(String name : nameSet){
-             outputList.add(name);  //add to the output list
+         for(Map.Entry<String, Integer> nameEntry : nameMap.entrySet()){
+             String name = nameEntry.getKey();
+             if(nameEntry.getValue() >= numAppearances) {
+                 outputList.add(name);  //add to the output list
+             }
          }
          return outputList;  //this is the final list of actor names who have played the joker.  should be final return value of the query function.
     }
 
 
     @Override
-    public List<String> calcCostarAppearances(String actorName, int namAppearances) {
+    public List<String> calcCostarAppearances(String actorName, int numAppearances) {
 
         List<String> output = new ArrayList<>();
-        TableRootNode tempTable = sqlExecutor.execute("testTypeCast");
-        output = CostarHelper(tempTable);
-        System.out.println(output);
+        TableRootNode tempTable = sqlExecutor.execute("GetAllActorMovies", actorName);
+        output = CostarHelper(tempTable, numAppearances, actorName);
         return output;
     }
 
