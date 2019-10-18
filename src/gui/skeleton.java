@@ -187,21 +187,16 @@ public class skeleton {
         constellationQueryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                Query q = new Query(executor);
                 String user1 = actor.getText();
                 String user2 = appearances.getText();
-                int user3 = 0;
-                try {
-                    user3 = Integer.parseInt(user2);
-                } catch (NumberFormatException e) {
-                    System.out.println("Numerical exception");
-                }
-                List<String> functionCallList = Arrays.asList("0", "1", "2")/*calcCostarAppearances(user1, user3)*/;
+                int user3 = Integer.parseInt(user2);
+                List<String> functionCallList = q.calcCostarAppearances(user1, user3);
                 String functionCall = "";
                 for (int i = 0; i < functionCallList.size(); i++){
                     functionCall += functionCallList.get(i) + "\n";
                 }
-                actorListOutput.setText(functionCall);
-            }
+                actorListOutput.setText(functionCall); }
         });
         return constellationPanel;
     }

@@ -9,6 +9,7 @@ import parser.SqlBaseListener;
 import parser.antlr.SQLGrammarLexer;
 import parser.antlr.SQLGrammarParser;
 import gui.skeleton;
+import gui.MainWindow;
 
 
 import java.io.File;
@@ -34,8 +35,10 @@ public class Main {
 
         TableRootNode table = exec.execute(file);
 
+        MainWindow m = new MainWindow();
+        m.setLocationByPlatform(true);
+        //m.setVisible(true);
         skeleton.generateGUI();
-
         System.out.println("");
     }
 }
