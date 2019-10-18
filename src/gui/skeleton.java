@@ -9,6 +9,7 @@ import java.util.concurrent.Flow;
 import dbms.Dbms;
 import dbms.SqlExecutor;
 import query.CoverRolesQuery;
+import query.Query;
 import query.WorstOfBestQuery;
 import query.interfaces.*;
 
@@ -61,7 +62,7 @@ public class skeleton {
         JButton typecastingQuery = new JButton("Query");
         c.gridy = 2;
         typecastingPanel.add(typecastingQuery, c);
-        JLabel outputText = new JLabel("The actor has been typecast as ...");
+        JLabel outputText = new JLabel("The actor has mainly plays roles in this genre ...");
         c.gridy = 3;
         typecastingPanel.add(outputText, c);
         JTextField typecastedRole = new JTextField(30);
@@ -70,9 +71,9 @@ public class skeleton {
         typecastingQuery.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                Query q = new Query(executor);
                 String toTypecast = typecastingActor.getText();
-                //typecastingQuery q = new typecastingQuery(executor);
-                String typecastOutput = "0"; /** q.calcTypeCastQuery(toTypeCast) */
+                String typecastOutput = q.calcMostCommonGenre(toTypecast);
                 typecastedRole.setText(typecastOutput);
             }
         });

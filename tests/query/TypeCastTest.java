@@ -12,7 +12,7 @@ public class TypeCastTest {
     Query quer = new Query(sql);
 
     @Test
-    public void costarQueryTest() throws IOException {
+    public void typecastQueryTest() throws IOException {
 
         String Tom = "";
 
