@@ -19,6 +19,11 @@ import query.interfaces.*;
 
 public class skeleton {
     private static SqlExecutor executor = new SqlExecutor(new Dbms());
+    /**
+     * Layout structure:
+     * 5 tabs for each corresponding query
+     * Each button has a listener that performs the getText() function and calls corresponding function
+     */
 
     // Main GUI building function
     public static void generateGUI() {
