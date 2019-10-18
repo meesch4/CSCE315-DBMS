@@ -51,9 +51,8 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
     public List<String> calcCostarAppearances(String actorName, int numAppearances) {
 
         List<String> output = new ArrayList<>();
-        TableRootNode tempTable = sqlExecutor.execute("GetAllActorMovies");
+        TableRootNode tempTable = sqlExecutor.execute("GetAllActorMovies", actorName);
         output = CostarHelper(tempTable, numAppearances, actorName);
-        System.out.println(output);
         return output;
     }
 
