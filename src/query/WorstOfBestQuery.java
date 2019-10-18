@@ -34,8 +34,13 @@ public class WorstOfBestQuery implements IWorstOfBestQuery {
 
     // Returns the actor's best rated movie(movieID)
     public int getMembersBestWorstMovie(String name, boolean getBest) {
+        String file = "GetAllActorMovies";
+        if(getBest)
+            file = "GetAllActorMoviesIsCast";
+
         //  1) Get all of the actors movies
-        TableRootNode actorMovies = executor.execute("GetAllActorMovies", name);
+        TableRootNode actorMovies = executor.execute(file, name);
+
 
         //  2) Get the corresponding movies from movies DB and get it's rating, then compare it with the others
         int goalRating = getBest ? Integer.MIN_VALUE : Integer.MAX_VALUE;
