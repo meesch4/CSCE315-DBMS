@@ -2,7 +2,7 @@
 OPEN credits;
 
 // Get all the movies he acted in
-actorMovies <- select (name == arg0) credits;
+actorMovies <- select (name == arg0 && character == "Director") credits;
 
 // Only want movieID's
 movies_split <- project (movieID) actorMovies;

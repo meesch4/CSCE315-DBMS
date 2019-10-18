@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainWindow extends JFrame {
-    private static SqlExecutor executor = new SqlExecutor(new Dbms());
+    private SqlExecutor executor;
 
     /**
      * Serial Version UID
@@ -24,7 +24,9 @@ public class MainWindow extends JFrame {
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
+    public MainWindow(SqlExecutor executor) {
+        this.executor = executor;
+
         initComponents();
     }
 
@@ -318,15 +320,6 @@ public class MainWindow extends JFrame {
         String worstMovie = q.calcWorstOfBests(user);
         worstOutput.setText(worstMovie);
 
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.setLocationByPlatform(true);
-        mainWindow.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

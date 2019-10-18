@@ -34,7 +34,7 @@ public class WorstOfBestQuery implements IWorstOfBestQuery {
 
     // Returns the actor's best rated movie(movieID)
     public int getMembersBestWorstMovie(String name, boolean getBest) {
-        String file = "GetAllActorMovies";
+        String file = "GetAllDirectorMovies";
         if(getBest)
             file = "GetAllActorMoviesIsCast";
 
