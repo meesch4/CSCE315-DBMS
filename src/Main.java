@@ -35,10 +35,10 @@ public class Main {
 
         TableRootNode table = exec.execute(file);
 
+        // GUI Generation
         MainWindow m = new MainWindow();
         m.setLocationByPlatform(true);
-        //m.setVisible(true);
-        skeleton.generateGUI();
+        m.setVisible(true);
         System.out.println("");
     }
 }
