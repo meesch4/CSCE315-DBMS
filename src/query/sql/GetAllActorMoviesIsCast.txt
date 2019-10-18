@@ -1,0 +1,14 @@
+// Returns a 1-col table of all of the movieID's this actor has been in
+OPEN credits;
+
+// Get all the movies he acted in
+actorMovies <- select (name == arg0 && isCast == 1) credits;
+
+// Only want movieID's
+movies_split <- project (movieID) actorMovies;
+
+RETURN movies_split;
+
+CLOSE actorMovies;
+
+// Don't close credits, will probably use it again?
