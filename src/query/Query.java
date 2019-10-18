@@ -51,14 +51,14 @@ public class Query implements IDegreeOfSeparationQuery, ITypecastingQuery, ICost
     public List<String> calcCostarAppearances(String actorName, int numAppearances) {
 
         List<String> output = new ArrayList<>();
-        TableRootNode tempTable = sqlExecutor.execute("GetAllActorMovies", actorName);
+        TableRootNode tempTable = sqlExecutor.execute("GetAllActorMoviesIsCast", actorName);
         output = CostarHelper(tempTable, numAppearances, actorName);
         return output;
     }
 
     @Override
     public String calcMostCommonGenre(String actorName){
-        TableRootNode movieIDs = sqlExecutor.execute("GetAllActorMovies", actorName);
+        TableRootNode movieIDs = sqlExecutor.execute("GetAllActorMoviesIsCast", actorName);
         Set<Object> IDs = new HashSet<Object>();
         for(Map.Entry<String, RowNode> rowEntry : movieIDs.getRowNodes().entrySet()){
             RowNode row = rowEntry.getValue();
